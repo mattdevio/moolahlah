@@ -10,9 +10,16 @@
     "type": "git",
     "url": "git+https://github.com/mattdevio/moolahlah.git"
   },
+  "engines": {
+    "node": "=8.9.4",
+    "npm": ">=6.0.0"
+  },
   "author": "Matthew Greenberg",
   "bugs": {
     "url": "https://github.com/mattdevio/moolahlah/issues"
   },
-  "homepage": "https://github.com/mattdevio/moolahlah#readme"
+  "homepage": "https://github.com/mattdevio/moolahlah#readme",
+  "dependencies": {
+    "express": "4.16.3"
+  }
 }
