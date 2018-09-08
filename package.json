@@ -24,7 +24,9 @@
     "body-parser": "1.18.3",
     "chalk": "2.4.1",
     "express": "4.16.3",
-    "morgan": "1.9.0"
+    "morgan": "1.9.0",
+    "react": "16.5.0",
+    "react-dom": "16.5.0"
   },
   "devDependencies": {
     "dotenv": "6.0.0",
