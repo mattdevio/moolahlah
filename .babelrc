@@ -1,0 +1,19 @@
+
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": [
+          "> 1%",
+          "last 2 versions",
+          "IE 10"
+        ]
+      }
+    }],
+    ["@babel/preset-react"]
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-object-rest-spread"],
+    ["@babel/plugin-proposal-pipeline-operator", { "proposal": "minimal" }]
+  ]
+}
