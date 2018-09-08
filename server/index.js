@@ -1,10 +1,14 @@
+/*----------  Load .env File First!  ----------*/
+require('dotenv').config();
+
+/*----------  Vendor Imports  ----------*/
+
+
 /*----------  Custom Imports  ----------*/
 const expressServer = require('./bin/expressServer');
-const config = require('../config/config.js');
+const utility = require('./bin/utility');
 
-/**
- * Start the express server
- */
-expressServer.listen(config.port, () => {
-  console.log(`Server is listening @ ${config.BASE_URL}:${config.PORT}`);
+// Start
+expressServer.listen(process.env.PORT, () => {
+  utility.log(`Server listening on : ${process.env.BASE_URL}:${process.env.PORT}`);
 });

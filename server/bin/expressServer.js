@@ -10,8 +10,6 @@ const http = require('http');
 const path = require('path');
 
 /*----------  Custom Imports  ----------*/
-const config = require('../../config/config.js');
-
 
 // Start Express Server
 const app = express();
