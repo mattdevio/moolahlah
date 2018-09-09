@@ -29,7 +29,11 @@ const initServer = () => {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(morgan('dev'));
-    
+
+    // Setup Pug Templates
+    app.set('view enginge', 'pug');
+    app.set('views', path.resolve(__dirname, '../views'));
+
     // Load common webpack file
     let common;
     try {
