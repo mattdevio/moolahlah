@@ -14,6 +14,8 @@ const path = require('path');
 const commonWebpackConfig = require('../../webpack_config/webpack.common');
 const devWebpackConfig = require('../../webpack_config/webpack.dev');
 const prodWebpackConfig = require('../../webpack_config/webpack.prod');
+const fileRouter = require('../routers/file');
+const apiRouter = require('../routers/api');
 
 /*==================================
 =            initServer            =
@@ -35,7 +37,7 @@ const initServer = () => {
     app.use('/favicon.ico', express.static(path.resolve(__dirname, '../assets/images/favicon.ico')));
 
     // Setup Pug Templates
-    app.set('view enginge', 'pug');
+    app.set('view engine', 'pug');
     app.set('views', path.resolve(__dirname, '../views'));
 
     // Load common webpack file
@@ -54,6 +56,12 @@ const initServer = () => {
     app.use(webpackDevMiddleware(compiler, {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
+
+    // Add api middleware
+    app.use('/api', apiRouter);
+
+    // Add the file router, needs to be the last middleware in the stack
+    app.use(fileRouter);
 
     // Resolve promise with express server
     resolve(expressServer);
