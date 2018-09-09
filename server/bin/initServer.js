@@ -30,6 +30,10 @@ const initServer = () => {
     app.use(bodyParser.json());
     app.use(morgan('dev'));
 
+    // Serve static assets
+    app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
+    app.use('/favicon.ico', express.static(path.resolve(__dirname, '../assets/images/favicon.ico')));
+
     // Setup Pug Templates
     app.set('view enginge', 'pug');
     app.set('views', path.resolve(__dirname, '../views'));
