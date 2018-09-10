@@ -4,7 +4,7 @@
   "description": "Financial Planner",
   "main": "index.js",
   "scripts": {
-    "start": "node server",
+    "start": "nodemon server",
     "config": "node scripts/configure"
   },
   "repository": {
@@ -29,7 +29,8 @@
     "morgan": "1.9.0",
     "pug": "2.0.3",
     "react": "16.5.0",
-    "react-dom": "16.5.0"
+    "react-dom": "16.5.0",
+    "styled-components": "^3.4.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -39,7 +40,7 @@
     "babel-loader": "8.0.2",
     "dotenv": "6.0.0",
     "eslint": "5.5.0",
-    "eslint-plugin-react": "7.11.1",
+    "eslint-plugin-react": "^7.11.1",
     "nodemon": "1.18.4",
     "webpack": "4.17.2",
     "webpack-dev-middleware": "3.2.0",
