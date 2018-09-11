@@ -8,7 +8,7 @@ A financial planner that aims to help users save money by tracking their income,
 ## Directory
 
 1. [Brief](/docs/BRIEF.md)
-2. [Project Milestones](/docs/PROJECT_MILESTONES)
+2. [Project Milestones](/docs/PROJECT_MILESTONES.md)
 3. [Spec](/docs/SPEC.md)
 
 ### Setup & Development
