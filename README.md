@@ -1,54 +1,61 @@
-<h1 align="center">🐮 moolahlah</h1>
-<h3 align="center">Your personal cash cow!</h3>
+# moolahlah
 
-A financial planner that aims to help users save money by tracking their income, spending and debt.
+A personal budget and finance management platform that helps you save money by effortless planning.
 
-[Moolahlah App](http://moolahlah.com)
+## Getting Started
 
-## Directory
+**Clone** -> **Install Dependencies** -> **Configure** -> **Start Server**
 
-1. [Brief](/docs/BRIEF.md)
-2. [Project Milestones](/docs/PROJECT_MILESTONES.md)
-3. [Spec](/docs/SPEC.md)
+```
+git clone https://github.com/mattdevio/moolahlah.git && cd moolahlah
+npm install
+npm run config
+npm start
+```
 
-### Setup & Development
+### Prerequisites
 
-**Requirements :**<br>
-> Node Version `8.9.4` (LTS / Carbon) or Higher<br>
-> NPM Version `6.0.0` or Higher<br>
++ Node.js v8.9.4 (LTS / Carbon)
++ NPM v6.00
 
-**Bash Commands :**
-<table>
-  <tr>
-    <td>Clone Repository</td>
-    <td><pre>git clone https://github.com/mattdevio/moolahlah.git && cd moolahlah</pre></td>
-  </tr>
-  <tr>
-    <td>Install Dependencies</td>
-    <td><pre>npm install</pre></td>
-  </tr>
-  <tr>
-    <td>Configure Enviornment</td>
-    <td><pre>npm run config [variable=value]</pre></td>
-  </tr>
-  <tr>
-    <td>Start Dev Server</td>
-    <td><pre>npm start</pre></td>
-  </tr>
-</table>
+### Custom Configuration
 
-**Getting Started :**<br>
-Clone the repository and install the dependencies. After installation has finished configure the enviornment by adding an `.env` file to the project root. All project enviornment variables can be found the [example.env](/example.env) file. You can use the Configure Enviornment command in the table above to set this up automatically for you. Once your enviornment is configured, you can start the development server with the common `npm start` command.
+All enviornment variables are stored within an `.env` file not included in this repository. You can find an example of this file and it's associated variables by looking at the [example.env](/example.env) file.
 
-**Project Structure :**<br>
-This is a MERN stack application meaning it uses Mongo, Express, React, Node. All of the server side code can be found in the directory named `server`. Likewise, client side code can be found in the directory labeled `client`. 
+In an effort to make configuration as easy as possible, you can use the built in configure command to load the defaults. This will setup the `.env` file for you.
 
-**Code of Conduct :**<br>
-All code must follow the linter rules. Use comments when neccessary, but less is more.
+```
+npm run config
+```
 
-___
-**Designed by Matthew Greenberg**<br>
-**Fullsail University**<br>
-**Capstone Project**<br>
-**September - November 2018**
+You can pass optional arguments to the command to override the default variables. This will merge the defaults found in the [example.env](/example.env) file with your values.
 
+```
+npm run config PORT=1337 BASE_URL=https://moolahlah.com
+```
+
+### And coding style tests
+
+All code is formatted via the eslint and the rules found in the [.eslintrc](/.eslintrc.js) file.
+
+## Deployment
+
+Nothing to deploy yet...
+
+## Built With
+
+* [MongoDB](https://docs.mongodb.com/manual/) - The Database Used
+* [Mongoose](https://mongoosejs.com/docs/guide.html) - Database ORM
+* [Express](https://expressjs.com/en/4x/api.html) - Server Side Web Framework
+* [React](https://reactjs.org/docs/) - Client Interface Development Library
+* [Redux](https://redux.js.org/) = State Management
+* [Webpack](https://webpack.js.org/concepts/) - Bundler / Compiler
+* [Styled Components](https://www.styled-components.com/docs/basics) - CSS Modules
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Matthew Greenberg** - *Lead Developer* - [MattDevIo](https://github.com/mattdevio)
