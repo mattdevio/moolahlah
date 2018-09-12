@@ -28,6 +28,7 @@
     "pug": "2.0.3",
     "react": "16.5.0",
     "react-dom": "16.5.0",
+    "react-router-dom": "4.3.1",
     "styled-components": "3.4.5"
   },
   "devDependencies": {
