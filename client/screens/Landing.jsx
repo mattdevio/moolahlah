@@ -1,4 +1,12 @@
+/*----------  Vendor Import  ----------*/
 import React, { Component } from 'react';
+
+/*----------  Custom Imports  ----------*/
+
+
+/*======================================
+=            Landing Screen            =
+======================================*/
 
 class Landing extends Component {
   render() {
@@ -9,3 +17,5 @@ class Landing extends Component {
 }
 
 export default Landing;
+
+/*=====  End of Landing Screen  ======*/
