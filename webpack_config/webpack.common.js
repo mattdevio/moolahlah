@@ -36,7 +36,7 @@ const getBaseWebpackConfig = async () => {
     resolve: {
       extensions: ['.jsx', '.js'],
       alias: {
-        '@': path.resolve(__dirname, '../src'),
+        '@': path.resolve(__dirname, '../client'),
       },
     },
 
