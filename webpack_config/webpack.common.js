@@ -24,7 +24,7 @@ const getBaseWebpackConfig = async () => {
 
     entry: {
       polyfill: '@babel/polyfill',
-      app: path.resolve(__dirname, '../src/entry.jsx'),
+      app: path.resolve(__dirname, '../client/entry.jsx'),
     },
 
     output: {
