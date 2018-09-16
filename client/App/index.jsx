@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { ThemeProvider } from 'styled-components';
 
 /*----------  Custom Imports  ----------*/
+import { Header } from '@/components';
 import * as routes from '@/constants/routes';
 import { Landing } from '@/screens';
 import { moolahlahTheme } from '@/App/styled_theme';
@@ -19,6 +20,7 @@ class App extends Component {
       <ThemeProvider theme={ moolahlahTheme }>
         <Router>
           <Fragment>
+            <Header />
             <Switch>
               <Route exact path={ routes.LANDING } component={ Landing } />
               <Route

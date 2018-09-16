@@ -32,4 +32,5 @@ export const moolahlahTheme = {
   }),
   typeFont: 'Catamaran, Helvetica, sans-serif',
   accentFont: 'Covered By Your Grace, serif',
+  maxWidth: '108rem',
 };
