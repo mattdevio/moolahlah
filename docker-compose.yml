@@ -1,0 +1,22 @@
+version: "2"
+
+services:
+
+  moolahlah:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "3000:3000"
+    networks:
+      - moolahlah-network
+
+  mongodb:
+    image: mongo
+    networks:
+      - moolahlah-network
+
+networks:
+  moolahlah-network:
+    driver: bridge
