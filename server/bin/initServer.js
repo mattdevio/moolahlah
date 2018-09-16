@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const merge = require('webpack-merge');
+const mongoose = require('mongoose');
 
 /*----------  Node Imports  ----------*/
 const http = require('http');
@@ -26,7 +27,10 @@ const initServer = () => {
 
     const app = express();
     const expressServer = http.Server(app);
-    
+
+    const dbConnectionURI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.DB_NAME}`;
+    mongoose.connect(dbConnectionURI, { useNewUrlParser: true });
+
     // Add Middleware To The Express App
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
