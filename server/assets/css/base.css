@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
 }
-body {
+html {
   /* Set 1rem = 10px */
   font-size: 62.5%;
 }
