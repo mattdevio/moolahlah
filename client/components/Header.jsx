@@ -25,7 +25,7 @@ export default Header;
 
 const HeaderContainer = styled.header`
   width: 100%;
-  background-color: ${({theme}) => theme.teal};
+  background-color: ${({theme}) => theme.beige};
 `;
 
 const HeaderWrapper = styled.div`
@@ -43,9 +43,9 @@ const LogoEscapeHatch = styled.a.attrs({
   children: 'moolahlah',
   href: LANDING,
 })`
-  font-size: 4rem;
+  font-size: 4.5rem;
   font-family: ${({theme}) => theme.accentFont};
-  color: #FFF;
+  color: #000;
   text-decoration: none;
   cursor: pointer;
 `;

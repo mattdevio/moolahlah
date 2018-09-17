@@ -36,6 +36,9 @@ class Landing extends Component {
     return (
       <LandingContainer height={this.state.height}>
         <Cow/>
+        <ProductDescription>
+          Writing out your monthly budget by hand can be a difficult task.<br />Moolahlah makes it better!
+        </ProductDescription>
         <CallToAction />
       </LandingContainer>
     );
@@ -71,16 +74,22 @@ const Cow = styled.img.attrs({
 const CallToAction = styled.button.attrs({
   children: 'Sign Up'
 })`
-  padding: 0.5rem 1rem;
-  font-size: 2em;
-  background-color: transparent;
-  border: 2px solid ${({theme}) => theme.blue};
-  border-radius: 0.3rem;
+  padding: 0.6rem 1.3rem;
+  text-decoration: none;
+  font-size: 2rem;
+  border-radius: 0.4rem;
+  background-color: ${({theme}) => theme.green};
+  color: ${({theme}) => theme.darkGreen};
   font-family: ${({theme}) => theme.typeFont};
   cursor: pointer;
-  transition: 0.3s all;
-  margin-top: 1rem;
-  &:hover {
-    background-color: ${({theme}) => theme.blue};
-  }
 `;
+
+const ProductDescription = styled.span`
+  font-family: ${({theme}) => theme.accentFont};
+  font-size: 2.6rem;
+  color: #000;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+

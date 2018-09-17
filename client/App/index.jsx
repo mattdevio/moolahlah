@@ -24,6 +24,7 @@ class App extends Component {
             <Switch>
               <Route exact path={ routes.LANDING } component={ Landing } />
               <Route path={ routes.SIGN_UP } component={ Signup } />
+              <route path={ routes.SIGN_IN } component={ Signup } />
               <Route
                 render={ () => <Redirect to={ routes.LANDING } /> }
               />

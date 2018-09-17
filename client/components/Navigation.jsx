@@ -1,9 +1,9 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 /*----------  Custom Imports  ----------*/
-import NavListItem from './NavListItem';
 import * as routes from '@/constants/routes';
 
 /*============================================
@@ -11,11 +11,12 @@ import * as routes from '@/constants/routes';
 ============================================*/
 
 class Navigation extends Component {
+
   render() {
     return (
       <NavList>
-        <NavListItem to={routes.LANDING} displayName='Landing' />
-        <NavListItem to={routes.SIGN_UP} displayName='Sign Up' />
+        <li><SignIn /></li>
+        <li><SignUp /></li>
       </NavList>
     );
   }
@@ -24,7 +25,6 @@ class Navigation extends Component {
 export default Navigation;
 
 /*=====  End of Navigation Component  ======*/
-
 
 const NavList = styled.ul`
   list-style-type: none;
@@ -40,5 +40,28 @@ const NavList = styled.ul`
   > *:nth-child(1) {
     margin-left: 0;
   }
+`;
+
+const SignUp = styled(Link).attrs({
+  to: routes.SIGN_UP,
+  children: 'Sign Up',
+})`
+  padding: 0.3rem 1rem;
+  text-decoration: none;
+  font-size: 2rem;
+  border-radius: 0.4rem;
+  background-color: ${({theme}) => theme.green};
+  color: ${({theme}) => theme.darkGreen};
+  font-family: ${({theme}) => theme.typeFont};
+`;
+
+const SignIn = styled(Link).attrs({
+  to: routes.SIGN_IN,
+  children: 'sign in',
+})`
+  text-decoration: none;
+  color: #000;
+  font-size: 2rem;
+  font-family: ${({theme}) => theme.typeFont};
 `;
 
