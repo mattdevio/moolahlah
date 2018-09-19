@@ -34,6 +34,21 @@ You can pass optional arguments to the command to override the default variables
 npm run config PORT=1337 BASE_URL=https://moolahlah.com
 ```
 
+### Runnin with Docker
+
+The project is setup for docker containers. You can use `docker-compose` to get the application up and running without any trouble. Here are some commands to help you.
+
+```
+// (Step 1) Build Docker Images
+$ docker-compose build
+
+// (Step 2) Start Docker Containers
+$ docker-compose up
+
+// (Step 3) Stop and Remove Docker Containers
+$ docker-compose down
+```
+
 ### And coding style tests
 
 All code is formatted via the eslint and the rules found in the [.eslintrc](/.eslintrc.js) file.

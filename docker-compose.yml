@@ -1,0 +1,25 @@
+version: "2"
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - "3000:3000"
+    networks:
+      - moolahlah-network
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - moolahlah-network
+
+networks:
+  moolahlah-network:
+    driver: bridge
