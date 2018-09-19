@@ -1,12 +1,8 @@
 /*===================================
 =            Barrel File            =
 ===================================*/
-import Header from './Header';
-import Navigation from './Navigation';
-import Footer from './Footer';
+import LandingPage from './LandingPage';
 
 export {
-  Header,
-  Navigation,
-  Footer,
+  LandingPage,
 };

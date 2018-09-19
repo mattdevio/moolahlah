@@ -1,13 +1,12 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component, Fragment } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 /*----------  Custom Imports  ----------*/
-import { Header, Footer } from '@/components';
-import * as routes from '@/constants/routes';
-import { Landing, Signup } from '@/screens';
 import { moolahlahTheme } from '@/App/styled_theme';
+import * as routes from '@/constants/routes';
+import { LandingPage } from '@/components';
 
 /*===========================
 =            App            =
@@ -20,16 +19,9 @@ class App extends Component {
       <ThemeProvider theme={ moolahlahTheme }>
         <Router>
           <Fragment>
-            <Header />
             <Switch>
-              <Route exact path={ routes.LANDING } component={ Landing } />
-              <Route path={ routes.SIGN_UP } component={ Signup } />
-              <route path={ routes.SIGN_IN } component={ Signup } />
-              <Route
-                render={ () => <Redirect to={ routes.LANDING } /> }
-              />
+              <Route exact path={ routes.LANDING } component={ LandingPage } />
             </Switch>
-            <Footer />
           </Fragment>
         </Router>
       </ThemeProvider>
