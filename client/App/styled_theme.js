@@ -32,11 +32,12 @@ export const moolahlahTheme = {
   }),
   typeFont: 'Lato, Helvetica, sans-serif',
   accentFont: 'Covered By Your Grace, serif',
-  maxWidth: '96rem', // 960px
-  green: '#3AB795',
-  darkGreen: '#164337',
-  teal: '#7DCFB6',
-  beige: '#EDEAD0',
-  midBeige: '#EDEAD0',
-  darkBeige: '#414039'
+  siteMaxWidth: '96rem', // 960px
+  white: '#FFFFFF',
+  black: '#00171F',
+  darkBlue: '#003459',
+  midBlue: '#007EA7',
+  brightBlue: '#00A8E8',
+  skyBlue: '#88CCF1',
+  whiteBlue: '#C1DFF0',
 };

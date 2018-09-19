@@ -20,7 +20,7 @@ class App extends Component {
         <Router>
           <Fragment>
             <Switch>
-              <Route exact path={ routes.LANDING } component={ LandingPage } />
+              <Route exact path={ routes.LANDING_PAGE } component={ LandingPage } />
             </Switch>
           </Fragment>
         </Router>
