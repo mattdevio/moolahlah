@@ -22,7 +22,6 @@ export function generateMediaMixin(sizes) {
 
 /**
  * moolahlahTheme - a styled component theme object
- * @type {Object}
  */
 export const moolahlahTheme = {
   ...generateMediaMixin({
@@ -32,12 +31,11 @@ export const moolahlahTheme = {
   }),
   typeFont: 'Lato, Helvetica, sans-serif',
   accentFont: 'Covered By Your Grace, serif',
-  siteMaxWidth: '96rem', // 960px
+  siteMaxWidth: '96rem',
   white: '#FFFFFF',
-  black: '#00171F',
-  darkBlue: '#003459',
-  midBlue: '#007EA7',
-  brightBlue: '#00A8E8',
-  skyBlue: '#88CCF1',
-  whiteBlue: '#C1DFF0',
+  black: '#000000',
+  orange: '#FF9F58',
+  yellow: '#FFD758',
+  pink: '#FA569D',
+  teal: '#53F2E1',
 };

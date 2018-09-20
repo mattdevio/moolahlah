@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 /*----------  Custom Imports  ----------*/
+import windowEvents from './windowEvents';
 import { moolahlahTheme } from '@/App/styled_theme';
 import * as routes from '@/constants/routes';
 import { LandingPage } from '@/components';
@@ -20,7 +21,7 @@ class App extends Component {
         <Router>
           <Fragment>
             <Switch>
-              <Route exact path={ routes.LANDING_PAGE } component={ LandingPage } />
+              <Route path={ routes.LANDING_PAGE } component={ LandingPage } />
             </Switch>
           </Fragment>
         </Router>
@@ -30,6 +31,6 @@ class App extends Component {
 
 }
 
-export default App;
+export default windowEvents(App);
 
 /*=====  End of App  ======*/

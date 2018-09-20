@@ -1,14 +1,21 @@
 /*----------  Custom Imports  ----------*/
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Switch } from 'react-router-dom';
 
 /*----------  Custom Imports  ----------*/
-
+import LandingHeader from './LandingHeader';
 
 
 class LandingPage extends Component {
   render() {
     return (
-      <h1>HelloWorld</h1>
+      <Fragment>
+        <LandingHeader />
+        { console.log(this.props) }
+        <Switch>
+          
+        </Switch>
+      </Fragment>
     );
   }
 }
