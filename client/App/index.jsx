@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 /*----------  Custom Imports  ----------*/
-import windowEvents from './windowEvents';
+import windowEvents from '@/hocs/windowEvents';
 import { moolahlahTheme } from '@/App/styled_theme';
 import * as routes from '@/constants/routes';
-import { LandingPage } from '@/components';
+import LandingPage from '@/screens/LandingPage';
+import './iconLibrary';
+
 
 /*===========================
 =            App            =
