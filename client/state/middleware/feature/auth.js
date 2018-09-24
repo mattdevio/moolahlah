@@ -2,7 +2,7 @@
 import * as R from 'ramda';
 
 /*----------  Custom Imports  ----------*/
-import { apiRequest } from '@/state/ducks/api';
+import { apiRequest, API_SUCCESS, API_ERROR } from '@/state/ducks/api';
 import {
   SIGN_UP_NAME,
   SIGN_UP_EMAIL,
@@ -26,16 +26,27 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
   switch (action.type) {
 
     case SIGN_UP_NAME:
-      return next(errorSignUpName(''));
+      next(errorSignUpName(''));
+      break;
 
     case SIGN_UP_EMAIL:
-      return next(errorSignUpEmail(''));
+      next(errorSignUpEmail(''));
+      break;
 
     case SIGN_UP_PASSWORD:
-      return next(errorSignUpPassword(''));
+      next(errorSignUpPassword(''));
+      break;
 
     case SIGNUP_USER:
       processSignUpForm(getState(), next, action.type);
+      break;
+
+    case `${SIGNUP_USER} ${API_SUCCESS}`:
+      console.log(action);
+      break;
+
+    case `${SIGNUP_USER} ${API_ERROR}`:
+      console.log(action);
       break;
 
   }
