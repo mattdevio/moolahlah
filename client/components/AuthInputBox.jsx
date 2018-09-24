@@ -7,16 +7,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 /*----------  Custom Imports  ----------*/
 
 
-const AuthInputBox = ({ iconName, placeHolder, inputType, value, onChange }) => (
-  <AuthInputBoxContainer>
-    <FormInput
-      placeholder={ placeHolder }
-      type={ inputType }
-      value={ value }
-      onChange={ e => onChange(e.target.value) }
-    />
-    <AuthInputStyledIcon icon={ iconName } />
-  </AuthInputBoxContainer>
+const AuthInputBox = ({ iconName, placeHolder, inputType, value, onChange, error }) => (
+  <MainContainer>
+    { !!error &&
+      <ErrorMessageBubble>
+        { error }
+      </ErrorMessageBubble> 
+    }
+    <AuthInputBoxContainer>
+      <FormInput
+        placeholder={ placeHolder }
+        type={ inputType }
+        value={ value }
+        onChange={ e => onChange(e.target.value) }
+      />
+      <AuthInputStyledIcon icon={ iconName } />
+    </AuthInputBoxContainer>
+  </MainContainer>
 );
 
 AuthInputBox.propTypes = {
@@ -25,10 +32,15 @@ AuthInputBox.propTypes = {
   inputType: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
 };
 
 export default AuthInputBox;
 
+
+const MainContainer = styled.div`
+  width: 100%;
+`;
 
 const AuthInputBoxContainer = styled.div`
   width: 100%;
@@ -64,4 +76,33 @@ const AuthInputStyledIcon = styled(FontAwesomeIcon)`
   top: 50%;
   left: 1.8rem;
   transform: translateY(-50%);
+`;
+
+const ErrorMessageBubble = styled.span`
+  font-family: ${({ theme }) => theme.typeFont};
+  color: ${({ theme }) => theme.white};
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  padding: 0.7rem 0.3rem;
+  border-radius: 2rem;
+  background-color: ${({ theme }) => theme.alertColor};
+  width: 100%;
+  display: block;
+  text-align: center;
+  position: relative;
+  &:after {
+    content: ' ';
+    width: 0; 
+    height: 0; 
+    border-left: 1rem solid transparent;
+    border-right: 1rem solid transparent;
+    border-top: 1rem solid ${({ theme }) => theme.alertColor};
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -1rem;
+    z-index: 100;
+  }
 `;

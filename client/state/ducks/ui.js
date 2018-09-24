@@ -3,12 +3,12 @@ export const UI = '[ui]';
 
 /*----------  Actions  ----------*/
 export const WINDOW_DIMENSIONS = `${UI} WINDOW_DIMENSIONS`;
+export const LOADING_MODAL = `${UI} LOADING_MODAL`;
 
 /*----------  Default State  ----------*/
 const INITIAL_UI_STATE = {
   windowWidth: window.innerWidth,
   windowHeight: window.innerHeight,
-  focusableInputs: {},
 };
 
 /*----------  Action Creators  ----------*/
@@ -17,6 +17,7 @@ export const setWindowDimensions = (windowWidth, windowHeight) => ({
   windowWidth,
   windowHeight,
 });
+
 
 /*=================================
 =            uiReducer            =

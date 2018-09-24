@@ -38,5 +38,5 @@ export const moolahlahTheme = {
   mediumBlue: '#2F447A',
   lightBlue: '#4967A3',
   skyBlue: '#90B9E4',
-  alertColor: '#DAA339',
+  alertColor: '#e74c3c',
 };

@@ -5,6 +5,7 @@ import {
   faAt,
   faKey,
   faExclamationTriangle,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -13,4 +14,5 @@ library.add(
   faAt,                     // at
   faKey,                    // key
   faExclamationTriangle,    // exclamation-triangle
+  faSpinner,                // spinner
 );

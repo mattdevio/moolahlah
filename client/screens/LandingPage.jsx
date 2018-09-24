@@ -59,6 +59,7 @@ const LandingPageContainer = styled.div.attrs({
   justify-content: center;
   background-color: ${({ theme }) => theme.white};
   padding: 1.5rem;
+  position: relative;
 `;
 
 const MoolahlahLogo = styled.img.attrs({

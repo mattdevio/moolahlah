@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /*----------  Custom Imports  ----------*/
 import AuthInputBox from './AuthInputBox';
 import {
-  setSignUpFields,
+  signUpName,
+  signUpEmail,
+  signUpPassword,
   signUpUser,
 } from '@/state/ducks/auth';
 
@@ -22,19 +23,23 @@ class AuthenticationBox extends Component {
       name,
       email,
       password,
+      nameError,
+      emailError,
+      passwordError,
       updateSignUpName,
       updateSignUpEmail,
       updateSignUpPassword,
       startSignupUser,
     } = this.props;
     return (
-      <AuthenticationBoxContainer>
+      <AuthenticationBoxContainer onSubmit={e => e.preventDefault()}>
         <AuthInputBox
           iconName='user'
           placeHolder='Name'
           inputType='text'
           value={ name }
           onChange={ updateSignUpName }
+          error={ nameError }
         />
         <AuthInputBox
           iconName='at'
@@ -42,6 +47,7 @@ class AuthenticationBox extends Component {
           inputType='text'
           value={ email }
           onChange={ updateSignUpEmail }
+          error={ emailError }
         />
         <AuthInputBox
           iconName='key'
@@ -49,11 +55,8 @@ class AuthenticationBox extends Component {
           inputType='password'
           value={ password }
           onChange={ updateSignUpPassword }
+          error={ passwordError }
         />
-        <ErrorMessage>
-          <FontAwesomeIcon icon='exclamation-triangle' />
-          All fields are required to start an account!
-        </ErrorMessage>
         <SubmitButton onClick={ startSignupUser }>
           Start Account
         </SubmitButton>
@@ -66,6 +69,9 @@ AuthenticationBox.propTypes = {
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
+  nameError: PropTypes.string.isRequired,
+  emailError: PropTypes.string.isRequired,
+  passwordError: PropTypes.string.isRequired,
   updateSignUpName: PropTypes.func.isRequired,
   updateSignUpEmail: PropTypes.func.isRequired,
   updateSignUpPassword: PropTypes.func.isRequired,
@@ -76,12 +82,15 @@ const mapStateToProps = (state) => ({
   name: state.auth.signUpName,
   email: state.auth.signUpEmail,
   password: state.auth.signUpPassword,
+  nameError: state.auth.errorSignUpName,
+  emailError: state.auth.errorSignUpEmail,
+  passwordError: state.auth.errorSignUpPassword,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  updateSignUpName: (signUpName) => dispatch(setSignUpFields({signUpName})),
-  updateSignUpEmail: (signUpEmail) => dispatch(setSignUpFields({signUpEmail})),
-  updateSignUpPassword: (signUpPassword) => dispatch(setSignUpFields({signUpPassword})),
+  updateSignUpName: (name) => dispatch(signUpName(name)),
+  updateSignUpEmail: (email) => dispatch(signUpEmail(email)),
+  updateSignUpPassword: (password) => dispatch(signUpPassword(password)),
   startSignupUser: () => dispatch(signUpUser()),
 });
 
@@ -90,7 +99,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(AuthenticationBox);
 /*=====  End of AuthenticationBox Component  ======*/
 
 
-const AuthenticationBoxContainer = styled.div`
+const AuthenticationBoxContainer = styled.form`
   position: relative;
   width: 100%;
   max-width: 35rem;
@@ -112,6 +121,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   box-shadow: 0 0 0 ${({ theme }) => theme.lightBlue};
+  padding: 0;
   &:focus {
     outline: none;
   }
@@ -120,19 +130,3 @@ const SubmitButton = styled.button`
     box-shadow: 0 0 1rem ${({ theme }) => theme.lightBlue};
   }
 `;
-
-const ErrorMessage = styled.p`
-  color: ${({ theme }) => theme.alertColor};
-  font-family: ${({ theme }) => theme.typeFont};
-  text-align: center;
-  font-weight: 700;
-  font-size: 1.8rem;
-  padding: 0;
-  margin: 1rem 0;
-  > svg {
-    margin-right: 0.5rem;
-  }
-`;
-
-
-
