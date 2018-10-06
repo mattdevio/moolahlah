@@ -1,5 +1,7 @@
 # moolahlah
 
+![Trello - Moolahlah](https://img.shields.io/badge/project management-trello-blue.svg)
+
 A personal budget and finance management platform that helps you save money by effortless planning.
 
 ## Getting Started
