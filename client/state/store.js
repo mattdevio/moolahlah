@@ -4,7 +4,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 /*----------  Custom Imports  ----------*/
 import rootReducer from '@/state/ducks';
 import uiMiddleware from '@/state/middleware/feature/ui';
-import authMiddleware from '@/state/middleware/feature/auth';
 import apiMiddleware from '@/state/middleware/core/api';
 
 /*----------  Setup  ----------*/
@@ -14,7 +13,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /*----------  Define & Order Middleware  ----------*/
 const featureMiddleware = [
   uiMiddleware,
-  authMiddleware,
 ];
 const coreMiddleware = [
   apiMiddleware,
