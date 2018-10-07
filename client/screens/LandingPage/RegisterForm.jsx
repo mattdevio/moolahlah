@@ -1,9 +1,16 @@
 /*----------  Vendor Imports  ----------*/
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
 import FloatingInput from '@/components/FloatingInput';
+import {
+  setRegisterName,
+  setRegisterEmail,
+  setRegisterPassword,
+} from '@/state/ducks/auth';
 
 /*====================================
 =            RegisterForm            =
@@ -11,19 +18,39 @@ import FloatingInput from '@/components/FloatingInput';
 
 class RegisterForm extends PureComponent {
   render() {
+    const {
+      name,
+      email,
+      password,
+      nameError,
+      emailError,
+      passwordError,
+      updateName,
+      updateEmail,
+      updatePassword,
+    } = this.props;
     return (
       <RegisterFormContainer>
         <SpacedFloatingInput
+          type='text'
           textLabel='Full Name'
-          errorMessage=''
+          errorMessage={ nameError }
+          value={ name }
+          onChange={ updateName }
         />
         <SpacedFloatingInput
+          type='text'
           textLabel='Email'
-          errorMessage=''
+          errorMessage={ emailError }
+          value={ email }
+          onChange={ updateEmail }
         />
         <SpacedFloatingInput
+          type='password'
           textLabel='Password'
-          errorMessage=''
+          errorMessage={ passwordError }
+          value={ password }
+          onChange={ updatePassword }
         />
         <RegisterButton>
           Create Your Free Account
@@ -33,7 +60,34 @@ class RegisterForm extends PureComponent {
   }
 }
 
-export default RegisterForm;
+RegisterForm.propTypes = {
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
+  nameError: PropTypes.string.isRequired,
+  emailError: PropTypes.string.isRequired,
+  passwordError: PropTypes.string.isRequired,
+  updateName: PropTypes.func.isRequired,
+  updateEmail: PropTypes.func.isRequired,
+  updatePassword: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  name: state.auth.registerName,
+  email: state.auth.registerEmail,
+  password: state.auth.registerPassword,
+  nameError: state.auth.registerName_Error,
+  emailError: state.auth.registerEmail_Error,
+  passwordError: state.auth.registerPassword_Error,
+});
+
+const mapDispatchToProps = dispatch => ({
+  updateName: name => dispatch(setRegisterName(name)),
+  updateEmail: email => dispatch(setRegisterEmail(email)),
+  updatePassword: password => dispatch(setRegisterPassword(password)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
 
 /*=====  End of RegisterForm  ======*/
 
