@@ -1,26 +1,27 @@
 /*----------  Vendor Imports  ----------*/
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 /*----------  Custom imports  ----------*/
 import * as routes from '@/constants/routes';
 
+/*==================================
+=            AuthToggle            =
+==================================*/
 
-class AuthToggle extends Component {
-
-  render() {
-    return (
-      <AuthToggleContainer>
-        <RouteableButton to={ routes.AUTH_REGISTER }>Register</RouteableButton>
-        <RouteableButton to={ routes.AUTH_SIGNIN }>Sign In</RouteableButton>
-        <BottomMarker />
-      </AuthToggleContainer>
-    );
-  }
-}
+const AuthToggle = () => (
+  <AuthToggleContainer>
+    <RouteableButton to={ routes.AUTH_REGISTER }>Register</RouteableButton>
+    <RouteableButton to={ routes.AUTH_SIGNIN }>Sign In</RouteableButton>
+    <BottomMarker />
+  </AuthToggleContainer>
+);
 
 export default AuthToggle;
+
+/*=====  End of AuthToggle  ======*/
+
 
 const AuthToggleContainer = styled.div`
   display: block;
