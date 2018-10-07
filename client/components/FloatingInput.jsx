@@ -16,10 +16,12 @@ class FloatingInput extends PureComponent {
       onChange,
       textLabel,
       errorMessage,
+      className,
+      type,
     } = this.props;
     return (
-      <FloatingInputContainer>
-        <TextInputBox value={ value } onChange={ e => onChange(e.target.value) } />
+      <FloatingInputContainer className={ className }>
+        <TextInputBox value={ value } onChange={ e => onChange(e.target.value) } type={ type } />
         <InputHighlight />
         <TextLabel>{ textLabel }</TextLabel>
         {
@@ -35,6 +37,8 @@ FloatingInput.propTypes = {
   onChange: func.isRequired,
   textLabel: string.isRequired,
   errorMessage: string.isRequired,
+  className: string,
+  type: string.isRequired,
 };
 
 export default FloatingInput;
@@ -42,9 +46,8 @@ export default FloatingInput;
 /*=====  End of FloatingInput Component  ======*/
 
 const FloatingInputContainer = styled.div`
-  padding: 2rem 0 1.7rem 0;
+  padding: 2rem 0;
   width: 100%;
-  max-width: 32rem;
   position: relative;
 `;
 
@@ -88,7 +91,7 @@ const TextLabel = styled.label`
 
 const InputHighlight = styled.span`
   position: absolute;
-  bottom: 1.7rem;
+  bottom: 2rem;
   left: 0;
   width: 100%;
   height: 0.3rem;
@@ -99,10 +102,10 @@ const InputHighlight = styled.span`
 
 
 const ErrorMessage = styled.p`
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   position: absolute;
   bottom: 0;
-  left: 0.1rem;
+  left: 0.2rem;
   margin: 0;
   color: ${({ theme }) => theme.alertRed};
   font-family: ${({ theme }) => theme.typeFont};
