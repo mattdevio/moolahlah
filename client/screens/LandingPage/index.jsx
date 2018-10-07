@@ -21,6 +21,10 @@ class LandingPage extends Component {
       <LandingPageContainer minHeight={ windowHeight }>
         <LandingPageLogo />
         <MainLine>Personal Finance Manager</MainLine>
+        <SubLine>
+          The first step to saving money<br />
+          is to make a plan!
+        </SubLine>
         <AuthForm />
       </LandingPageContainer>
     );
@@ -56,6 +60,7 @@ const LandingPageLogo = styled.span`
   background-size: 30rem 8.9rem;
   width: 30rem;
   height: 8.9rem;
+  margin-bottom: 2rem;
 `;
 
 const MainLine = styled.h2`
@@ -65,4 +70,16 @@ const MainLine = styled.h2`
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3rem;
+  margin: 0 0 2rem 0;
+`;
+
+const SubLine = styled.p`
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  text-align: center;
+  font-family: ${({ theme }) => theme.typeFont};
+  color: ${({ theme }) => theme.darkBlue};
+  font-weight: 400;
+  margin: 0 0 2rem 0;
 `;
