@@ -1,17 +1,17 @@
 /*----------  Vendor Imports  ----------*/
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 /*----------  Custom Imports  ----------*/
-
+import FloatingInput from '@/components/FloatingInput';
 
 /*==========================================
-=            AuthForm Component            =
+=            AuthForm PureComponent            =
 ==========================================*/
 
-class AuthForm extends Component {
+class AuthForm extends PureComponent {
   render() {
     return (
-      <h1>This is the Auth Form</h1>
+      <FloatingInput />
     );
   }
 }

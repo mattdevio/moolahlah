@@ -20,6 +20,7 @@ class LandingPage extends Component {
     return (
       <LandingPageContainer minHeight={ windowHeight }>
         <LandingPageLogo />
+        <MainLine></MainLine>
         <AuthForm />
       </LandingPageContainer>
     );
@@ -55,4 +56,10 @@ const LandingPageLogo = styled.span`
   background-size: 30rem 8.9rem;
   width: 30rem;
   height: 8.9rem;
+`;
+
+const MainLine = styled.h2`
+  font-size: 3rem;
+  font-family: ${({ theme }) => theme.typeFont};
+  font-weight: 700;
 `;
