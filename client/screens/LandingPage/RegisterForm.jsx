@@ -49,7 +49,6 @@ class RegisterForm extends PureComponent {
           errorMessage={ nameError }
           value={ name }
           onChange={ updateName }
-          onInvalid
         />
         <SpacedFloatingInput
           type='text'
