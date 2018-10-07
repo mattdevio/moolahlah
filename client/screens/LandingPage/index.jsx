@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
-import AuthForm from './AuthForm';
+import ComboAuthBox from './ComboAuthBox';
 
 
 /*==========================================
@@ -25,7 +25,7 @@ class LandingPage extends Component {
           The first step to saving money<br />
           is to make a plan!
         </SubLine>
-        <AuthForm />
+        <ComboAuthBox />
       </LandingPageContainer>
     );
   }

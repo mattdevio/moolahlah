@@ -5,41 +5,41 @@ import { Route } from 'react-router-dom';
 
 /*----------  Custom Imports  ----------*/
 import AuthToggle from './AuthToggle';
+import RegisterForm from './RegisterForm';
+import SigninForm from './SigninForm';
 import * as routes from '@/constants/routes';
 
 /*==========================================
-=            AuthForm PureComponent            =
+=            ComboAuthBox PureComponent            =
 ==========================================*/
 
-class AuthForm extends Component {
+class ComboAuthBox extends Component {
   render() {
     return (
-      <AuthFormContainer>
+      <ComboAuthBoxContainer>
         <AuthToggle />
         <Route
           exact
           path={ routes.AUTH_REGISTER }
-          render={ () => <h1>register</h1> }
+          component={ RegisterForm }
         />
         <Route
           exact
           path={ routes.AUTH_SIGNIN }
-          render={ () => <h1>signin</h1> }
+          component={ SigninForm }
         />
-      </AuthFormContainer>
+      </ComboAuthBoxContainer>
     );
   }
 }
 
-export default AuthForm;
+export default ComboAuthBox;
 
-/*=====  End of AuthForm Component  ======*/
+/*=====  End of ComboAuthBox Component  ======*/
 
-const AuthFormContainer = styled.div`
+const ComboAuthBoxContainer = styled.div`
   box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.5);
   max-width: 40rem;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: block;
 `;
