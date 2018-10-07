@@ -20,7 +20,7 @@ class LandingPage extends Component {
     return (
       <LandingPageContainer minHeight={ windowHeight }>
         <LandingPageLogo />
-        <MainLine></MainLine>
+        <MainLine>Personal Finance Manager</MainLine>
         <AuthForm />
       </LandingPageContainer>
     );
@@ -61,5 +61,8 @@ const LandingPageLogo = styled.span`
 const MainLine = styled.h2`
   font-size: 3rem;
   font-family: ${({ theme }) => theme.typeFont};
+  color: ${({ theme }) => theme.darkBlue};
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
 `;
