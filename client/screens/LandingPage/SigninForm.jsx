@@ -1,8 +1,12 @@
 /*----------  Vendor Imports  ----------*/
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
 
+/*==================================
+=            SigninForm            =
+==================================*/
 
 class SigninForm extends PureComponent {
   render() {
@@ -13,3 +17,5 @@ class SigninForm extends PureComponent {
 }
 
 export default SigninForm;
+
+/*=====  End of SigninForm  ======*/

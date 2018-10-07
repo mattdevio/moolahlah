@@ -65,22 +65,22 @@ const processAndSubmit = ({ auth }, next) => {
   let isValid = true;
 
   if (payload.registerName === '') {
-    next(setRegisterNameError('This field is required.'));
+    next(setRegisterNameError('This field is required'));
     isValid = false;
   }
 
   if (payload.registerEmail === '') {
-    next(setRegisterEmailError('This field is required.'));
+    next(setRegisterEmailError('This field is required'));
     isValid = false;
   } else if (payload.registerEmail.indexOf('@') < 3) {
     next(setRegisterEmailError('Invalid Email Address'));
   }
 
   if (payload.registerPassword === '') {
-    next(setRegisterPasswordError('This field is required.'));
+    next(setRegisterPasswordError('This field is required'));
     isValid = false;
   } else if (payload.registerPassword.length < 6) {
-    next(setRegisterPasswordError('Password must be atleast 6 characters.'));
+    next(setRegisterPasswordError('Password must be atleast 6 characters'));
     isValid = false;
   }
 
