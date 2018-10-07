@@ -8,6 +8,7 @@ export const REGISTER_EMAIL = `${AUTH} REGISTER_EMAIL`;
 export const REGISTER_EMAIL_ERROR = `${AUTH} REGISTER_EMAIL_ERROR`;
 export const REGISTER_PASSWORD = `${AUTH} REGISTER_PASSWORD`;
 export const REGISTER_PASSWORD_ERROR = `${AUTH} REGISTER_PASSWORD_ERROR`;
+export const SUBMIT_REGISTER_FORM = `${AUTH} SUBMIT_REGISTER_FORM`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -48,6 +49,10 @@ export const setRegisterEmailError = registerEmail_Error => ({
 export const setRegisterPasswordError = registerPassword_Error => ({
   type: REGISTER_PASSWORD_ERROR,
   registerPassword_Error: registerPassword_Error ? registerPassword_Error : '',
+});
+
+export const submitRegisterForm = () => ({
+  type: SUBMIT_REGISTER_FORM,
 });
 
 /*===================================

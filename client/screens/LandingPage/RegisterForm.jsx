@@ -10,6 +10,7 @@ import {
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
+  submitRegisterForm,
 } from '@/state/ducks/auth';
 
 /*====================================
@@ -17,6 +18,17 @@ import {
 ====================================*/
 
 class RegisterForm extends PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.runSubmit = this.runSubmit.bind(this);
+  }
+
+  runSubmit(event) {
+    event.preventDefault();
+    this.props.submitForm();
+  }
+
   render() {
     const {
       name,
@@ -30,7 +42,7 @@ class RegisterForm extends PureComponent {
       updatePassword,
     } = this.props;
     return (
-      <RegisterFormContainer>
+      <RegisterFormContainer onSubmit={ this.runSubmit }>
         <SpacedFloatingInput
           type='text'
           textLabel='Full Name'
@@ -70,6 +82,7 @@ RegisterForm.propTypes = {
   updateName: PropTypes.func.isRequired,
   updateEmail: PropTypes.func.isRequired,
   updatePassword: PropTypes.func.isRequired,
+  submitForm: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -85,6 +98,7 @@ const mapDispatchToProps = dispatch => ({
   updateName: name => dispatch(setRegisterName(name)),
   updateEmail: email => dispatch(setRegisterEmail(email)),
   updatePassword: password => dispatch(setRegisterPassword(password)),
+  submitForm: () => dispatch(submitRegisterForm())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
