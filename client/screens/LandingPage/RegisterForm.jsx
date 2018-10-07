@@ -42,13 +42,14 @@ class RegisterForm extends PureComponent {
       updatePassword,
     } = this.props;
     return (
-      <RegisterFormContainer onSubmit={ this.runSubmit }>
+      <RegisterFormContainer onSubmit={ this.runSubmit } noValidate>
         <SpacedFloatingInput
           type='text'
           textLabel='Full Name'
           errorMessage={ nameError }
           value={ name }
           onChange={ updateName }
+          onInvalid
         />
         <SpacedFloatingInput
           type='text'

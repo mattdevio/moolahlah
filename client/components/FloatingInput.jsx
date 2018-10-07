@@ -25,7 +25,7 @@ class FloatingInput extends PureComponent {
         <InputHighlight />
         <TextLabel>{ textLabel }</TextLabel>
         {
-          !!errorMessage && <ErrorMessage>Error: { errorMessage }</ErrorMessage>
+          !!errorMessage && <ErrorMessage>{ errorMessage }</ErrorMessage>
         }
       </FloatingInputContainer>
     );
