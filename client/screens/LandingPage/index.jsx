@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
+import AuthForm from './AuthForm';
 
 
 /*==========================================
@@ -19,6 +20,7 @@ class LandingPage extends Component {
     return (
       <LandingPageContainer minHeight={ windowHeight }>
         <LandingPageLogo />
+        <AuthForm />
       </LandingPageContainer>
     );
   }
