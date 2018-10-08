@@ -7,12 +7,19 @@ import {
   REGISTER_EMAIL,
   REGISTER_PASSWORD,
   SUBMIT_REGISTER_FORM,
+  SIGNIN_EMAIL,
+  SIGNIN_PASSWORD,
+  SUBMIT_SIGNIN_FORM,
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
   setRegisterNameError,
   setRegisterEmailError,
   setRegisterPasswordError,
+  setSigninEmail,
+  setSigninPassword,
+  setSigninEmailError,
+  setSigninPasswordError,
 } from '@/state/ducks/auth';
 
 
@@ -37,8 +44,23 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
       clearErrorIfSet(getState(), next, 'registerPassword_Error', setRegisterPasswordError);
       break;
 
+    case SIGNIN_EMAIL:
+      clearErrorIfSet(getState(), next, 'signinEmail_Error', setSigninEmailError);
+      break;
+
+    case SIGNIN_PASSWORD:
+      clearErrorIfSet(getState(), next, 'signinPassword_Error', setSigninPasswordError);
+      break;
+
     case SUBMIT_REGISTER_FORM:
-      processAndSubmit(getState(), next);
+      processRegisterAndSubmit(getState(), next);
+      break;
+
+    case SUBMIT_SIGNIN_FORM:
+      processSigninAndSubmit(getState(), next);
+      break;
+
+
 
   } // end switch
 
@@ -48,7 +70,13 @@ export default authMiddleware;
 
 /*=====  End of authMiddleware  ======*/
 
-const processAndSubmit = ({ auth }, next) => {
+const clearErrorIfSet = ({ auth }, next, errorKey, errorMessageActionCreator) => {
+  if (auth[errorKey] !== '') {
+    next(errorMessageActionCreator());
+  }
+};
+
+const processRegisterAndSubmit = ({ auth }, next) => {
 
   const payload = R.map(
     R.trim,
@@ -73,7 +101,7 @@ const processAndSubmit = ({ auth }, next) => {
     next(setRegisterEmailError('This field is required'));
     isValid = false;
   } else if (payload.registerEmail.indexOf('@') < 3) {
-    next(setRegisterEmailError('Invalid Email Address'));
+    next(setRegisterEmailError('Invalid email address'));
   }
 
   if (payload.registerPassword === '') {
@@ -86,12 +114,46 @@ const processAndSubmit = ({ auth }, next) => {
 
   if (isValid) {
     console.log('all good', payload);
+    // Call API Route
   }
 
-};
+}; // end processRegisterAndSubmit
 
-const clearErrorIfSet = ({ auth }, next, errorKey, errorMessageActionCreator) => {
-  if (auth[errorKey] !== '') {
-    next(errorMessageActionCreator());
+const processSigninAndSubmit = ({ auth }, next) => {
+
+  const payload = R.map(
+    R.trim,
+    R.pick(
+      ['signinEmail', 'signinPassword'],
+      auth,
+    ),
+  );
+
+  console.log(payload);
+
+  next(setSigninEmail(payload.signinEmail));
+  next(setSigninPassword(payload.signinPassword));
+
+  let isValid = true;
+
+  if (payload.signinEmail === '') {
+    next(setSigninEmailError('This field is required'));
+    isValid = false;
+  } else if (payload.signinEmail.indexOf('@') < 3) {
+    next(setSigninEmailError('Invalid email address'));
   }
+
+  if (payload.signinPassword === '') {
+    next(setSigninPasswordError('This field is required'));
+    isValid = false;
+  } else if (payload.signinPassword.length < 6) {
+    next(setSigninPasswordError('Password must be atleast 6 characters'));
+    isValid = false;
+  }
+
+  if (isValid) {
+    console.log('all good', payload);
+    // Call API Route
+  }
+
 };

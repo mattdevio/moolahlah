@@ -76,12 +76,12 @@ export const setSigninPassword = signinPassword => ({
 
 export const setSigninEmailError = signinEmail_Error => ({
   type: SIGNIN_EMAIL_ERROR,
-  signinEmail_Error,
+  signinEmail_Error: signinEmail_Error ? signinEmail_Error : '',
 });
 
 export const setSigninPasswordError = signinPassword_Error => ({
   type: SIGNIN_PASSWORD_ERROR,
-  signinPassword_Error,
+  signinPassword_Error: signinPassword_Error ? signinPassword_Error : '',
 });
 
 export const submitSigninForm = () => ({

@@ -34,6 +34,8 @@ class SigninForm extends PureComponent {
       password,
       updateEmail,
       updatePassword,
+      emailError,
+      passwordError,
     } = this.props;
     return (
       <SigninFormContainer onSubmit={ this.runSubmit } noValidate>
@@ -41,12 +43,14 @@ class SigninForm extends PureComponent {
           type='text'
           textLabel='Email'
           value={ email }
+          errorMessage={ emailError }
           onChange={ updateEmail }
         />
         <SpacedFloatingInput
           type='password'
           textLabel='Password'
           value={ password }
+          errorMessage={ passwordError }
           onChange={ updatePassword }
         />
         <SigninButton>Sign In</SigninButton>
@@ -58,6 +62,8 @@ class SigninForm extends PureComponent {
 SigninForm.propTypes = {
   email: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
+  emailError: PropTypes.string.isRequired,
+  passwordError: PropTypes.string.isRequired,
   updateEmail: PropTypes.func.isRequired,
   updatePassword: PropTypes.func.isRequired,
   submitForm: PropTypes.func.isRequired,
