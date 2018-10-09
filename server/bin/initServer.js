@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const merge = require('webpack-merge');
+const appRoot = require('app-root-path');
 // const mongoose = require('mongoose');
 
 /*----------  Node Imports  ----------*/
@@ -12,11 +13,12 @@ const http = require('http');
 const path = require('path');
 
 /*----------  Custom Imports  ----------*/
-const commonWebpackConfig = require('../../webpack_config/webpack.common');
-const devWebpackConfig = require('../../webpack_config/webpack.dev');
-const prodWebpackConfig = require('../../webpack_config/webpack.prod');
-const fileRouter = require('../routers/file');
-const apiRouter = require('../routers/api');
+const commonWebpackConfig = require(`${appRoot}/webpack_config/webpack.common`);
+const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
+const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
+const fileRouter = require(`${appRoot}/server/routers/file`);
+const apiRouter = require(`${appRoot}/server/routers/api`);
+const { logger } = require(`${appRoot}/server/bin/utility`);
 
 /*==================================
 =            initServer            =
@@ -34,7 +36,9 @@ const initServer = () => {
     // Add Middleware To The Express App
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
-    app.use(morgan('dev'));
+    app.use(morgan('tiny', {
+      stream: { write: line => logger.debug(line.replace(/\n$/, '')) },
+    }));
 
     // Serve static assets
     app.use('/assets', express.static(path.resolve(__dirname, '../assets')));

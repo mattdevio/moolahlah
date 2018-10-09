@@ -1,38 +1,35 @@
 /*----------  Vendor Imports  ----------*/
-const chalk = require('chalk');
+const { createLogger, format, transports } = require('winston');
+const appRoot = require('app-root-path');
 
-/*----------  Setup  ----------*/
-// eslint-disable-next-line no-console
-const logFunc = (process.env.NODE_ENV === 'development') ? console.log : () => {};
-const objectIsError = e => e && e.stack && e.message;
+/*=======================================
+=            Winston Logging            =
+=======================================*/
 
+const { combine, timestamp, printf } = format;
 
-/*===============================================
-=            Static Utility Class            =
-===============================================*/
+const myFormat = printf(info => {
+  return `${info.timestamp} [${info.level}] ${info.message}`;
+});
 
-class Utility {
+const logger = createLogger({
+  level: 'debug',
+  format: combine(
+    timestamp(),
+    myFormat,
+  ),
+  transports: [
+    new transports.Console(),
+    new transports.File({
+      filename: `${appRoot}/temp/combined.log`,
+    }),
+    new transports.File({
+      filename: `${appRoot}/temp/error.log`,
+      level: 'error',
+    }),
+  ],
+});
 
-  constructor() {
-    throw new Error('Utility is a static class');
-  }
+module.exports.logger = logger;
 
-  static log(...args) {
-    const enhancedArgs = args.map((arg) => {
-      if (objectIsError(arg)) {
-        return chalk.red(arg.stack);
-      } else if (Array.isArray(arg)) {
-        return chalk.magenta(JSON.stringify(arg, null, 2));
-      } else if (typeof arg === 'object') {
-        return chalk.green(JSON.stringify(arg, null, 2));
-      }
-      return chalk.underline(arg.toString());
-    });
-    logFunc.apply(console, enhancedArgs);
-  }
-
-}
-
-module.exports = Utility;
-
-/*=====  End of Static Utility Class  ======*/
+/*=====  End of Winston Logging  ======*/

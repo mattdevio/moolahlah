@@ -1,13 +1,24 @@
 /*----------  Load .env File First!  ----------*/
-require('dotenv').config();
+const result = require('dotenv').config();
 
 /*----------  Custom Imports  ----------*/
 const initServer = require('./bin/initServer');
-const utility = require('./bin/utility');
+const { logger } = require('./bin/utility');
 
 /*----------  Run Server  ----------*/
+logger.info('Starting the moolahlah server!');
+
+if (result.error) {
+  logger.error('Unable to load enviornment variables', result);
+  process.exit(1);
+}
+
+Object.keys(result.parsed).forEach(key => {
+  logger.debug(`${key} => ${result.parsed[key]}`);
+});
+
 initServer()
   .then(server => server.listen(process.env.PORT, () => {
-    utility.log(`Server listening on ${process.env.BASE_URL}:${process.env.PORT}`);
+    logger.info(`Server listening on ${process.env.BASE_URL}:${process.env.PORT}`);
   }))
-  .catch(e => utility.log(e));
+  .catch(e => logger.error(e));
