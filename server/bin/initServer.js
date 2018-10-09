@@ -38,7 +38,7 @@ const initServer = () => {
 
     // Serve static assets
     app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
-    app.use('/favicon.ico', express.static(path.resolve(__dirname, '../assets/images/favicon.ico')));
+    app.use('/favicon.ico', express.static(path.resolve(__dirname, '../assets/image/favicon.ico')));
 
     // Setup Pug Templates
     app.set('view engine', 'pug');

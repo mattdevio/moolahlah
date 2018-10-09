@@ -7,12 +7,12 @@ import PropTypes from 'prop-types';
 import { setWindowDimensions } from '@/state/ducks/ui';
 
 /**
- * windowEvents = HOC that updates window width and height in redux
+ * withWindowEvents = HOC that updates window width and height in redux
  * @param  {Node} Component [A React Node]
  * @return {Node}           [The input React Node]
  */
-const windowEvents = (Component) => {
-  class WindowEvents extends React.Component {
+const withWindowEvents = (Component) => {
+  class WithWindowEvents extends React.Component {
 
     constructor(props) {
       super(props);
@@ -35,9 +35,9 @@ const windowEvents = (Component) => {
       return <Component />;
     }
 
-  } // end class WindowEvents
+  } // end class WithWindowEvents
 
-  WindowEvents.propTypes = {
+  WithWindowEvents.propTypes = {
     updateDimensions: PropTypes.func.isRequired,
   };
 
@@ -45,7 +45,7 @@ const windowEvents = (Component) => {
     updateDimensions: (width, height) => dispatch(setWindowDimensions(width, height)),
   });
 
-  return connect(null, mapDispatchToProps)(WindowEvents);
+  return connect(null, mapDispatchToProps, null, { pure: false })(WithWindowEvents);
 };
 
-export default windowEvents;
+export default withWindowEvents;

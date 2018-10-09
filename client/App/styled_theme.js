@@ -38,6 +38,6 @@ export const moolahlahTheme = {
   mediumBlue: '#2F447A',
   lightBlue: '#4967A3',
   skyBlue: '#90B9E4',
-  alertRed: '#90b9E4',
+  alertRed: '#E74C3C',
   alertYellow: '#F5D95F',
 };
