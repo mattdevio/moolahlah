@@ -6,17 +6,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: moolahlah
     volumes:
       - .:/var/www
     ports:
-      - "3000:3000"
+      - "80:${PORT}"
     networks:
       - moolahlah-network
 
   mongodb:
     image: mongo
+    container_name: "${MONGO_HOST}"
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT}:27017"
     networks:
       - moolahlah-network
 
