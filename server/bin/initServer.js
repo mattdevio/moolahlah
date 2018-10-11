@@ -18,6 +18,7 @@ const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
 const fileRouter = require(`${appRoot}/server/routers/file`);
 const apiRouter = require(`${appRoot}/server/routers/api`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
+const errorMiddleware = require(`${appRoot}/server/middleware/error`);
 
 /*==================================
 =            initServer            =
@@ -66,6 +67,9 @@ const initServer = () => {
 
     // Add the file router, needs to be the last middleware in the stack
     app.use(fileRouter);
+
+    // Mount Error Middleware
+    app.use(errorMiddleware());
 
     // Resolve promise with express server
     resolve(expressServer);
