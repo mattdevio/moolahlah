@@ -37,6 +37,11 @@ const initServer = () => {
       stream: { write: line => logger.debug(line.replace(/\n$/, '')) },
     }));
 
+    // Make JSON response pretty :)
+    if (process.env.NODE_ENV === 'development') {
+      app.set('json spaces', 2);
+    }
+
     // Serve static assets
     app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
     app.use('/favicon.ico', express.static(path.resolve(__dirname, '../assets/image/favicon.ico')));
