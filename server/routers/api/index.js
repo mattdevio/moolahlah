@@ -1,5 +1,9 @@
 /*----------  Vendor Imports  ----------*/
 const { Router } = require('express');
+const appRoot = require('app-root-path');
+
+/*----------  Custom Imports  ----------*/
+const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
 
 /*=================================
 =            apiRouter            =
@@ -8,7 +12,9 @@ const { Router } = require('express');
 const apiRouter = Router();
 
 apiRouter.get('/', (req, res) => {
-  res.send('This is the api!');
+  res.json(apiResponse({
+    message: 'This is our API!'
+  }));
 });
 
 module.exports = apiRouter;
