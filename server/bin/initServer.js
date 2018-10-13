@@ -16,9 +16,8 @@ const path = require('path');
 const commonWebpackConfig = require(`${appRoot}/webpack_config/webpack.common`);
 const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
 const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
-const fileRouter = require(`${appRoot}/server/routers/file`);
-const apiRouter = require(`${appRoot}/server/routers/api`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
+const initController = require(`${appRoot}/server/bin/initController`);
 const errorMiddleware = require(`${appRoot}/server/middleware/error`);
 
 /*==================================
@@ -71,11 +70,15 @@ const initServer = () => {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
 
-    // Add api middleware
-    app.use('/api', apiRouter);
-
-    // Add the file router, needs to be the last middleware in the stack
-    app.use(fileRouter);
+    // Mount all the controllers - Dynamically :)
+    await Promise.all([initController('api'), initController('file')])
+      .then(routers => {
+        app.use('/api', routers[0]);
+        app.use(routers[1]);
+      })
+      .catch(err => {
+        logger.error(`initControllers failed : ${err.stack}`);
+      });
 
     // Mount Error Middleware
     app.use(errorMiddleware());
