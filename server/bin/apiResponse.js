@@ -3,7 +3,7 @@
  * @param  {object}      payload [The payload body]
  * @return {ApiResponse}         [An ApiResponse Object]
  */
-const apiResponse = (payload) => {
+const apiResponse = (payload = {}) => {
 
   const DataSymbol = Symbol('data');
   const StatusSymbol = Symbol('status');

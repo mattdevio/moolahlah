@@ -11,6 +11,8 @@ const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
 ===========================================*/
 
 function handleRequestErrors() {
+  logger.info('Mounting [handleRequestErrors] middleware');
+  
   return (err, req, res, next) => {
 
     if (res.headersSent) {
@@ -31,6 +33,7 @@ function handleRequestErrors() {
     }
 
   };
+  
 }
 
 module.exports = handleRequestErrors;

@@ -40,6 +40,7 @@ const initDatabase = () => {
 
   // Connect!
   mongoose.connect(dbConnectionURI, { useNewUrlParser: true });
+  mongoose.set('useCreateIndex', true);
 
 };
 
