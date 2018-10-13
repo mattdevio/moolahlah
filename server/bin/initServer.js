@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const merge = require('webpack-merge');
 const appRoot = require('app-root-path');
+const helmet = require('helmet');
 
 /*----------  Node Imports  ----------*/
 const http = require('http');
@@ -29,6 +30,9 @@ const initServer = () => {
 
     const app = express();
     const expressServer = http.Server(app);
+
+    // Secure HTTP Headers
+    app.use(helmet());
 
     // Add Middleware To The Express App
     app.use(bodyParser.urlencoded({ extended: false }));
