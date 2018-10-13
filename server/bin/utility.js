@@ -6,6 +6,14 @@ const appRoot = require('app-root-path');
 =            Winston Logging            =
 =======================================*/
 
+/**
+ * Log Levels
+ * 
+ * @error => The error log
+ * @info  => Non secret app information
+ * @debug => Secret app information
+ */
+
 const { combine, timestamp, printf } = format;
 
 const myFormat = printf(info => {
@@ -13,7 +21,7 @@ const myFormat = printf(info => {
 });
 
 const logger = createLogger({
-  level: 'debug',
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
   format: combine(
     timestamp(),
     myFormat,

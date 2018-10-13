@@ -13,10 +13,11 @@ const initDatabase = () => {
 
   logger.info('Attempting to initialize mongodb via mongoose controller');
   const dbConnectionURI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.DB_NAME}`;
-  
+  logger.debug(`Database connection URI: ${dbConnectionURI}`);
+
   // Log connections
   mongoose.connection.on('connected', () => {
-    logger.debug(`Mongoose connection open to : ${dbConnectionURI}`);
+    logger.info('Mongoose connection open!');
   });
 
   // Log errors
@@ -26,13 +27,13 @@ const initDatabase = () => {
 
   // Log disconnections
   mongoose.connection.on('disconnected', () => {
-    logger.debug('Mongoose connection disconnected');
+    logger.info('Mongoose connection disconnected');
   });
 
   // Shutdown gracefully
   process.on('SIGINT', () => {
     mongoose.connection.close(() => {
-      logger.info('Mongoose connection disconnected through app termination');
+      logger.info('Mongoose connection closed via app termination');
       process.exit(0);
     });
   });

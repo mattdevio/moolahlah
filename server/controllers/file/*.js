@@ -8,6 +8,7 @@ function get(req, res, next) {
   } 
 }
 
+// Export Functions
 module.exports = {
-  get: get,
+  get,
 };

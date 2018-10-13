@@ -13,6 +13,7 @@ const { logger } = require(`${appRoot}/server/bin/utility`);
 ========================================*/
 
 logger.info('Starting the moolahlah server!');
+logger.info(`Running server in '${process.env.NODE_ENV}' mode`);
 
 if (result.error) {
   logger.error('Unable to load enviornment variables! Try "npm run config" to load defaults.', result);

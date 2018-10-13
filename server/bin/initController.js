@@ -19,7 +19,7 @@ function initController(controllerRoot) {
 
   return new Promise(async function(resolve, reject){
 
-    logger.debug(`Initializing controller "${controllerRoot}"`);
+    logger.info(`Initializing controller '${controllerRoot}'`);
     const baseDir = `${appRoot}/server/controllers/${controllerRoot}`;
     const router = Router();
     let files;
@@ -30,7 +30,7 @@ function initController(controllerRoot) {
       return reject(e);
     }
 
-    logger.debug(`Directory for "${controllerRoot}" controller loaded : ${JSON.stringify(files)}`);
+    logger.info(`Directory for '${controllerRoot}' controller loaded : ${JSON.stringify(files)}`);
     files.forEach(file => {
 
       const handler = require(`${baseDir}/${file}`);
@@ -38,13 +38,13 @@ function initController(controllerRoot) {
       const mount = router.route(route);
 
       Object.keys(handler).forEach(key => {
-        logger.debug(`Binding [${key}] method to "${route}"`);
+        logger.info(`Binding [${key}] method to '${controllerRoot}' controller on route "${route}"`);
         mount[key](handler[key]);
       });
 
     });
 
-    logger.debug(`"${controllerRoot}" initialized`);
+    logger.info(`Controller "${controllerRoot}" initialized`);
     resolve(router);
 
   });

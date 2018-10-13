@@ -37,7 +37,7 @@ const initServer = () => {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(morgan('tiny', {
-      stream: { write: line => logger.debug(line.replace(/\n$/, '')) },
+      stream: { write: line => logger.info(line.replace(/\n$/, '')) },
     }));
 
     // Make JSON response pretty :)
