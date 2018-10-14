@@ -40,15 +40,39 @@ npm run config PORT=1337 BASE_URL=https://moolahlah.com
 
 The project is setup for docker containers. You can use `docker-compose` to get the application up and running without any trouble. Here are some commands to help you.
 
+<table>
+  <tr>
+    <td>Build Docker Images</td>
+    <td>docker-compose build</td>
+  </tr>
+  <tr>
+    <td>Start Containers w/ All Output</td>
+    <td>docker-compose up</td>
+  </tr>
+  <tr>
+    <td>Start Containers In Detached Mode</td>
+    <td>docker-compose up -d</td>
+  </tr>
+  <tr>
+    <td>Start Containers w/ App Output (Prefered)</td>
+    <td>docker-compose up -d && docker attach moolahlah</td>
+  </tr>
+  <tr>
+    <td>List All Containers</td>
+    <td>docker ps -a</td>
+  </tr>
+  <tr>
+    <td>Destroy Containers</td>
+    <td>docker-compose down</td>
+  </tr>
+</table>
+
+**The easy way to get going...**
+
 ```
-// (Step 1) Build Docker Images
+$ npm run config
 $ docker-compose build
-
-// (Step 2) Start Docker Containers
-$ docker-compose up
-
-// (Step 3) Stop and Remove Docker Containers
-$ docker-compose down
+$ docker-compose up -d && docker attach moolahlah
 ```
 
 ### And coding style tests
