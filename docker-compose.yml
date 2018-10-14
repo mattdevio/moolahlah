@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/var/www
     ports:
-      - "80:${PORT}"
+      - "${PORT}:${PORT}"
     networks:
       - moolahlah-network
     depends_on:
