@@ -35,7 +35,7 @@ const initServer = () => {
     app.use(helmet());
 
     // Add Middleware To The Express App
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
     app.use(morgan('tiny', {
       stream: { write: line => logger.info(line.replace(/\n$/, '')) },
