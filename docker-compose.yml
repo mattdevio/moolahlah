@@ -24,6 +24,14 @@ services:
     networks:
       - moolahlah-network
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    pors:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - moolahlah-network
+
 networks:
   moolahlah-network:
     driver: bridge
