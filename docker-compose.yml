@@ -15,6 +15,7 @@ services:
       - moolahlah-network
     depends_on:
       - mongodb
+      - redis
 
   mongodb:
     image: mongo
