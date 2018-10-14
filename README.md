@@ -19,6 +19,7 @@ npm start
 
 + Node.js v8.9.4 (LTS / Carbon)
 + NPM v6.00
++ Redis v4.0.0 (LTS / Alpine)
 
 ### Custom Configuration
 
@@ -33,7 +34,9 @@ npm run config
 You can pass optional arguments to the command to override the default variables. This will merge the defaults found in the [example.env](/example.env) file with your values.
 
 ```
-npm run config PORT=1337 BASE_URL=https://moolahlah.com
+npm run config \
+  PORT=1337 \
+  BASE_URL=https://moolahlah.com
 ```
 
 ### Running with Docker
@@ -86,6 +89,7 @@ Nothing to deploy yet...
 ## Built With
 
 * [MongoDB](https://docs.mongodb.com/manual/) - The Database Used
+* [Redis](https://redis.io/) - Session Store
 * [Mongoose](https://mongoosejs.com/docs/guide.html) - Database ORM
 * [Express](https://expressjs.com/en/4x/api.html) - Server Side Web Framework
 * [React](https://reactjs.org/docs/) - Client Interface Development Library

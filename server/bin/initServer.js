@@ -18,6 +18,7 @@ const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
 const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
 const loadControllers = require(`${appRoot}/server/bin/loadControllers`);
+const redisSession = require(`${appRoot}/server/middleware/redisSession`);
 const serveReactHTML = require(`${appRoot}/server/middleware/serveReactHTML`);
 const handleRequestErrors = require(`${appRoot}/server/middleware/handleRequestErrors`);
 
@@ -45,6 +46,9 @@ const initServer = () => {
     if (process.env.NODE_ENV === 'development') {
       app.set('json spaces', 2);
     }
+
+    // Bind session middleware
+    redisSession(app);
 
     // Serve static assets
     app.use('/assets', express.static(path.resolve(__dirname, '../assets')));

@@ -30,31 +30,32 @@ const userSchema = new mongoose.Schema({
 });
 
 /**
- * newUserValidation - Validate the post params for new user signup
+ * newUserValidation
+ * Validate the post params for new user signup
  */
 userSchema.statics.newUserValidation = function() {
   return [
 
     body('emailAddress')
       .isEmail()
-      .withMessage('Invalid email')
+      .withMessage('invalid email')
       .custom(emailAddress => this.find({ emailAddress })
         .exec()
         .then(result => {
-          if (result.length > 0) return Promise.reject('Aready in use');
+          if (result.length > 0) return Promise.reject('aready in use');
         })
         .catch(error => Promise.reject(error))),
 
     body('password')
       .isLength({ min: 6 })
-      .withMessage('Must be atleast 6 characters')
+      .withMessage('must be atleast 6 characters')
       .matches(/\d/)
-      .withMessage('Must contain a number'),
+      .withMessage('must contain a number'),
 
     body('name')
       .not()
       .isEmpty()
-      .withMessage('Name can not be empty'),
+      .withMessage('can not be empty'),
 
     handleValidationErrors(),
 
