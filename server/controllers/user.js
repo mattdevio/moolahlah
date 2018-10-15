@@ -4,7 +4,6 @@ const { Router } = require('express');
 const bcrypt = require('bcrypt');
 const R = require('ramda');
 
-
 /*----------  Custom Imports  ----------*/
 const { logger } = require(`${appRoot}/server/bin/utility`);
 const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
@@ -13,15 +12,20 @@ const UserModel = require(`${appRoot}/server/models/user`);
 /*----------  Setup  ----------*/
 const userRouter = Router();
 
+
 /**
  * Get the users
  */
-userRouter.post('/', UserModel.newUserValidation(), function(req, res, next) {
+userRouter.post('/', UserModel.newUserValidation(), async function(req, res, next) {
 
   logger.debug(`Attempting to save new user to the database: ${JSON.stringify(req.body)}`);
 
-  const salt = bcrypt.genSaltSync(+process.env.SALT_ROUNDS || 10);
-  const hash = bcrypt.hashSync(req.body.password, salt);
+  let hash;
+  try {
+    hash = await bcrypt.hash(req.body.password, +process.env.SALT_ROUNDS);
+  } catch (e) {
+    return next(e);
+  }
 
   UserModel.create({
     name: req.body.name,
@@ -55,16 +59,25 @@ userRouter.post('/login', UserModel.loginValidation(), async function(req, res, 
     return next(e);
   }
 
-  if (user && bcrypt.compareSync(password, user.password)) {
-    const response = apiResponse({
-      message: 'Login successful',
-      data: Object.assign({
-        password: '***********'
-      }, R.pick(['name', 'emailAddress'], user)),
-    });
-    req.session.data = user._id;
-    res.status(200);
-    return res.json(response);
+  if (user) {
+    let passwordMatches;
+    try {
+      passwordMatches = await bcrypt.compare(password, user.password);
+    } catch (e) {
+      return next(e);
+    }
+
+    if (passwordMatches) {
+      const response = apiResponse({
+        message: 'Login successful',
+        data: Object.assign({
+          password: '***********'
+        }, R.pick(['name', 'emailAddress'], user)),
+      });
+      req.session.data = user._id;
+      res.status(200);
+      return res.json(response);
+    }
   }
 
   const response = apiResponse({

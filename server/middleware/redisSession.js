@@ -42,13 +42,6 @@ function redisSession(expressAppInstance) {
     lookupSession();
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    expressAppInstance.use(function(req, res, next) {
-      logger.debug(`Session data: ${JSON.stringify(req.session)}`);
-      next();
-    });
-  }
-
 }
 
 module.exports = redisSession;

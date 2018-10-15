@@ -104,5 +104,6 @@ typings/
 # Serverless directories
 .serverless
 
+temp/db
 
 # End of https://www.gitignore.io/api/node,macos
