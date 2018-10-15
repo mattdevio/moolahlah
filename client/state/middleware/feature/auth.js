@@ -1,7 +1,9 @@
 /*----------  Vendor Imports  ----------*/
 import * as R from 'ramda';
+import validator from 'validator';
 
 /*----------  Custom Imports  ----------*/
+import * as endpoints from '@/constants/endpoints';
 import {
   REGISTER_NAME,
   REGISTER_EMAIL,
@@ -21,6 +23,11 @@ import {
   setSigninEmailError,
   setSigninPasswordError,
 } from '@/state/ducks/auth';
+import {
+  apiRequest,
+  API_SUCCESS,
+  API_ERROR,
+} from '@/state/ducks/api';
 
 
 /*======================================
@@ -60,7 +67,13 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
       processSigninAndSubmit(getState(), next);
       break;
 
+    case `${SUBMIT_REGISTER_FORM} ${API_SUCCESS}`:
+      console.dir(action);
+      break;
 
+    case `${SUBMIT_REGISTER_FORM} ${API_ERROR}`:
+      console.dir(action);
+      break;
 
   } // end switch
 
@@ -92,29 +105,37 @@ const processRegisterAndSubmit = ({ auth }, next) => {
 
   let isValid = true;
 
-  if (payload.registerName === '') {
-    next(setRegisterNameError('This field is required'));
+  if (validator.isEmpty(payload.registerName)) {
     isValid = false;
+    next(setRegisterNameError('Field is required'));
   }
 
-  if (payload.registerEmail === '') {
-    next(setRegisterEmailError('This field is required'));
+  if (validator.isEmpty(payload.registerEmail)) {
     isValid = false;
-  } else if (payload.registerEmail.indexOf('@') < 3) {
-    next(setRegisterEmailError('Invalid email address'));
+    next(setRegisterEmailError('Field is required'));
+  } else if (!validator.isEmail(payload.registerEmail)) {
+    isValid = false;
+    next(setRegisterEmailError('Not a valid email address'));
   }
 
-  if (payload.registerPassword === '') {
-    next(setRegisterPasswordError('This field is required'));
+  if (validator.isEmpty(payload.registerPassword)) {
     isValid = false;
-  } else if (payload.registerPassword.length < 6) {
-    next(setRegisterPasswordError('Password must be atleast 6 characters'));
+    next(setRegisterPasswordError('Field is required'));
+  } else if (validator.isLength(payload.registerPassword, { min: 6 })) {
     isValid = false;
+    next(setRegisterPasswordError('Must be atleast 6 characters'));
+  } else if (!validator.matches(payload.registerPassword, /\d/)) {
+    isValid = false;
+    next(setRegisterPasswordError('Must container a number'));
   }
 
   if (isValid) {
-    console.log('all good', payload);
-    // Call API Route
+    next(apiRequest({
+      feature: SUBMIT_REGISTER_FORM,
+      data: payload,
+      method: 'POST',
+      url: endpoints.USER, 
+    }));
   }
 
 }; // end processRegisterAndSubmit
@@ -129,31 +150,10 @@ const processSigninAndSubmit = ({ auth }, next) => {
     ),
   );
 
-  console.log(payload);
-
   next(setSigninEmail(payload.signinEmail));
   next(setSigninPassword(payload.signinPassword));
 
-  let isValid = true;
 
-  if (payload.signinEmail === '') {
-    next(setSigninEmailError('This field is required'));
-    isValid = false;
-  } else if (payload.signinEmail.indexOf('@') < 3) {
-    next(setSigninEmailError('Invalid email address'));
-  }
 
-  if (payload.signinPassword === '') {
-    next(setSigninPasswordError('This field is required'));
-    isValid = false;
-  } else if (payload.signinPassword.length < 6) {
-    next(setSigninPasswordError('Password must be atleast 6 characters'));
-    isValid = false;
-  }
-
-  if (isValid) {
-    console.log('all good', payload);
-    // Call API Route
-  }
 
 };
