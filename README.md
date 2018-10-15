@@ -19,6 +19,7 @@ npm start
 
 + Node.js v8.9.4 (LTS / Carbon)
 + NPM v6.00
++ Redis v4.0.0 (LTS / Alpine)
 
 ### Custom Configuration
 
@@ -33,22 +34,48 @@ npm run config
 You can pass optional arguments to the command to override the default variables. This will merge the defaults found in the [example.env](/example.env) file with your values.
 
 ```
-npm run config PORT=1337 BASE_URL=https://moolahlah.com
+npm run config \
+  PORT=1337 \
+  BASE_URL=https://moolahlah.com
 ```
 
 ### Running with Docker
 
 The project is setup for docker containers. You can use `docker-compose` to get the application up and running without any trouble. Here are some commands to help you.
 
+<table>
+  <tr>
+    <td>Build Docker Images</td>
+    <td>docker-compose build</td>
+  </tr>
+  <tr>
+    <td>Start Containers w/ All Output</td>
+    <td>docker-compose up</td>
+  </tr>
+  <tr>
+    <td>Start Containers In Detached Mode</td>
+    <td>docker-compose up -d</td>
+  </tr>
+  <tr>
+    <td>Start Containers w/ App Output (Prefered)</td>
+    <td>docker-compose up -d && docker attach moolahlah</td>
+  </tr>
+  <tr>
+    <td>List All Containers</td>
+    <td>docker ps -a</td>
+  </tr>
+  <tr>
+    <td>Destroy Containers</td>
+    <td>docker-compose down</td>
+  </tr>
+</table>
+
+**The easy way to get going...**
+
 ```
-// (Step 1) Build Docker Images
+$ npm run config
 $ docker-compose build
-
-// (Step 2) Start Docker Containers
-$ docker-compose up
-
-// (Step 3) Stop and Remove Docker Containers
-$ docker-compose down
+$ docker-compose up -d && docker attach moolahlah
 ```
 
 ### And coding style tests
@@ -62,6 +89,7 @@ Nothing to deploy yet...
 ## Built With
 
 * [MongoDB](https://docs.mongodb.com/manual/) - The Database Used
+* [Redis](https://redis.io/) - Session Store
 * [Mongoose](https://mongoosejs.com/docs/guide.html) - Database ORM
 * [Express](https://expressjs.com/en/4x/api.html) - Server Side Web Framework
 * [React](https://reactjs.org/docs/) - Client Interface Development Library

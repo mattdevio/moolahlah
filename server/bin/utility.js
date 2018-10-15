@@ -1,38 +1,43 @@
 /*----------  Vendor Imports  ----------*/
-const chalk = require('chalk');
+const { createLogger, format, transports } = require('winston');
+const appRoot = require('app-root-path');
 
-/*----------  Setup  ----------*/
-// eslint-disable-next-line no-console
-const logFunc = (process.env.NODE_ENV === 'development') ? console.log : () => {};
-const objectIsError = e => e && e.stack && e.message;
+/*=======================================
+=            Winston Logging            =
+=======================================*/
 
+/**
+ * Log Levels
+ * 
+ * @error => The error log
+ * @info  => Non secret app information
+ * @debug => Secret app information
+ */
 
-/*===============================================
-=            Static Utility Class            =
-===============================================*/
+const { combine, timestamp, printf } = format;
 
-class Utility {
+const myFormat = printf(info => {
+  return `${info.timestamp} [${info.level}] ${info.message}`;
+});
 
-  constructor() {
-    throw new Error('Utility is a static class');
-  }
+const logger = createLogger({
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  format: combine(
+    timestamp(),
+    myFormat,
+  ),
+  transports: [
+    new transports.Console(),
+    new transports.File({
+      filename: `${appRoot}/temp/combined.log`,
+    }),
+    new transports.File({
+      filename: `${appRoot}/temp/error.log`,
+      level: 'error',
+    }),
+  ],
+});
 
-  static log(...args) {
-    const enhancedArgs = args.map((arg) => {
-      if (objectIsError(arg)) {
-        return chalk.red(arg.stack);
-      } else if (Array.isArray(arg)) {
-        return chalk.magenta(JSON.stringify(arg, null, 2));
-      } else if (typeof arg === 'object') {
-        return chalk.green(JSON.stringify(arg, null, 2));
-      }
-      return chalk.underline(arg.toString());
-    });
-    logFunc.apply(console, enhancedArgs);
-  }
+module.exports.logger = logger;
 
-}
-
-module.exports = Utility;
-
-/*=====  End of Static Utility Class  ======*/
+/*=====  End of Winston Logging  ======*/

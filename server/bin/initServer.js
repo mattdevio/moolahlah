@@ -5,18 +5,22 @@ const morgan = require('morgan');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const merge = require('webpack-merge');
-// const mongoose = require('mongoose');
+const appRoot = require('app-root-path');
+const helmet = require('helmet');
 
 /*----------  Node Imports  ----------*/
 const http = require('http');
 const path = require('path');
 
 /*----------  Custom Imports  ----------*/
-const commonWebpackConfig = require('../../webpack_config/webpack.common');
-const devWebpackConfig = require('../../webpack_config/webpack.dev');
-const prodWebpackConfig = require('../../webpack_config/webpack.prod');
-const fileRouter = require('../routers/file');
-const apiRouter = require('../routers/api');
+const commonWebpackConfig = require(`${appRoot}/webpack_config/webpack.common`);
+const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
+const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
+const { logger } = require(`${appRoot}/server/bin/utility`);
+const loadControllers = require(`${appRoot}/server/bin/loadControllers`);
+const redisSession = require(`${appRoot}/server/middleware/redisSession`);
+const serveReactHTML = require(`${appRoot}/server/middleware/serveReactHTML`);
+const handleRequestErrors = require(`${appRoot}/server/middleware/handleRequestErrors`);
 
 /*==================================
 =            initServer            =
@@ -28,13 +32,23 @@ const initServer = () => {
     const app = express();
     const expressServer = http.Server(app);
 
-    // const dbConnectionURI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.DB_NAME}`;
-    // mongoose.connect(dbConnectionURI, { useNewUrlParser: true });
+    // Secure HTTP Headers
+    app.use(helmet());
 
     // Add Middleware To The Express App
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
-    app.use(morgan('dev'));
+    app.use(morgan('tiny', {
+      stream: { write: line => logger.info(line.replace(/\n$/, '')) },
+    }));
+
+    // Make JSON response pretty :)
+    if (process.env.NODE_ENV === 'development') {
+      app.set('json spaces', 2);
+    }
+
+    // Bind session middleware
+    redisSession(app);
 
     // Serve static assets
     app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
@@ -61,11 +75,14 @@ const initServer = () => {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
 
-    // Add api middleware
-    app.use('/api', apiRouter);
+    // Load all the controllers into the app
+    await loadControllers(app);
 
-    // Add the file router, needs to be the last middleware in the stack
-    app.use(fileRouter);
+    // Mount React HTML middleware
+    app.use(serveReactHTML());
+
+    // Mount Error Middleware
+    app.use(handleRequestErrors());
 
     // Resolve promise with express server
     resolve(expressServer);
