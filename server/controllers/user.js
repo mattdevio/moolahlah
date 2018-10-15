@@ -89,5 +89,27 @@ userRouter.post('/login', UserModel.loginValidation(), async function(req, res, 
 
 });
 
+userRouter.post('/logout', async function(req, res, next) {
+
+  if (!req.session) {
+    res.status(204);
+    res.json(apiResponse({
+      message: 'no operation',
+    }));
+  }
+
+  req.session.destroy((err) => {
+
+    if (err) return next(err);
+    res.clearCookie(process.env.COOKIE_NAME);
+    res.status(200);
+    res.json(apiResponse({
+      message: 'Logout successful',
+    }));
+
+  });
+
+});
+
 // export router
 module.exports = userRouter;
