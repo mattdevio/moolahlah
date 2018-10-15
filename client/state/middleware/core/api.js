@@ -21,14 +21,18 @@ const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
       data: action.payload,
     };
 
-    let response;
+    let thunk;
     try {
-      response = await axios(request);
+      thunk = await axios(request);
     } catch (error) {
-      return dispatch(apiError({ error, feature }));
+      const { data } = error.response;
+      return dispatch(apiError({
+        error: data,
+        feature,
+      }));
     }
 
-    const { data } = response;
+    const { data } = thunk;
     dispatch(apiSuccess({ data, feature }));
 
   } // end if

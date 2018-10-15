@@ -38,24 +38,24 @@ userSchema.statics.newUserValidation = function() {
 
     body('emailAddress')
       .isEmail()
-      .withMessage('invalid email')
+      .withMessage('Not a valid email address')
       .custom(emailAddress => this.find({ emailAddress })
         .exec()
         .then(result => {
-          if (result.length > 0) return Promise.reject('aready in use');
+          if (result.length > 0) return Promise.reject('Email address already in use');
         })
         .catch(error => Promise.reject(error))),
 
     body('password')
       .isLength({ min: 6 })
-      .withMessage('must be atleast 6 characters')
+      .withMessage('Must be atleast 6 characters')
       .matches(/\d/)
       .withMessage('must contain a number'),
 
     body('name')
       .not()
       .isEmpty()
-      .withMessage('can not be empty'),
+      .withMessage('Must container a number'),
 
     handleValidationErrors(),
 

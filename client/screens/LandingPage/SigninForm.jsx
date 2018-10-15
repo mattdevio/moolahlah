@@ -108,4 +108,9 @@ const SigninButton = styled.button`
   width: 100%;
   padding: 1rem 0;
   cursor: pointer;
+  border: 2px solid ${({ theme }) => theme.darkBlue};
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.skyBlue};
+  }
 `;

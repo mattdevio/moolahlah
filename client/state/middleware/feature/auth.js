@@ -68,11 +68,13 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
       break;
 
     case `${SUBMIT_REGISTER_FORM} ${API_SUCCESS}`:
-      console.dir(action);
+      console.log('register success response');
+      processRegisterSuccess(next, action);
       break;
 
     case `${SUBMIT_REGISTER_FORM} ${API_ERROR}`:
-      console.dir(action);
+      console.log('register error response');
+      processRegisterError(next, action);
       break;
 
   } // end switch
@@ -121,7 +123,7 @@ const processRegisterAndSubmit = ({ auth }, next) => {
   if (validator.isEmpty(payload.registerPassword)) {
     isValid = false;
     next(setRegisterPasswordError('Field is required'));
-  } else if (validator.isLength(payload.registerPassword, { min: 6 })) {
+  } else if (!validator.isLength(payload.registerPassword, { min: 6 })) {
     isValid = false;
     next(setRegisterPasswordError('Must be atleast 6 characters'));
   } else if (!validator.matches(payload.registerPassword, /\d/)) {
@@ -132,13 +134,39 @@ const processRegisterAndSubmit = ({ auth }, next) => {
   if (isValid) {
     next(apiRequest({
       feature: SUBMIT_REGISTER_FORM,
-      data: payload,
+      data: {
+        name: payload.registerName,
+        emailAddress: payload.registerEmail,
+        password: payload.registerPassword,
+      },
       method: 'POST',
       url: endpoints.USER, 
     }));
   }
 
 }; // end processRegisterAndSubmit
+
+const processRegisterSuccess = (next, { payload }) => {
+
+  console.dir(payload);
+
+};
+
+const processRegisterError = (next, { payload }) => {
+
+  const { errors } = payload;
+  const obj = errors.reduce((acc, val) => {
+    acc[val.param] = val.msg;
+    return acc;
+  }, {});
+
+  console.dir(obj);
+
+  if (obj.emailAddress) next(setRegisterEmailError(obj.emailAddress));
+  if (obj.name) next(setRegisterNameError(obj.name));
+  if (obj.password) next(setRegisterPasswordError(obj.password));
+
+};
 
 const processSigninAndSubmit = ({ auth }, next) => {
 
