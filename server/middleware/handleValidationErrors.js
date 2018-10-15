@@ -16,7 +16,7 @@ function handleValidationErrors() {
     const errors = validationResult(req);
     if (errors.isEmpty()) return next();
 
-    const allErrors = errors.array();
+    const allErrors = errors.array({ onlyFirstError: true });
     logger.error(`Invalid ${req.method} request to "${req.baseUrl}" ${JSON.stringify(allErrors)}`);
 
     res.status(400);

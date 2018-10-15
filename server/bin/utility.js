@@ -1,6 +1,7 @@
 /*----------  Vendor Imports  ----------*/
 const { createLogger, format, transports } = require('winston');
 const appRoot = require('app-root-path');
+const mailgun = require('mailgun-js');
 
 /*=======================================
 =            Winston Logging            =
@@ -41,3 +42,17 @@ const logger = createLogger({
 module.exports.logger = logger;
 
 /*=====  End of Winston Logging  ======*/
+
+
+/*======================================
+=            Mailgun Mailer            =
+======================================*/
+
+const mailer = mailgun({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
+
+module.exports.mailer = mailer;
+
+/*=====  End of Mailgun Mailer  ======*/

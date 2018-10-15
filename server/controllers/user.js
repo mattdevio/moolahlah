@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const R = require('ramda');
 
 /*----------  Custom Imports  ----------*/
-const { logger } = require(`${appRoot}/server/bin/utility`);
+const { logger, mailer } = require(`${appRoot}/server/bin/utility`);
 const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
 const UserModel = require(`${appRoot}/server/models/user`);
 
@@ -39,6 +39,22 @@ userRouter.post('/', UserModel.newUserValidation(), async function(req, res, nex
       }, R.pick(['name', 'emailAddress'], user)),
       messsage: 'User created successful',
     });
+
+    logger.info('Atempting to send email message to new user');
+    const email = {
+      from: process.env.EMAIL_SENDER,
+      to: user.emailAddress,
+      subject: 'Welcome to moolahlah!',
+      html: 'Welcome to moolahlah!<br /><br />We just wanted to say hello. 👋',
+    };
+    mailer.messages().send(email, function(err, body) {
+      if (err) {
+        logger.error(err);
+      } else {
+        logger.info(`Email queued! ${JSON.stringify(body)}`);
+      }
+    });
+
     logger.debug(`User '${user.name}' saved!`);
     req.session.data = user._id;
     res.status(201);
