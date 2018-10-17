@@ -1,6 +1,8 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component, Fragment } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /*----------  Custom Imports  ----------*/
 import withWindowEvents from '@/hocs/withWindowEvents';
@@ -26,6 +28,10 @@ class App extends Component {
           <Route path={ routes.AUTH } component={ LandingPage } />
           <Route render={ () => <Redirect to={ routes.AUTH_REGISTER } /> } />
         </Switch>
+        <ToastContainer
+          style={{ boxSizing: 'border-box', fontSize: '1.4rem' }}
+          autoClose={ false }
+        />
       </Fragment>
     );
   }

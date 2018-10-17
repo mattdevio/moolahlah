@@ -50,6 +50,10 @@ const getBaseWebpackConfig = async () => {
             options: babelConfig,
           },
         },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        }
       ],
     },
 

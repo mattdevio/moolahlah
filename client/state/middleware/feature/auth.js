@@ -3,7 +3,6 @@ import * as R from 'ramda';
 import validator from 'validator';
 
 /*----------  Custom Imports  ----------*/
-import * as endpoints from '@/constants/endpoints';
 import {
   REGISTER_NAME,
   REGISTER_EMAIL,
@@ -68,7 +67,6 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
       break;
 
     case `${SUBMIT_REGISTER_FORM} ${API_SUCCESS}`:
-      console.log('register success response');
       processRegisterSuccess(next, action);
       break;
 
@@ -140,7 +138,7 @@ const processRegisterAndSubmit = ({ auth }, next) => {
         password: payload.registerPassword,
       },
       method: 'POST',
-      url: endpoints.USER, 
+      url: 'google.com/jfdksjdkflsdkfl', 
     }));
   }
 
@@ -148,6 +146,7 @@ const processRegisterAndSubmit = ({ auth }, next) => {
 
 const processRegisterSuccess = (next, { payload }) => {
 
+  console.log('register success');
   console.dir(payload);
 
 };

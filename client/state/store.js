@@ -6,6 +6,7 @@ import rootReducer from '@/state/ducks';
 import uiMiddleware from '@/state/middleware/feature/ui';
 import authMiddleware from '@/state/middleware/feature/auth';
 import apiMiddleware from '@/state/middleware/core/api';
+import toastMiddleware from '@/state/middleware/core/toast';
 
 /*----------  Setup  ----------*/
 // Get the DevTools : https://github.com/zalmoxisus/redux-devtools-extension
@@ -18,6 +19,7 @@ const featureMiddleware = [
 ];
 const coreMiddleware = [
   apiMiddleware,
+  toastMiddleware,
 ];
 
 /*----------  Build Enhancer  ----------*/

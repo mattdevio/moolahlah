@@ -7,6 +7,7 @@ import {
   apiSuccess,
   apiError,
 } from '@/state/ducks/api';
+import { showErrorMessage } from '@/state/ducks/toast';
 
 /*----------  apiMiddleware  ----------*/
 const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
@@ -25,15 +26,23 @@ const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
     try {
       thunk = await axios(request);
     } catch (error) {
-      const { data } = error.response;
-      return dispatch(apiError({
-        error: data,
-        feature,
-      }));
+      if (error && error.response && error.response.data) {
+        const { data } = error.response;
+        return dispatch(apiError({
+          error: data,
+          feature,
+        }));
+      }
+      // Send log message to server sometime in the future
+      return dispatch(showErrorMessage('⚠️ An unknown error occurred!'));
     }
 
     const { data } = thunk;
-    dispatch(apiSuccess({ data, feature }));
+    if (data && (data.status === 1 || data.status === 0)) {
+      return dispatch(apiSuccess({ data, feature }));
+    }
+    // Send log message to server sometime in the future
+    dispatch(showErrorMessage('⚠️ An unknown error occurred!'));
 
   } // end if
 
