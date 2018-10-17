@@ -1,4 +1,4 @@
-FROM node:carbon-jessie
+FROM node:10.12-stretch
 MAINTAINER mattdevio
 
 WORKDIR /var/www
