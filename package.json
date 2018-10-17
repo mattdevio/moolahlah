@@ -31,6 +31,7 @@
     "connect-redis": "3.4.0",
     "express": "4.16.3",
     "express-session": "1.15.6",
+    "express-validator": "5.3.0",
     "helmet": "3.14.0",
     "mailgun-js": "0.21.0",
     "mongoose": "5.2.15",
