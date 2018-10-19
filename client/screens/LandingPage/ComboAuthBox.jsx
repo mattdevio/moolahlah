@@ -1,7 +1,7 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Route } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 /*----------  Custom Imports  ----------*/
 import AuthToggle from './AuthToggle';
@@ -18,16 +18,21 @@ class ComboAuthBox extends Component {
     return (
       <ComboAuthBoxContainer>
         <AuthToggle />
-        <Route
-          exact
-          path={ routes.AUTH_REGISTER }
-          component={ RegisterForm }
-        />
-        <Route
-          exact
-          path={ routes.AUTH_SIGNIN }
-          component={ SigninForm }
-        />
+        <Switch>
+          <Route
+            exact
+            path={ routes.AUTH_REGISTER }
+            component={ RegisterForm }
+          />
+          <Route
+            exact
+            path={ routes.AUTH_SIGNIN }
+            component={ SigninForm }
+          />
+          <Route
+            render={ () => <Redirect to={ routes.AUTH_SIGNIN } /> }
+          />
+        </Switch>
       </ComboAuthBoxContainer>
     );
   }

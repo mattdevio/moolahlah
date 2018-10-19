@@ -19,13 +19,19 @@ class FloatingInput extends PureComponent {
       className,
       type,
     } = this.props;
+    const hasError = !!errorMessage;
     return (
       <FloatingInputContainer className={ className }>
-        <TextInputBox value={ value } onChange={ e => onChange(e.target.value) } type={ type } />
+        <TextInputBox
+          value={ value }
+          onChange={ e => onChange(e.target.value, hasError) }
+          type={ type }
+          hasError={ hasError }
+        />
         <InputHighlight />
-        <TextLabel>{ textLabel }</TextLabel>
+        <TextLabel hasError={hasError}>{ textLabel }</TextLabel>
         {
-          !!errorMessage && <ErrorMessage>{ errorMessage }</ErrorMessage>
+          hasError && <ErrorMessage>{ errorMessage }</ErrorMessage>
         }
       </FloatingInputContainer>
     );
@@ -59,18 +65,18 @@ const TextInputBox = styled.input.attrs({
   display: block;
   width: 100%;
   font-family: ${({ theme }) => theme.typeFont};
+  color: ${({ theme, hasError }) => hasError ? theme.alertRed : theme.darkBlue};
   font-size: 2.6rem;
   font-weight: 400;
-  border-bottom: 3px solid ${({ theme }) => theme.darkBlue};
+  border-bottom: 3px solid ${({ theme, hasError }) => hasError ? theme.alertRed : theme.darkBlue};
   &:focus {
     outline: none;
   }
   &:focus ~ label,
   &:valid ~ label {
     top: 0;
-    left: 0.2rem;
+    left: 0;
     font-size: 1.8rem;
-    color: ${({ theme }) => theme.darkBlue};
   }
   &:focus ~ span {
     max-width: 100%;
@@ -84,7 +90,7 @@ const TextLabel = styled.label`
   left: 0;
   font-size: 2.6rem;
   font-family: ${({ theme }) => theme.typeFont};
-  color: ${({ theme }) => theme.darkBlue};
+  color: ${({ theme, hasError }) => hasError ? theme.alertRed : theme.darkBlue};
   pointer-events: none;
   transition:0.2s ease all;
 `;
@@ -102,10 +108,10 @@ const InputHighlight = styled.span`
 
 
 const ErrorMessage = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   position: absolute;
   bottom: 0;
-  left: 0.2rem;
+  left: 0;
   margin: 0;
   color: ${({ theme }) => theme.alertRed};
   font-family: ${({ theme }) => theme.typeFont};

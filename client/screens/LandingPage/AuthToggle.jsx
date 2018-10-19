@@ -45,10 +45,13 @@ const RouteableButton = styled(NavLink).attrs({
   text-decoration: none;
   color: ${({ theme }) => theme.white};
   text-align: center;
-  padding: 2rem 0 3rem 0;
+  padding: 2rem 0 2.5rem 0;
   background-color: ${({ theme }) => theme.skyBlue};
   &.active {
     background-color: ${({ theme }) => theme.mediumBlue};
+  }
+  &:focus {
+    outline: none;
   }
 `;
 

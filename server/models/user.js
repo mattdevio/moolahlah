@@ -37,25 +37,22 @@ userSchema.statics.newUserValidation = function() {
   return [
 
     body('emailAddress')
-      .isEmail()
-      .withMessage('invalid email')
+      .not().isEmpty().withMessage('Field required')
+      .isEmail().withMessage('Not a valid email address')
       .custom(emailAddress => this.find({ emailAddress })
         .exec()
         .then(result => {
-          if (result.length > 0) return Promise.reject('aready in use');
+          if (result.length > 0) return Promise.reject('Email address already in use');
         })
         .catch(error => Promise.reject(error))),
 
     body('password')
-      .isLength({ min: 6 })
-      .withMessage('must be atleast 6 characters')
-      .matches(/\d/)
-      .withMessage('must contain a number'),
+      .not().isEmpty().withMessage('Field required')
+      .isLength({ min: 6 }).withMessage('Must be atleast 6 characters')
+      .matches(/\d/).withMessage('must contain a number'),
 
     body('name')
-      .not()
-      .isEmpty()
-      .withMessage('can not be empty'),
+      .not().isEmpty().withMessage('Field required'),
 
     handleValidationErrors(),
 
@@ -70,12 +67,11 @@ userSchema.statics.loginValidation = function() {
   return [
 
     body('emailAddress')
-      .isEmail()
-      .withMessage('invalid email'),
+      .not().isEmpty().withMessage('Field required')
+      .isEmail().withMessage('Not a valid email address'),
 
     body('password')
-      .isLength({ min: 6 })
-      .withMessage('must be atleast 6 characters'),
+      .not().isEmpty().withMessage('Field required'),
 
     handleValidationErrors(),
 

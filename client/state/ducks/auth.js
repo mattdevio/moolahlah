@@ -14,6 +14,8 @@ export const SIGNIN_EMAIL_ERROR = `${AUTH} SIGNIN_EMAIL_ERROR`;
 export const SIGNIN_PASSWORD = `${AUTH} SIGNIN_PASSWORD`;
 export const SIGNIN_PASSWORD_ERROR = `${AUTH} SIGNIN_PASSWORD_ERROR`;
 export const SUBMIT_SIGNIN_FORM = `${AUTH} SUBMIT_SIGNIN_FORM`;
+export const AUTHENTICATED_USER = `${AUTH} AUTHENTICATED_USER`;
+export const CHECK_SESSION = `${AUTH} CHECK_SESSION`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -27,6 +29,11 @@ const INITIAL_AUTH_STATE = {
   signinPassword: '',
   signinEmail_Error: '',
   signinPassword_Error: '',
+  authenticatedUser: {
+    name: '',
+    emailAddress: '',
+    password: '',
+  },
 };
 
 /*----------  Action Creators  ----------*/
@@ -88,6 +95,17 @@ export const submitSigninForm = () => ({
   type: SUBMIT_SIGNIN_FORM,
 });
 
+export const authenticatedUser = ({ name, emailAddress, password }) => ({
+  type: AUTHENTICATED_USER,
+  name,
+  emailAddress,
+  password,
+});
+
+export const checkSession = () => ({
+  type: CHECK_SESSION,
+});
+
 /*===================================
 =            authReducer            =
 ===================================*/
@@ -143,6 +161,15 @@ export default function authReducer(state = INITIAL_AUTH_STATE, action) {
     case SIGNIN_PASSWORD_ERROR:
       return Object.assign({}, state, {
         signinPassword_Error: action.signinPassword_Error,
+      });
+
+    case AUTHENTICATED_USER:
+      return Object.assign({}, state, {
+        authenticatedUser: {
+          name: action.name,
+          emailAddress: action.emailAddress,
+          password: action.password,
+        }
       });
 
     default:
