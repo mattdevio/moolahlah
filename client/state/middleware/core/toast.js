@@ -1,6 +1,4 @@
 /*----------  Vendor Imports  ----------*/
-import React, { Fragment } from 'react';
-import { string } from 'prop-types';
 import { toast } from 'react-toastify';
 
 /*----------  Custom Imports  ----------*/

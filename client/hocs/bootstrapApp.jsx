@@ -1,18 +1,18 @@
 /*----------  Vendor Imports  ----------*/
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { func, bool } from 'prop-types';
 
 /*----------  Custom Imports  ----------*/
 import { setWindowDimensions } from '@/state/ducks/ui';
+import { checkSession } from '@/state/ducks/auth';
 
 /**
- * withWindowEvents = HOC that updates window width and height in redux
- * @param  {Node} Component [A React Node]
- * @return {Node}           [The input React Node]
+ * bootstrapApp
+ * Initialize the app
  */
-const withWindowEvents = (Component) => {
-  class WithWindowEvents extends React.Component {
+const bootstrapApp = (Component) => {
+  class BootstrapApp extends React.Component {
 
     constructor(props) {
       super(props);
@@ -24,6 +24,7 @@ const withWindowEvents = (Component) => {
     }
 
     componentDidMount() {
+      this.props.checkSession();
       window.addEventListener('resize', this.resizeWindow);
     }
 
@@ -32,20 +33,28 @@ const withWindowEvents = (Component) => {
     }
 
     render() {
-      return <Component />;
+      const { readyToDisplay } = this.props;
+      return readyToDisplay ? <Component /> : null;
     }
 
-  } // end class WithWindowEvents
+  } // end class BootstrapApp
 
-  WithWindowEvents.propTypes = {
-    updateDimensions: PropTypes.func.isRequired,
+  BootstrapApp.propTypes = {
+    updateDimensions: func.isRequired,
+    checkSession: func.isRequired,
+    readyToDisplay: bool.isRequired,
   };
+
+  const mapStateToProps = state => ({
+    readyToDisplay: state.ui.readyToDisplay,
+  });
 
   const mapDispatchToProps = (dispatch) => ({
     updateDimensions: (width, height) => dispatch(setWindowDimensions(width, height)),
+    checkSession: () => dispatch(checkSession()),
   });
 
-  return connect(null, mapDispatchToProps, null, { pure: false })(WithWindowEvents);
+  return connect(mapStateToProps, mapDispatchToProps, null, { pure: false })(BootstrapApp);
 };
 
-export default withWindowEvents;
+export default bootstrapApp;

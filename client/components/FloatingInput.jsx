@@ -24,7 +24,7 @@ class FloatingInput extends PureComponent {
       <FloatingInputContainer className={ className }>
         <TextInputBox
           value={ value }
-          onChange={ e => onChange(e.target.value) }
+          onChange={ e => onChange(e.target.value, hasError) }
           type={ type }
           hasError={ hasError }
         />
