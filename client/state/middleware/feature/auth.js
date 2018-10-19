@@ -5,7 +5,6 @@ import validator from 'validator';
 /*----------  Custom Imports  ----------*/
 import history from '@/App/history';
 import { DASHBOARD } from '@/constants/routes';
-import { safeLog } from '@/bin/utility';
 import { setDisplayOn } from '@/state/ducks/ui';
 import {
   CHECK_SESSION,
@@ -128,7 +127,6 @@ const processCheckSessionSuccess = (next, { payload }) => {
       password: data.password,
     }));
     // If user is on an authentication route, send them to the dashboard
-    safeLog(route);
     if (route === '/' || /^\/auth/.test(route)) {
       history.push(DASHBOARD);
     }
@@ -211,7 +209,6 @@ const processRegisterAndSubmit = ({ auth }, next) => {
  * Store the authenticated user after registration success
  */
 const processRegisterSuccess = (next, { payload }) => {
-  safeLog('Success', payload);
 
   const { data } = payload;
   next(authenticatedUser({
@@ -293,7 +290,6 @@ const processSigninAndSubmit = ({ auth }, next) => {
  * Store the authenticated user after signin success
  */
 const processSigninSuccess = (next, { payload }) => {
-  safeLog('Success', payload);
 
   const { data } = payload;
 
