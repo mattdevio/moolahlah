@@ -3,3 +3,7 @@ export const AUTH = '/auth';
 export const AUTH_REGISTER = '/auth/register';
 export const AUTH_SIGNIN = '/auth/signin';
 export const DASHBOARD = '/dashboard';
+export const DASHBOARD_DESIGN = '/dashboard/design';
+export const DASHBOARD_TRANSACTION = '/dashboard/transaction';
+export const DASHBOARD_VISION = '/dashboard/vision';
+export const DASHBOARD_ACCOUNT = '/dashboard/account';

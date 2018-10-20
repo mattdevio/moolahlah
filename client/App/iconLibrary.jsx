@@ -1,18 +1,16 @@
 /*----------  Vendor Imports  ----------*/
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faCalendarPlus,
+  faFeatherAlt,
   faUser,
-  faAt,
-  faKey,
-  faExclamationTriangle,
-  faSpinner,
+  faChartBar,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
 library.add(
-  faUser,                   // user
-  faAt,                     // at
-  faKey,                    // key
-  faExclamationTriangle,    // exclamation-triangle
-  faSpinner,                // spinner
+  faCalendarPlus,   // calendar-plus
+  faFeatherAlt,     // feather-alt
+  faUser,           // user
+  faChartBar,       // chart-bar
 );

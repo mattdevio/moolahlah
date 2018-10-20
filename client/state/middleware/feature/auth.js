@@ -299,6 +299,8 @@ const processSigninSuccess = (next, { payload }) => {
     password: data.password,
   }));
 
+  history.push(DASHBOARD);
+
 };
 
 /**
