@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
-
+import MoolahlahLogo from '@/components/MoolahlahLogo';
 
 class ContentSection extends Component {
   render() {
     return (
       <ContentSectionContainer>
-        <h1>This is the content section</h1>
+        <MoolahlahLogo width='20' margin='0 auto 2rem auto' />
       </ContentSectionContainer>
     );
   }
@@ -18,8 +18,9 @@ class ContentSection extends Component {
 export default ContentSection;
 
 const ContentSectionContainer = styled.div`
-  width: 100%;
+  width: calc(100% - 40rem);
   height: 100%;
-  background: green;
+  min-height: 100%;
+  padding: 1.5rem;
 `;
 

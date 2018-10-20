@@ -1,7 +1,5 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
@@ -15,11 +13,8 @@ import TabOverview from '@/screens/DashboardPage/TabOverview';
 
 class DashboardPage extends Component {
   render() {
-    const {
-      windowHeight,
-    } = this.props;
     return (
-      <DashboardPageContainer height={ windowHeight }>
+      <DashboardPageContainer>
         <ContentSection />
         <TabOverview />
       </DashboardPageContainer>
@@ -27,27 +22,12 @@ class DashboardPage extends Component {
   }
 }
 
-DashboardPage.propTypes = {
-  windowWidth: PropTypes.number.isRequired,
-  windowHeight: PropTypes.number.isRequired,
-};
-
-const mapStateToProps = state => ({
-  windowWidth: state.ui.windowWidth,
-  windowHeight: state.ui.windowHeight,
-});
-
-const connectedDashboardPage = connect(mapStateToProps)(DashboardPage);
-export default withAuthorization(connectedDashboardPage);
+export default withAuthorization(DashboardPage);
 
 /*=====  End of DashboardPage  ======*/
 
-const DashboardPageContainer = styled.div.attrs({
-  style: ({ height }) => ({
-    minHeight: `${height}px`,
-  }),
-})`
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+const DashboardPageContainer = styled.div`
+  height: 100%;
+  min-height: 100%;
+  position: relative;
 `;

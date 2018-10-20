@@ -1,12 +1,10 @@
 /*----------  Vendor imports  ----------*/
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
 import ComboAuthBox from './ComboAuthBox';
-
+import MoolahlahLogo from '@/components/MoolahlahLogo';
 
 /*==========================================
 =            LandingPage Screen            =
@@ -14,12 +12,9 @@ import ComboAuthBox from './ComboAuthBox';
 
 class LandingPage extends Component {
   render() {
-    const {
-      windowHeight,
-    } = this.props;
     return (
-      <LandingPageContainer minHeight={ windowHeight }>
-        <LandingPageLogo />
+      <LandingPageContainer>
+        <MoolahlahLogo />
         <MainLine>Personal Finance Manager</MainLine>
         <SubLine>
           The first step to saving money<br />
@@ -31,36 +26,20 @@ class LandingPage extends Component {
   }
 }
 
-LandingPage.propTypes = {
-  windowHeight: PropTypes.number.isRequired,
-};
 
-const mapStateToProps = state => ({
-  windowHeight: state.ui.windowHeight,
-});
-
-export default connect(mapStateToProps)(LandingPage);
+export default LandingPage;
 
 /*=====  End of LandingPage Screen  ======*/
 
-const LandingPageContainer = styled.div.attrs({
-  style: ({ minHeight }) => ({
-    minHeight: `${minHeight}px`,
-  }),
-})`
+const LandingPageContainer = styled.div`
   width: 100%;
+  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const LandingPageLogo = styled.span`
-  background: url(/assets/image/moolahlah_logo.png) no-repeat;
-  background-size: 30rem 8.9rem;
-  width: 30rem;
-  height: 8.9rem;
-  margin-bottom: 2rem;
+  padding: 1.5rem;
 `;
 
 const MainLine = styled.h2`

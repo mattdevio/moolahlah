@@ -21,5 +21,9 @@ export default TabOverview;
 const TabOverviewContainer = styled.div`
   width: 40rem;
   height: 100%;
+  min-height: 100%;
   background: yellow;
+  position: fixed;
+  top: 0;
+  right: 0;
 `;
