@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
-
+import TabSelector from './TabSelector';
 
 class TabOverview extends Component {
   render() {
     return (
       <TabOverviewContainer>
-        <h1>Empty Class Component</h1>
+        <TabSelector />
       </TabOverviewContainer>
     );
   }
