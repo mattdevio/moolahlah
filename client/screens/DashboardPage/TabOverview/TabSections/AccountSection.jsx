@@ -1,5 +1,6 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
+import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
 
@@ -7,9 +8,19 @@ import React, { Component } from 'react';
 class AccountSection extends Component {
   render() {
     return (
-      <h1>Account Section</h1>
+      <AccountSectionContainer>
+        Account Section
+      </AccountSectionContainer>
     );
   }
 }
 
 export default AccountSection;
+
+
+const AccountSectionContainer = styled.div`
+  width: 100%;
+  height: calc(100% - 5rem);
+  background-color: ${({ theme }) => theme.darkBlue};
+  padding: 1.5rem 0.5rem;
+`;

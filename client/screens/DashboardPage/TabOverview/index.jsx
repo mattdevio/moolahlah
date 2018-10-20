@@ -1,7 +1,7 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 /*----------  Custom imports  ----------*/
 import TabSelector from './TabSelector';
@@ -32,6 +32,9 @@ class TabOverview extends Component {
           <Route
             path={ routes.DASHBOARD_ACCOUNT }
             component={ AccountSection }
+          />
+          <Route
+            render={ () => <Redirect to={ routes.DASHBOARD_DESIGN } /> }
           />
         </Switch>
       </TabOverviewContainer>
