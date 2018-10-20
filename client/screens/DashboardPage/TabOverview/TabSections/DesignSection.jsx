@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
+import MonthSelector from '@/components/MonthSelector';
 
 
 class DesignSection extends Component {
   render() {
     return (
       <DesignSectionContainer>
-        Design Section
+        <MonthSelector />
       </DesignSectionContainer>
     );
   }
