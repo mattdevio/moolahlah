@@ -11,20 +11,20 @@ class MonthSelector extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedState: 'JAN',
+      selectedState: 0,
       year: 2018,
     };
     this.renderMonthButton = this.renderMonthButton.bind(this);
   }
 
-  renderMonthButton(month) {
+  renderMonthButton(monthInt, monthDisplay) {
     return (
       <MonthButton onClick={ () => {
         this.setState({
-          selectedState: month,
+          selectedState: monthInt,
         });
-      }} isSelected={ month === this.state.selectedState }>
-        { month }
+      }} isSelected={ monthInt === this.state.selectedState }>
+        { monthDisplay }
       </MonthButton>
     );
   }
@@ -49,24 +49,24 @@ class MonthSelector extends Component {
         </YearRow>
         <MonthGroup>
           <MonthRow>
-            { this.renderMonthButton('JAN') }
-            { this.renderMonthButton('FEB') }
-            { this.renderMonthButton('MAR') }
+            { this.renderMonthButton(0, 'JAN') }
+            { this.renderMonthButton(1, 'FEB') }
+            { this.renderMonthButton(2, 'MAR') }
           </MonthRow>
           <MonthRow>
-            { this.renderMonthButton('APR') }
-            { this.renderMonthButton('MAY') }
-            { this.renderMonthButton('JUN') }
+            { this.renderMonthButton(3, 'APR') }
+            { this.renderMonthButton(4, 'MAY') }
+            { this.renderMonthButton(5, 'JUN') }
           </MonthRow>
           <MonthRow>
-            { this.renderMonthButton('JUL') }
-            { this.renderMonthButton('AUG') }
-            { this.renderMonthButton('SEP') }
+            { this.renderMonthButton(6, 'JUL') }
+            { this.renderMonthButton(7, 'AUG') }
+            { this.renderMonthButton(8, 'SEP') }
           </MonthRow>
           <MonthRow>
-            { this.renderMonthButton('OCT') }
-            { this.renderMonthButton('NOV') }
-            { this.renderMonthButton('DEC') }
+            { this.renderMonthButton(9, 'OCT') }
+            { this.renderMonthButton(10, 'NOV') }
+            { this.renderMonthButton(11, 'DEC') }
           </MonthRow>
         </MonthGroup>
       </MonthSelectorContainer>
