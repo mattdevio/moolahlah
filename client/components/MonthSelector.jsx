@@ -128,9 +128,10 @@ const StyledIcon = styled(FontAwesomeIcon).attrs({
   cursor: pointer;
   margin: 0 2rem;
   color: ${({ theme }) => theme.darkBlue};
-  &:hover,
-  &:focus {
+  &:hover {
     color: ${({ theme }) => theme.white};
+  }
+  &:focus {
     outline: none;
   }
 `;

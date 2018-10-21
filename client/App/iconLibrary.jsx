@@ -7,6 +7,7 @@ import {
   faChartBar,
   faChevronCircleLeft,
   faChevronCircleRight,
+  faGrinBeam
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -17,4 +18,5 @@ library.add(
   faChartBar,            // chart-bar
   faChevronCircleLeft,   // chevron-circle-left
   faChevronCircleRight,  // chevron-circle-right
+  faGrinBeam,            // grin-beam
 );

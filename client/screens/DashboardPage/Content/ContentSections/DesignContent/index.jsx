@@ -6,7 +6,7 @@ import { number, string } from 'prop-types';
 
 /*----------  Custom imports  ----------*/
 import MoolahlahLogo from '@/components/MoolahlahLogo';
-
+import StartNewMonth from './StartNewMonth';
 
 /*=====================================
 =            DesignContent            =
@@ -21,6 +21,7 @@ class DesignContent extends Component {
         <CurrentBudgetMonth>
           { `${currentMonthDisplay} ${currentYear}` }
         </CurrentBudgetMonth>
+        <StartNewMonth />
       </DesignContentSection>
     );
   }
@@ -52,6 +53,6 @@ const CurrentBudgetMonth = styled.h3`
   font-family: ${({ theme }) => theme.typeFont};
   color: ${({ theme }) => theme.darkBlue};
   text-align: center;
-  margin: 0;
+  margin: 0 0 2rem 0;
   letter-spacing: 0.4rem;
 `;
