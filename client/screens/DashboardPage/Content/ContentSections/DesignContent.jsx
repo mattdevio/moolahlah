@@ -1,15 +1,57 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { number, string } from 'prop-types';
 
 /*----------  Custom imports  ----------*/
+import MoolahlahLogo from '@/components/MoolahlahLogo';
 
+
+/*=====================================
+=            DesignContent            =
+=====================================*/
 
 class DesignContent extends Component {
   render() {
+    const { currentMonthDisplay, currentYear } = this.props;
     return (
-      <h1>Empty Design Content</h1>
+      <DesignContentSection>
+        <MoolahlahLogo width='20' margin='0 auto 0 auto' />
+        <CurrentBudgetMonth>
+          { `${currentMonthDisplay} ${currentYear}` }
+        </CurrentBudgetMonth>
+      </DesignContentSection>
     );
   }
 }
 
-export default DesignContent;
+DesignContent.propTypes = {
+  currentMonthDisplay: string.isRequired,
+  currentYear: number.isRequired,
+};
+
+const mapStateToProps = state => ({
+  currentMonthDisplay: state.design.currentMonthDisplay,
+  currentYear: state.design.currentYear,
+});
+
+export default connect(mapStateToProps)(DesignContent);
+
+/*=====  End of DesignContent  ======*/
+
+
+const DesignContentSection = styled.div`
+
+`;
+
+const CurrentBudgetMonth = styled.h3`
+  font-size: 4.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: ${({ theme }) => theme.typeFont};
+  color: ${({ theme }) => theme.darkBlue};
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.4rem;
+`;
