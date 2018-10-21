@@ -1,3 +1,6 @@
+/*----------  Vendor Imports  ----------*/
+import { displayMonths } from '@/App/dateHelpers';
+
 /*----------  Namespace  ----------*/
 export const DESIGN = '[design]';
 
@@ -10,6 +13,7 @@ const TODAY = new Date();
 const DESIGN_INITIAL_STATE = {
   currentYear: TODAY.getFullYear(),
   currentMonth: TODAY.getMonth(),
+  currentMonthDisplay: displayMonths[TODAY.getMonth()],
 };
 
 /*----------  Action Creators  ----------*/
@@ -38,6 +42,7 @@ const designReducer = (state = DESIGN_INITIAL_STATE, action) => {
     case CURRENT_MONTH:
       return Object.assign({}, state, {
         currentMonth: action.currentMonth,
+        currentMonthDisplay: displayMonths[action.currentMonth],
       });
 
     default:
