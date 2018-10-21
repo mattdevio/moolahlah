@@ -51,7 +51,7 @@ class MonthSelector extends Component {
           </CurrentYear>
           <StyledIcon
             icon='chevron-circle-right'
-            onClick={ () => setCurrentYear }
+            onClick={ () => setCurrentYear(currentYear + 1) }
           />
         </YearRow>
         <MonthGroup>

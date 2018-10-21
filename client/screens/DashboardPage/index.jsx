@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
 import withAuthorization from '@/hocs/withAuthorization';
-import ContentSection from '@/screens/DashboardPage/ContentSection';
+import Content from '@/screens/DashboardPage/Content';
 import TabOverview from '@/screens/DashboardPage/TabOverview';
 
 /*=====================================
@@ -15,7 +15,7 @@ class DashboardPage extends Component {
   render() {
     return (
       <DashboardPageContainer>
-        <ContentSection />
+        <Content />
         <TabOverview />
       </DashboardPageContainer>
     );
