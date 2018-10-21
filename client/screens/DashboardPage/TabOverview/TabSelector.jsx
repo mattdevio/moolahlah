@@ -9,22 +9,22 @@ import * as routes from '@/constants/routes';
 
 const TabSelector = () => (
   <TabSelectorContainer>
-    <TabButton to={ routes.DASHBOARD_DESIGN } bgColor='skyBlue'>
+    <TabButton to={ routes.DASHBOARD_DESIGN } bgcolor='skyBlue'>
       <StyledIcon
         icon='calendar-plus'
       />
     </TabButton>
-    <TabButton to={ routes.DASHBOARD_TRANSACTION } bgColor='lightBlue'>
+    <TabButton to={ routes.DASHBOARD_TRANSACTION } bgcolor='lightBlue'>
       <StyledIcon
         icon='feather-alt'
       />
     </TabButton>
-    <TabButton to={ routes.DASHBOARD_VISION } bgColor='mediumBlue'>
+    <TabButton to={ routes.DASHBOARD_VISION } bgcolor='mediumBlue'>
       <StyledIcon
         icon='chart-bar'
       />
     </TabButton>
-    <TabButton to={ routes.DASHBOARD_ACCOUNT } bgColor='darkBlue'>
+    <TabButton to={ routes.DASHBOARD_ACCOUNT } bgcolor='darkBlue'>
       <StyledIcon
         icon='user'
       />
@@ -51,7 +51,7 @@ const TabButton = styled(NavLink).attrs({
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background-color: ${({ bgColor, theme }) => theme[bgColor]};
+  background-color: ${({ bgcolor, theme }) => theme[bgcolor]};
 `;
 
 const StyledIcon = styled(FontAwesomeIcon)`
