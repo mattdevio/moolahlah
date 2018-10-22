@@ -7,6 +7,7 @@ import { number, string } from 'prop-types';
 /*----------  Custom imports  ----------*/
 import MoolahlahLogo from '@/components/MoolahlahLogo';
 import StartNewMonth from './StartNewMonth';
+import CategoryGroup from './CategoryGroup';
 
 /*=====================================
 =            DesignContent            =
@@ -22,6 +23,9 @@ class DesignContent extends Component {
           { `${currentMonthDisplay} ${currentYear}` }
         </CurrentBudgetMonth>
         <StartNewMonth />
+        <CategoryGroup title='Income' baseColor='darkBlue' />
+        <CategoryGroup title='Housing Expenses' baseColor='mediumBlue' />
+        <CategoryGroup title='Food' baseColor='lightBlue' />
       </DesignContentSection>
     );
   }
