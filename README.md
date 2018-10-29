@@ -1,6 +1,6 @@
 # moolahlah
 
-[![Project Management | Trello](https://img.shields.io/badge/PM-trello-orange.svg)](https://trello.com/b/RcMVafA1/moolahlah)
+[![Project Management | Github Projects](https://img.shields.io/badge/pm-github-orange.svg)](https://github.com/mattdevio/moolahlah/projects/3)
 
 A personal budget and finance management platform that helps you save money by effortless planning.
 
@@ -99,7 +99,7 @@ Nothing to deploy yet...
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
 
 ## Authors
 
