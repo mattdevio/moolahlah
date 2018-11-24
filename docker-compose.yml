@@ -14,16 +14,21 @@ services:
     networks:
       - moolahlah-network
     depends_on:
-      - mongodb
+      - mysqldb
       - redis
 
-  mongodb:
-    image: mongo
-    container_name: "${MONGO_HOST}"
+  mysqldb:
+    image: mysql:5.7.24
+    container_name: "${MYSQL_HOST}"
     ports:
-      - "${MONGO_PORT}:27017"
+      - "${MYSQL_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_USER=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ./temp/db:/data/db
+      - ./temp/mysql:/var/lib/mysql
     networks:
       - moolahlah-network
 
