@@ -1,5 +1,5 @@
 FROM node:10.12-stretch
-MAINTAINER mattdevio
+LABEL Author=mattdevio
 
 WORKDIR /var/www
 
