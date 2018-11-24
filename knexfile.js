@@ -8,7 +8,11 @@ if (!result) {
 }
 
 const {
-  
+  MYSQL_HOST,
+  MYSQL_PORT,
+  MYSQL_DB_NAME,
+  MYSQL_USERNAME,
+  MYSQL_PASSWORD
 } = result.parsed;
 
 module.exports = {
@@ -16,9 +20,11 @@ module.exports = {
   development: {
     client: 'mysql2',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      host: MYSQL_HOST,
+      port: MYSQL_PORT,
+      database: MYSQL_DB_NAME,
+      user:     MYSQL_USERNAME,
+      password: MYSQL_PASSWORD
     },
     pool: {
       min: 0,
@@ -32,9 +38,11 @@ module.exports = {
   production: {
     client: 'mysql2',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      host: MYSQL_HOST,
+      port: MYSQL_PORT,
+      database: MYSQL_DB_NAME,
+      user:     MYSQL_USERNAME,
+      password: MYSQL_PASSWORD
     },
     pool: {
       min: 2,
