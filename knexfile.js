@@ -12,7 +12,7 @@ const {
   MYSQL_PORT,
   MYSQL_DB_NAME,
   MYSQL_USERNAME,
-  MYSQL_PASSWORD
+  MYSQL_PASSWORD,
 } = result.parsed;
 
 module.exports = {
@@ -24,15 +24,19 @@ module.exports = {
       port: MYSQL_PORT,
       database: MYSQL_DB_NAME,
       user:     MYSQL_USERNAME,
-      password: MYSQL_PASSWORD
+      password: MYSQL_PASSWORD,
     },
     pool: {
       min: 0,
-      max: 5
+      max: 5,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+      directory: `${appRoot}/server/db/migrations`,
+    },
+    seeds: {
+      directory: `${appRoot}/server/db/seeds`,
+    },
   },
 
   production: {
@@ -42,15 +46,19 @@ module.exports = {
       port: MYSQL_PORT,
       database: MYSQL_DB_NAME,
       user:     MYSQL_USERNAME,
-      password: MYSQL_PASSWORD
+      password: MYSQL_PASSWORD,
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+      directory: `${appRoot}/server/db/migrations`,
+    },
+    seeds: {
+      directory: `${appRoot}/server/db/seeds`,
+    },
   },
 
 };
