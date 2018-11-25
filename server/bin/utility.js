@@ -1,21 +1,15 @@
-/*----------  Vendor Imports  ----------*/
+// Vendor Imports
 const appRoot = require('app-root-path');
 const { createLogger, format, transports } = require('winston');
 const mailgun = require('mailgun-js');
 const pug = require('pug');
 
-/*=======================================
-=            Winston Logging            =
-=======================================*/
 
 /**
- * Log Levels
- *
- * @error => The error log
- * @info  => Non secret app information
- * @debug => Secret app information
+ * Winston Logger
+ * Got more robust logging with transports and log files
+ * Debug level only shows in development mode
  */
-
 const { combine, timestamp, printf } = format;
 
 const myFormat = printf(info => {
@@ -42,13 +36,11 @@ const logger = createLogger({
 
 module.exports.logger = logger;
 
-/*=====  End of Winston Logging  ======*/
 
-
-/*======================================
-=            Mailgun Mailer            =
-======================================*/
-
+/**
+ * Mailgun Processor
+ * Sends email to the user
+ */
 const mailer = mailgun({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
@@ -78,5 +70,3 @@ function sendMail({ to, template, locals = {} }) {
 }
 
 module.exports.sendMail = sendMail;
-
-/*=====  End of Mailgun Mailer  ======*/
