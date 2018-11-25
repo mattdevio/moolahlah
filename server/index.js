@@ -4,7 +4,6 @@ const appRoot = require('app-root-path');
 
 /*----------  Custom Imports  ----------*/
 const initServer = require(`${appRoot}/server/bin/initServer`);
-const initDatabase = require(`${appRoot}/server/bin/initDatabase`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
 
 
@@ -23,8 +22,6 @@ if (result.error) {
 Object.keys(result.parsed).forEach(key => {
   logger.debug(`${key} => ${result.parsed[key]}`);
 });
-
-initDatabase();
 
 initServer()
   .then(server => server.listen(process.env.PORT, () => {

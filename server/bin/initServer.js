@@ -17,7 +17,6 @@ const commonWebpackConfig = require(`${appRoot}/webpack_config/webpack.common`);
 const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
 const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
-const loadControllers = require(`${appRoot}/server/bin/loadControllers`);
 const redisSession = require(`${appRoot}/server/middleware/redisSession`);
 const serveReactHTML = require(`${appRoot}/server/middleware/serveReactHTML`);
 const handleRequestErrors = require(`${appRoot}/server/middleware/handleRequestErrors`);
@@ -74,9 +73,6 @@ const initServer = () => {
     app.use(webpackDevMiddleware(compiler, {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
-
-    // Load all the controllers into the app
-    await loadControllers(app);
 
     // Mount React HTML middleware
     app.use(serveReactHTML());
