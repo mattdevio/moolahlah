@@ -30,6 +30,13 @@ $ docker-compose build
 $ docker-compose up
 ```
 
+**Notice:** The first time you start the application, it will take a long time to download the docker images and initialize the services. After the services are started you will need to run the database migrations and seeders to initialize the db. Migrations need to be run inside the container!
+
+```bash
+$ docker exec -it moolahlah /bin/bash
+root@docker:/var/www$ npx knex migrate:latest
+```
+
 <table>
   <tr>
     <td>Build Docker Images</td>
@@ -74,6 +81,44 @@ You can pass optional arguments to the command to override the default variables
 npm run config \
   PORT=1337 \
   BASE_URL=https://moolahlah.com
+```
+
+Database Management
+===================
+
+We are using the [knex cli](https://knexjs.org/#Migrations-CLI) to manage database migrations and seeders. You can access the cli commands by running `npx knex` from the root of this project. Here is a list of the most common commands.
+
+<table>
+  <tr>
+    <td>npx knex migrate:make &lt;name&gt;</td>
+    <td>Start a new migration file</td>
+  </tr>
+  <tr>
+    <td>npx knex migrate:latest</td>
+    <td>Run all pending migrations</td>
+  </tr>
+  <tr>
+    <td>npx knex migrate:rollback</td>
+    <td>Rollback the last set of migrations</td>
+  </tr>
+  <tr>
+    <td>npx knex seed:make &lt;name&gt;</td>
+    <td>Start a new seeder file</td>
+  </tr>
+  <tr>
+    <td>npx knex seed:make &lt;name&gt;</td>
+    <td>Start a new seeder file</td>
+  </tr>
+  <tr>
+    <td>npx knex seed:run</td>
+    <td>Run seeder files</td>
+  </tr>
+</table>
+
+You will need to access the main application (moolahlah) docker container to run migrations. Here is how you gain acesss to run migrations (make sure the containers are running first).
+
+```bash
+$ docker exec -it moolahlah /bin/bash
 ```
 
 Coding Style
