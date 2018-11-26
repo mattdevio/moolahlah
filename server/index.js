@@ -5,7 +5,6 @@ const appRoot = require('app-root-path');
 // Custom Imports
 const initServer = require(`${appRoot}/server/bin/initServer`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
-const Models = require(`${appRoot}/server/db/models`);
 
 // Begin Server
 logger.info('Starting the moolahlah server!');
@@ -21,8 +20,6 @@ if (result.error) {
 Object.keys(result.parsed).forEach(key => {
   logger.debug(`${key} => ${result.parsed[key]}`);
 });
-
-console.dir(Object.keys(Models));
 
 // Start the express server
 initServer()
