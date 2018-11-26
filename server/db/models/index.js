@@ -5,7 +5,8 @@ const Knex = require('knex');
 
 // Node Imports
 const { readdirSync } = require('fs');
-const thisFile = require('path').basename(__filename);
+const { basename } = require('path');
+const thisFile = basename(__filename, '.js');
 
 // Custom Imports
 const knexConfig = require(`${appRoot}/knexfile`);
@@ -19,11 +20,10 @@ Model.knex(knex);
 /**
  * Load All Models and export like a barrel file
  */
-const exports = { knex };
-readdirSync(`${appRoot}/server/db/models`)
+module.exports = readdirSync(`${appRoot}/server/db/models`)
+  .map(file => basename(file, '.js'))
   .filter(file => file !== thisFile)
-  .forEach(file => {
-    console.log(file);
-  });
-
-module.exports = exports;
+  .reduce((acc, val) => {
+    acc[basename(val, '.js')] = require(`${appRoot}/se3rver/db/models/${val}`);
+    return acc;
+  }, { knex });
