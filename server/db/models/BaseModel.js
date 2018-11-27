@@ -18,6 +18,7 @@ class BaseModel extends Model {
       underscoreBeforeDigits: true,
     });
   }
+
 }
 
 module.exports = BaseModel;
