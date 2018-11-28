@@ -46,8 +46,8 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
     case CHECK_SESSION:
       next(apiRequest({
         feature: CHECK_SESSION,
-        method: 'POST',
-        url: '/user/authenticate',
+        method: 'GET',
+        url: '/user/profile',
       }));
       break;
 
@@ -120,10 +120,10 @@ export default authMiddleware;
 const processCheckSessionSuccess = (next, { payload }) => {
   const { data } = payload;
   const route = history.location.pathname.toLowerCase();
-  if (data && data.emailAddress) {
+  if (data && data.email) {
     next(authenticatedUser({
       name: data.name,
-      emailAddress: data.emailAddress,
+      email: data.email,
       password: data.password,
     }));
     // If user is on an authentication route, send them to the dashboard
@@ -196,7 +196,7 @@ const processRegisterAndSubmit = ({ auth }, next) => {
       url: '/user',
       data: {
         name: payload.registerName,
-        emailAddress: payload.registerEmail,
+        email: payload.registerEmail,
         password: payload.registerPassword,
       },
     }));
@@ -213,7 +213,7 @@ const processRegisterSuccess = (next, { payload }) => {
   const { data } = payload;
   next(authenticatedUser({
     name: data.name,
-    emailAddress: data.emailAddress,
+    email: data.email,
     password: data.password,
   }));
 
@@ -233,7 +233,7 @@ const processRegisterError = (next, { payload }) => {
     return acc;
   }, {});
 
-  if (obj.emailAddress) next(setRegisterEmailError(obj.emailAddress));
+  if (obj.email) next(setRegisterEmailError(obj.email));
   if (obj.name) next(setRegisterNameError(obj.name));
   if (obj.password) next(setRegisterPasswordError(obj.password));
 
@@ -277,7 +277,7 @@ const processSigninAndSubmit = ({ auth }, next) => {
       method: 'POST',
       url: '/user/login',
       data: {
-        emailAddress: payload.signinEmail,
+        email: payload.signinEmail,
         password: payload.signinPassword,
       },
     }));
@@ -295,7 +295,7 @@ const processSigninSuccess = (next, { payload }) => {
 
   next(authenticatedUser({
     name: data.name,
-    emailAddress: data.emailAddress,
+    email: data.email,
     password: data.password,
   }));
 
@@ -315,7 +315,7 @@ const processSigninError = (next, { payload }) => {
     return acc;
   }, {});
 
-  if (obj.emailAddress) next(setSigninEmailError(obj.emailAddress));
+  if (obj.email) next(setSigninEmailError(obj.email));
   if (obj.password) next(setSigninPasswordError(obj.password));
 
 };
