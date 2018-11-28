@@ -2,6 +2,7 @@
 const appRoot = require('app-root-path');
 const uuid = require('uuid/v4');
 const { body } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
 
 // Custom Imports
 const BaseModel = require('./BaseModel');
@@ -49,24 +50,26 @@ class User extends BaseModel {
   static newUserValidation() {
     return [
 
-      body('emailAddress')
-        .not().isEmpty().withMessage('Field required')
+      sanitizeBody(['email', 'password', 'name'])
+        .trim(),
+
+      body(['email', 'password', 'name'])
+        .not().isEmpty().withMessage('Field required'),
+
+      body('email')
         .isEmail().withMessage('Not a valid email address')
-        .custom(async emailAddress => new Promise(async (resolve, reject) => {
+        .custom(async email => new Promise(async (resolve, reject) => {
+          if (!email) return reject();
           User.query()
             .select('email')
-            .where('email', emailAddress)
+            .where('email', email)
             .then(result => result.length > 0 ? reject('Email address already in use') : resolve())
             .catch(() => reject('An error occured in validation'));
         })),
 
       body('password')
-        .not().isEmpty().withMessage('Field required')
         .isLength({ min: 6 }).withMessage('Must be atleast 6 characters')
         .matches(/\d/).withMessage('must contain a number'),
-
-      body('name')
-        .not().isEmpty().withMessage('Field required'),
 
       handleValidationErrors()
 
@@ -76,12 +79,14 @@ class User extends BaseModel {
   static loginUserValidation() {
     return [
 
-      body('emailAddress')
-        .not().isEmpty().withMessage('Field required')
-        .isEmail().withMessage('Not a valid email address'),
-      
-      body('password')
+      sanitizeBody(['email', 'password'])
+        .trim(),
+
+      body(['email', 'password'])
         .not().isEmpty().withMessage('Field required'),
+
+      body('email')
+        .isEmail().withMessage('Not a valid email address'),
 
       handleValidationErrors(),
 
