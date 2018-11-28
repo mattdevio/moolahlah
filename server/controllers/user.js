@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 
 // Custom Imports
 const { logger, sendMail } = require(`${appRoot}/server/bin/utility`);
-const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
+const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
+const protectedRoute = require(`${appRoot}/server/middleware/protectedRoute`);
 const { User } = require(`${appRoot}/server/db/models`);
 
 // Setup
@@ -19,12 +20,12 @@ const userRouter = Router();
  */
 userRouter.post('/', User.newUserValidation(), async function(req, res, next) {
 
-  logger.debug(`Attempting to save new user to the database: ${JSON.stringify(req.body, null, 2)}`);
-  const { name, emailAddress, password } = req.body;
+  const { body } = req;
+  logger.debug(`Attempting to save new user to the database: ${JSON.stringify(body.email, null, 2)}`);
 
   let hash;
   try {
-    hash = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
+    hash = await bcrypt.hash(body.password, +process.env.SALT_ROUNDS);
   } catch (e) {
     return next(e);
   }
@@ -33,15 +34,16 @@ userRouter.post('/', User.newUserValidation(), async function(req, res, next) {
   try {
     newUser = await User.query()
       .insert({
-        name: name,
-        email: emailAddress,
+        name: body.name,
+        email: body.email,
         password: hash,
       });
   } catch (e) {
     return next(e);
   }
 
-  // Send Mail - Need to promisify this function so we can watch errors better
+  // Send Mail
+  // Need to promisify this function so we can watch errors better
   sendMail({
     to: newUser.email,
     template: 'WelcomeEmail',
@@ -51,13 +53,12 @@ userRouter.post('/', User.newUserValidation(), async function(req, res, next) {
     },
   });
 
-  // Create session and send back response
   logger.debug(`New user saved: ${newUser.email}`);
-  req.session.data = { name: newUser.name, emailAddress: newUser.email };
+  req.session.data = { name: newUser.name, email: newUser.email };
   res.status(201).json(apiResponse({
     data: {
       name: newUser.name,
-      emailAddress: newUser.email,
+      email: newUser.email,
       password: '*********',
     },
     message: 'User created',
@@ -65,69 +66,75 @@ userRouter.post('/', User.newUserValidation(), async function(req, res, next) {
 
 });
 
-userRouter.post('/login', async function(req, res, next) {
+/**
+ * POST /login
+ * Authenticates a user by email and password
+ * Starts a session for future request
+ */
+userRouter.post('/login', User.loginUserValidation(), async function(req, res, next) {
 
-  const { emailAddress, password } = req.body;
-  logger.debug(`Attempting to login user: ${emailAddress}`);
+  const { body } = req;
+  logger.debug(`Attempting to login user: ${body.email}`);
 
-  res.json(apiResponse({
-    message: 'Not Implemented',
-    status: 0,
+  let result;
+  try {
+    [ result ] = await User.query()
+      .select('name', 'email', 'password')
+      .where('email', body.email);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (!result) {
+    return res.status(401).json(apiResponse({
+      message: 'Sign in failed',
+      status: 0,
+      errors: [{
+        location: 'body',
+        param: 'emailAddress',
+        value: body.email,
+        msg: 'No user with that email',
+      }]
+    }));
+  }
+
+  let passwordMatches;
+  try {
+    passwordMatches = await bcrypt.compare(body.password, result.password);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (!passwordMatches) {
+    return res.status(401).json(apiResponse({
+      message: 'Sign in failed',
+      status: 0,
+      errors: [{
+        location: 'body',
+        param: 'password',
+        value: body.password,
+        msg: 'Invalid password',
+      }],
+    }));
+  }
+
+  logger.debug(`User ${result.email} logged in!`);
+  req.session.data = { name: result.name, email: result.email };
+  res.status(200).json(apiResponse({
+    message: 'Login successful',
+    data: Object.assign({
+      name: result.name,
+      email: result.email, 
+      password: '*********',
+    }),
   }));
-
-  // let result;
-  // try {
-  //   result = await UserModel.findOne({ emailAddress }).exec();
-  // } catch (e) {
-  //   return next(e);
-  // }
-
-  // if (!result) {
-  //   res.status(401);
-  //   return res.json(apiResponse({
-  //     message: 'Sign In Failed',
-  //     status: 0,
-  //     errors: [{
-  //       location: 'body',
-  //       param: 'emailAddress',
-  //       value: emailAddress,
-  //       msg: 'No user with that email. Please try again.',
-  //     }]
-  //   }));
-  // }
-
-  // let passwordMatches;
-  // try {
-  //   passwordMatches = await bcrypt.compare(password, result.password);
-  // } catch (e) {
-  //   return next(e);
-  // }
-
-  // if (!passwordMatches) {
-  //   res.status(401);
-  //   return res.json(apiResponse({
-  //     message: 'Sign In Failed',
-  //     status: 0,
-  //     errors: [{
-  //       location: 'body',
-  //       param: 'password',
-  //       value: password,
-  //       msg: 'Wrong password. Try again or click \'Forgot Password\'.',
-  //     }],
-  //   }));
-  // }
-
-  // req.session.data = result._id;
-  // res.status(200);
-  // return res.json(apiResponse({
-  //   message: 'Login successful',
-  //   data: Object.assign({
-  //     password: '***********'
-  //   }, R.pick(['name', 'emailAddress'], result)),
-  // }));
 
 });
 
+/**
+ * POST /logout
+ * Destroys an active session for the user
+ */
 userRouter.post('/logout', async function(req, res, next) {
 
   req.session.destroy((err) => {
@@ -143,38 +150,31 @@ userRouter.post('/logout', async function(req, res, next) {
 
 });
 
-userRouter.post('/authenticate', async function(req, res, next) {
+/**
+ * PROTECTED ROUTE
+ * GET /profile
+ * Fetch the users profile information
+ */
+userRouter.get('/profile', protectedRoute(), async function(req, res, next) {
 
-  res.json(apiResponse({
-    message: 'Not Implemented',
-    status: 0,
+  let result;
+  try {
+    [ result ] = await User.query()
+      .select('name', 'email')
+      .where('email', req.session.data.email);
+    if (!result) next(new Error('Empty query response'));
+  } catch (err) {
+    return next(err);
+  }
+
+
+  res.status(200).json(apiResponse({
+    data: {
+      name: result.name,
+      email: result.email,
+      password: '*********',
+    },
   }));
-
-  // if (req.session && req.session.data) {
-  //   let result;
-  //   try {
-  //     result = await UserModel.findById(req.session.data).exec();
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  //   if (result) {
-  //     res.status(200);
-  //     return res.json(apiResponse({
-  //       message: 'Authentication Successful',
-  //       data: {
-  //         name: result.name,
-  //         emailAddress: result.emailAddress,
-  //         password: '***********',
-  //       },
-  //     }));
-  //   }
-  // }
-
-  // res.status(401);
-  // res.json(apiResponse({
-  //   message: 'Unable To Authenticate',
-  //   status: 0,
-  // }));
 
 });
 
