@@ -25,7 +25,7 @@ const withAuthorization = ScreenPage => {
   };
 
   const mapStateToProps = state => ({
-    authenticatedUser: state.auth.authenticatedUser.emailAddress,
+    authenticatedUser: state.auth.authenticatedUser.email,
   });
 
   return connect(mapStateToProps)(WithAuthorization);
