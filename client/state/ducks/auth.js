@@ -31,7 +31,7 @@ const INITIAL_AUTH_STATE = {
   signinPassword_Error: '',
   authenticatedUser: {
     name: '',
-    emailAddress: '',
+    email: '',
     password: '',
   },
 };
@@ -95,10 +95,10 @@ export const submitSigninForm = () => ({
   type: SUBMIT_SIGNIN_FORM,
 });
 
-export const authenticatedUser = ({ name, emailAddress, password }) => ({
+export const authenticatedUser = ({ name, email, password }) => ({
   type: AUTHENTICATED_USER,
   name,
-  emailAddress,
+  email,
   password,
 });
 
@@ -167,7 +167,7 @@ export default function authReducer(state = INITIAL_AUTH_STATE, action) {
       return Object.assign({}, state, {
         authenticatedUser: {
           name: action.name,
-          emailAddress: action.emailAddress,
+          email: action.email,
           password: action.password,
         }
       });
