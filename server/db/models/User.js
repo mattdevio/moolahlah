@@ -73,6 +73,21 @@ class User extends BaseModel {
     ];
   }
 
+  static loginUserValidation() {
+    return [
+
+      body('emailAddress')
+        .not().isEmpty().withMessage('Field required')
+        .isEmail().withMessage('Not a valid email address'),
+      
+      body('password')
+        .not().isEmpty().withMessage('Field required'),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
 } // end User Model
 
 module.exports = User;
