@@ -3,7 +3,7 @@ const appRoot = require('app-root-path');
 
 /*----------  Custom Imports  ----------*/
 const { logger } = require(`${appRoot}/server/bin/utility`);
-const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
+const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
 
 
 /*===========================================

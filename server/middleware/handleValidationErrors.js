@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator/check');
 
 /*----------  Custom Imports  ----------*/
 const { logger } = require(`${appRoot}/server/bin/utility`);
-const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
+const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
 
 /**
  * handleValidationErrors

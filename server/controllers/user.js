@@ -1,119 +1,140 @@
-/*----------  Vendor Imports  ----------*/
+// Vendor Imports
 const appRoot = require('app-root-path');
 const { Router } = require('express');
 const bcrypt = require('bcrypt');
-const R = require('ramda');
 
-/*----------  Custom Imports  ----------*/
+// Custom Imports
 const { logger, sendMail } = require(`${appRoot}/server/bin/utility`);
-const apiResponse = require(`${appRoot}/server/bin/apiResponse`);
-const UserModel = require(`${appRoot}/server/models/user`);
+const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
+const protectedRoute = require(`${appRoot}/server/middleware/protectedRoute`);
+const { User } = require(`${appRoot}/server/db/models`);
 
-/*----------  Setup  ----------*/
+// Setup
 const userRouter = Router();
 
-
 /**
- * Get the users
+ * POST /user
+ * Creates a new user in the database
+ * Sends Welcome Email
+ * Starts a session for future REST requests
  */
-userRouter.post('/', UserModel.newUserValidation(), async function(req, res, next) {
+userRouter.post('/', User.newUserValidation(), async function(req, res, next) {
 
-  logger.debug(`Attempting to save new user to the database: ${JSON.stringify(req.body)}`);
+  const { body } = req;
+  logger.debug(`Attempting to save new user to the database: ${JSON.stringify(body.email, null, 2)}`);
 
   let hash;
   try {
-    hash = await bcrypt.hash(req.body.password, +process.env.SALT_ROUNDS);
+    hash = await bcrypt.hash(body.password, +process.env.SALT_ROUNDS);
   } catch (e) {
     return next(e);
   }
 
-  UserModel.create({
-    name: req.body.name,
-    password: hash,
-    emailAddress: req.body.emailAddress,
-  }, function(err, user){
+  let newUser;
+  try {
+    newUser = await User.query()
+      .insert({
+        name: body.name,
+        email: body.email,
+        password: hash,
+      });
+  } catch (e) {
+    return next(e);
+  }
 
-    if (err) return next(err);
-    sendMail({
-      to: req.body.emailAddress,
-      template: 'WelcomeEmail',
-      locals: {
-        name: req.body.name,
-        emailAddress: req.body.emailAddress,
-      },
-    });
-    logger.debug(`User '${user.name}' saved!`);
-    req.session.data = user._id;
-    res.status(201);
-    return res.json(apiResponse({
-      data: Object.assign({
-        password: '***********'
-      }, R.pick(['name', 'emailAddress'], user)),
-      messsage: 'User Created',
-    }));
-
+  // Send Mail
+  // Need to promisify this function so we can watch errors better
+  sendMail({
+    to: newUser.email,
+    template: 'WelcomeEmail',
+    locals: {
+      name: newUser.name,
+      emailAddress: newUser.email,
+    },
   });
+
+  logger.debug(`New user saved: ${newUser.email}`);
+  req.session.data = { name: newUser.name, email: newUser.email };
+  res.status(201).json(apiResponse({
+    data: {
+      name: newUser.name,
+      email: newUser.email,
+      password: '*********',
+    },
+    message: 'User created',
+  }));
 
 });
 
-userRouter.post('/login', UserModel.loginValidation(), async function(req, res, next) {
+/**
+ * POST /login
+ * Authenticates a user by email and password
+ * Starts a session for future request
+ */
+userRouter.post('/login', User.loginUserValidation(), async function(req, res, next) {
 
-  const { emailAddress, password } = req.body;
-  logger.debug(`Attempting to login user: ${emailAddress}`);
+  const { body } = req;
+  logger.debug(`Attempting to login user: ${body.email}`);
 
   let result;
   try {
-    result = await UserModel.findOne({ emailAddress }).exec();
+    [ result ] = await User.query()
+      .select('name', 'email', 'password')
+      .where('email', body.email);
   } catch (e) {
     return next(e);
   }
 
   if (!result) {
-    res.status(401);
-    return res.json(apiResponse({
-      message: 'Sign In Failed',
+    return res.status(401).json(apiResponse({
+      message: 'Sign in failed',
       status: 0,
       errors: [{
         location: 'body',
         param: 'emailAddress',
-        value: emailAddress,
-        msg: 'No user with that email. Please try again.',
+        value: body.email,
+        msg: 'No user with that email',
       }]
     }));
   }
 
   let passwordMatches;
   try {
-    passwordMatches = await bcrypt.compare(password, result.password);
+    passwordMatches = await bcrypt.compare(body.password, result.password);
   } catch (e) {
     return next(e);
   }
 
   if (!passwordMatches) {
-    res.status(401);
-    return res.json(apiResponse({
-      message: 'Sign In Failed',
+    return res.status(401).json(apiResponse({
+      message: 'Sign in failed',
       status: 0,
       errors: [{
         location: 'body',
         param: 'password',
-        value: password,
-        msg: 'Wrong password. Try again or click \'Forgot Password\'.',
+        value: body.password,
+        msg: 'Invalid password',
       }],
     }));
   }
 
-  req.session.data = result._id;
-  res.status(200);
-  return res.json(apiResponse({
+  logger.debug(`User ${result.email} logged in!`);
+  req.session.data = { name: result.name, email: result.email };
+  res.status(200).json(apiResponse({
     message: 'Login successful',
     data: Object.assign({
-      password: '***********'
-    }, R.pick(['name', 'emailAddress'], result)),
+      name: result.name,
+      email: result.email, 
+      password: '*********',
+    }),
   }));
 
 });
 
+/**
+ * POST /logout
+ * Destroys an active session for the user
+ */
 userRouter.post('/logout', async function(req, res, next) {
 
   req.session.destroy((err) => {
@@ -129,32 +150,30 @@ userRouter.post('/logout', async function(req, res, next) {
 
 });
 
-userRouter.post('/authenticate', async function(req, res, next) {
+/**
+ * PROTECTED ROUTE
+ * GET /profile
+ * Fetch the users profile information
+ */
+userRouter.get('/profile', protectedRoute(), async function(req, res, next) {
 
-  if (req.session && req.session.data) {
-    let result;
-    try {
-      result = await UserModel.findById(req.session.data).exec();
-    } catch (err) {
-      next(err);
-    }
-    if (result) {
-      res.status(200);
-      return res.json(apiResponse({
-        message: 'Authentication Successful',
-        data: {
-          name: result.name,
-          emailAddress: result.emailAddress,
-          password: '***********',
-        },
-      }));
-    }
+  let result;
+  try {
+    [ result ] = await User.query()
+      .select('name', 'email')
+      .where('email', req.session.data.email);
+    if (!result) next(new Error('Empty query response'));
+  } catch (err) {
+    return next(err);
   }
 
-  res.status(401);
-  res.json(apiResponse({
-    message: 'Unable To Authenticate',
-    status: 0,
+
+  res.status(200).json(apiResponse({
+    data: {
+      name: result.name,
+      email: result.email,
+      password: '*********',
+    },
   }));
 
 });

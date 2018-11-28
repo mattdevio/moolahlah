@@ -1,4 +1,4 @@
-/*----------  Vendor Imports  ----------*/
+// Vendor Imports
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -8,24 +8,26 @@ const merge = require('webpack-merge');
 const appRoot = require('app-root-path');
 const helmet = require('helmet');
 
-/*----------  Node Imports  ----------*/
+// Node Imports
 const http = require('http');
 const path = require('path');
 
-/*----------  Custom Imports  ----------*/
+// Custom Imports
 const commonWebpackConfig = require(`${appRoot}/webpack_config/webpack.common`);
 const devWebpackConfig = require(`${appRoot}/webpack_config/webpack.dev`);
 const prodWebpackConfig = require(`${appRoot}/webpack_config/webpack.prod`);
 const { logger } = require(`${appRoot}/server/bin/utility`);
-const loadControllers = require(`${appRoot}/server/bin/loadControllers`);
 const redisSession = require(`${appRoot}/server/middleware/redisSession`);
 const serveReactHTML = require(`${appRoot}/server/middleware/serveReactHTML`);
+const loadControllers = require(`${appRoot}/server/middleware/loadControllers`);
 const handleRequestErrors = require(`${appRoot}/server/middleware/handleRequestErrors`);
 
-/*==================================
-=            initServer            =
-==================================*/
 
+/**
+ * initServer - Starts the express app
+ * Returns a promise that resolves the express app instance.
+ * The app instance is not bound to a port, you have to do that yourself!
+ */
 const initServer = () => {
   return new Promise(async (resolve, reject) => {
 
@@ -75,8 +77,8 @@ const initServer = () => {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
 
-    // Load all the controllers into the app
-    await loadControllers(app);
+    // Mount Controllers
+    loadControllers(app);
 
     // Mount React HTML middleware
     app.use(serveReactHTML());
@@ -91,5 +93,3 @@ const initServer = () => {
 }; // end function initServer
 
 module.exports = initServer;
-
-/*=====  End of initServer  ======*/

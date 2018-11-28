@@ -105,5 +105,6 @@ typings/
 .serverless
 
 temp/db
+temp/mysql
 
 # End of https://www.gitignore.io/api/node,macos
