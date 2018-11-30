@@ -35,8 +35,8 @@ exports.up = function(knex, Promise) {
                               WEEKOFYEAR(currentdate),
                               DATE_FORMAT(currentdate,'%W'),
                               DATE_FORMAT(currentdate,'%M'),
-                              'f',
-                              CASE DAYOFWEEK(currentdate) WHEN 1 THEN 't' WHEN 7 then 't' ELSE 'f' END);
+                              0,
+                              CASE DAYOFWEEK(currentdate) WHEN 1 THEN 1 WHEN 7 then 1 ELSE 0 END);
               SET currentdate = ADDDATE(currentdate,INTERVAL 1 DAY);
           END WHILE;
       END
