@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server",
-    "config": "node scripts/configure"
+    "config": "node scripts/configure",
+    "migrate:latest": "docker exec -it moolahlah /bin/bash -c 'npx knex migrate:latest'",
+    "migrate:rollback": "docker exec -it moolahlah /bin/bash -c 'npx knex migrate:rollback'",
+    "seed:run": "docker exec -it moolahlah /bin/bash -c 'npx knex seed:run'"
   },
   "repository": {
     "type": "git",
