@@ -7,6 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: moolahlah
+    environment:
+      - NODE_ENV=${NODE_ENV}
     volumes:
       - .:/var/www
     ports:
