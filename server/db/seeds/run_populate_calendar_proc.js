@@ -7,5 +7,4 @@ exports.seed = function(knex, Promise) {
 };
 
 const CALL_POPULATE_CALENDAR = exports.CALL_POPULATE_CALENDAR = knex => (start, end) =>
-  knex('calendar').truncate()
-    .then(() => knex.raw(`CALL populate_calendar('${start}', '${end}')`));
+  knex.raw(`CALL populate_calendar('${start}', '${end}')`);
