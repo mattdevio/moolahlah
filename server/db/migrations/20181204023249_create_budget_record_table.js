@@ -9,11 +9,13 @@ exports.up = function(knex, Promise) {
       table.string('label').notNullable();
       table.date('estimate_date').notNullable();
       table.decimal('estimate', 2).notNullable();
+      table.foreign('budget_id').references('budget.id').onDelete('cascade');
+      table.foreign('category_id').references('category.id').onDelete('cascade');
     });
     resolve();
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTableIfExists(tableName);
 };
