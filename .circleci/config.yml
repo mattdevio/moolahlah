@@ -7,5 +7,5 @@ jobs:
     steps:
       - checkout
       - run: 
-        name: "Check Node Version"
-        command: "node -v"
+          name: "Check Node Version"
+          command: "node -v"
