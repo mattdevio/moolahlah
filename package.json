@@ -4,6 +4,7 @@
   "description": "Financial Planner",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "start": "nodemon server",
     "config": "node scripts/configure",
     "migrate:latest": "docker exec -it moolahlah /bin/bash -c 'npx knex migrate:latest'",
@@ -57,21 +58,50 @@
     "winston": "3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0",
+    "@babel/core": "^7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
     "babel-loader": "8.0.2",
     "css-loader": "^1.0.0",
     "dotenv": "6.0.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-to-json": "^3.3.5",
     "eslint": "5.5.0",
+    "eslint-plugin-jest": "^22.1.2",
     "eslint-plugin-react": "7.11.1",
+    "jest": "^23.6.0",
+    "jest-styled-components": "^6.3.1",
     "nodemon": "1.18.4",
     "prop-types": "15.6.2",
     "style-loader": "^0.23.1",
     "webpack": "4.17.2",
     "webpack-dev-middleware": "3.2.0",
     "webpack-merge": "4.1.4"
+  },
+  "jest": {
+    "verbose": true,
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/client/$1"
+    },
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>__test__/setupTests.js",
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   }
 }
