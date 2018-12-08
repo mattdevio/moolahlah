@@ -21,14 +21,11 @@ process.argv.slice(2).forEach(keyValuePair => {
 });
 
 // Build config file as a string
+console.log('Writing .env File ✏️\n');
 let envFile = '';
 Object.keys(envConfig).forEach(key => {
   envFile += `${key}=${envConfig[key]}\n`;
 });
-
-// Show some feedback!
-console.log('Writing .env File ✏️\n');
-console.log(envFile);
 
 // Write File
 fs.writeFile(path.resolve(__dirname, '../.env'), envFile, 'utf8', () => {
