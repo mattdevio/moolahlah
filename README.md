@@ -1,7 +1,7 @@
 moolahlah
 =========
 
-[![Project Management | Github Projects](https://img.shields.io/badge/pm-github-orange.svg)](https://github.com/mattdevio/moolahlah/projects/3)
+[![Project Management | Github Projects](https://img.shields.io/badge/pm-github-orange.svg)](https://github.com/mattdevio/moolahlah/projects/3) [![CircleCI](https://circleci.com/gh/mattdevio/moolahlah.svg?style=svg)](https://circleci.com/gh/mattdevio/moolahlah)
 
 A personal budget and finance management platform that helps you save money by effortless planning.
 
@@ -30,11 +30,13 @@ $ docker-compose build
 $ docker-compose up
 ```
 
-**Notice:** The first time you start the application, it will take a long time to download the docker images and initialize the services. After the services are started you will need to run the database migrations and seeders to initialize the db. Migrations need to be run inside the container!
+**Notice:** The first time you start the application, it will take a _long time_ to download the docker images and initialize the services. After the services are started you will need to run the database migrations and seeders to initialize the db. A good indication that the containers have finished building is when you see the webpack compiler output.
+
+You can read more about the migration tools in [database management](#database_management).
 
 ```bash
-$ docker exec -it moolahlah /bin/bash
-root@docker:/var/www$ npx knex migrate:latest
+$ npm run migrate:latest
+$ npm run seed:run
 ```
 
 <table>
@@ -115,11 +117,28 @@ We are using the [knex cli](https://knexjs.org/#Migrations-CLI) to manage databa
   </tr>
 </table>
 
-You will need to access the main application (moolahlah) docker container to run migrations. Here is how you gain acesss to run migrations (make sure the containers are running first).
+Migrations have to be run from the server where is running the application; in our case, that would be the docker container. Here is how you gain acesss to the docker container to run migrations (make sure the containers are running first).
 
 ```bash
 $ docker exec -it moolahlah /bin/bash
 ```
+
+Alternatively, you can use the `npm scripts` which have an alias to remotely execute the migration commands on the docker container while on your local enviornment.
+
+<table>
+  <tr>
+    <td>npm run migrate:latest</td>
+    <td>runs 'npx knex migrate:latest' remotely</td>
+  </td>
+  <tr>
+    <td>npm run migrate:rollback</td>
+    <td>runs 'npx knex migrate:rollback' remotely</td>
+  </td>
+  <tr>
+    <td>npm run seed:run</td>
+    <td>runs 'npx knex seed:run' remotely</td>
+  </td>
+</table>
 
 Coding Style
 ============
