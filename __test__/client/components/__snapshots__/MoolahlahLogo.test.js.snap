@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MoolahlahLogo /> Component Should match the snapshot 1`] = `
+.c0 {
+  background: url(/assets/image/moolahlah_logo.png) no-repeat;
+  background-size: 30rem 8.90207715133531rem;
+  width: 30rem;
+  height: 8.90207715133531rem;
+  margin: 0 0 2rem 0;
+  display: block;
+}
+
+<styled.span
+  margin="0 0 2rem 0"
+  width="30"
+>
+  <span
+    className="c0"
+    width="30"
+  />
+</styled.span>
+`;

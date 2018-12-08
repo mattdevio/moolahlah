@@ -1,7 +1,7 @@
 moolahlah
 =========
 
-[![Project Management | Github Projects](https://img.shields.io/badge/pm-github-orange.svg)](https://github.com/mattdevio/moolahlah/projects/3)
+[![Project Management | Github Projects](https://img.shields.io/badge/pm-github-orange.svg)](https://github.com/mattdevio/moolahlah/projects/3) [![CircleCI](https://circleci.com/gh/mattdevio/moolahlah.svg?style=svg)](https://circleci.com/gh/mattdevio/moolahlah)
 
 A personal budget and finance management platform that helps you save money by effortless planning.
 
