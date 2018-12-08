@@ -1,13 +1,16 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component, Fragment } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /*----------  Custom Imports  ----------*/
-import { Header, Footer } from '@/components';
+import bootstrapApp from '@/hocs/bootstrapApp';
 import * as routes from '@/constants/routes';
-import { Landing, Signup } from '@/screens';
-import { moolahlahTheme } from '@/App/styled_theme';
+import LandingPage from '@/screens/LandingPage';
+import DashboardPage from '@/screens/DashboardPage';
+import './iconLibrary';
+
 
 /*===========================
 =            App            =
@@ -15,29 +18,28 @@ import { moolahlahTheme } from '@/App/styled_theme';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
-      <ThemeProvider theme={ moolahlahTheme }>
-        <Router>
-          <Fragment>
-            <Header />
-            <Switch>
-              <Route exact path={ routes.LANDING } component={ Landing } />
-              <Route path={ routes.SIGN_UP } component={ Signup } />
-              <route path={ routes.SIGN_IN } component={ Signup } />
-              <Route
-                render={ () => <Redirect to={ routes.LANDING } /> }
-              />
-            </Switch>
-            <Footer />
-          </Fragment>
-        </Router>
-      </ThemeProvider>
+      <Fragment>
+        <Switch>
+          <Route path={ routes.AUTH } component={ LandingPage } />
+          <Route path={ routes.DASHBOARD } component={ DashboardPage } />
+          <Route render={ () => <Redirect to={ routes.AUTH_REGISTER } /> } />
+        </Switch>
+        <ToastContainer
+          style={{ boxSizing: 'border-box', fontSize: '1.4rem' }}
+          autoClose={ false }
+        />
+      </Fragment>
     );
   }
 
 }
 
-export default App;
+export default bootstrapApp(App);
 
 /*=====  End of App  ======*/

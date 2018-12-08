@@ -1,10 +1,8 @@
-FROM node:carbon-jessie
-MAINTAINER mattdevio
+FROM node:10.12-stretch
+LABEL Author=mattdevio
 
 WORKDIR /var/www
 
-RUN npm install
-
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD npm install && npm start

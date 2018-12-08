@@ -1,38 +1,72 @@
-/*----------  Vendor Imports  ----------*/
-const chalk = require('chalk');
-
-/*----------  Setup  ----------*/
-// eslint-disable-next-line no-console
-const logFunc = (process.env.NODE_ENV === 'development') ? console.log : () => {};
-const objectIsError = e => e && e.stack && e.message;
+// Vendor Imports
+const appRoot = require('app-root-path');
+const { createLogger, format, transports } = require('winston');
+const mailgun = require('mailgun-js');
+const pug = require('pug');
 
 
-/*===============================================
-=            Static Utility Class            =
-===============================================*/
+/**
+ * Winston Logger
+ * Got more robust logging with transports and log files
+ * Debug level only shows in development mode
+ */
+const { combine, timestamp, printf } = format;
 
-class Utility {
+const myFormat = printf(info => {
+  return `${info.timestamp} [${info.level}] ${info.message}`;
+});
 
-  constructor() {
-    throw new Error('Utility is a static class');
-  }
+const logger = createLogger({
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  format: combine(
+    timestamp(),
+    myFormat,
+  ),
+  transports: [
+    new transports.Console(),
+    new transports.File({
+      filename: `${appRoot}/temp/combined.log`,
+    }),
+    new transports.File({
+      filename: `${appRoot}/temp/error.log`,
+      level: 'error',
+    }),
+  ],
+});
 
-  static log(...args) {
-    const enhancedArgs = args.map((arg) => {
-      if (objectIsError(arg)) {
-        return chalk.red(arg.stack);
-      } else if (Array.isArray(arg)) {
-        return chalk.magenta(JSON.stringify(arg, null, 2));
-      } else if (typeof arg === 'object') {
-        return chalk.green(JSON.stringify(arg, null, 2));
-      }
-      return chalk.underline(arg.toString());
-    });
-    logFunc.apply(console, enhancedArgs);
-  }
+module.exports.logger = logger;
+
+
+/**
+ * Mailgun Processor
+ * Sends email to the user
+ */
+const mailer = mailgun({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
+
+function sendMail({ to, template, locals = {} }) {
+
+  const templateFile = `${appRoot}/server/views/${template}.pug`;
+  const rendered = pug.renderFile(templateFile, { ...locals,
+    baseUrl: process.env.BASE_URL,
+  });
+  const email = {
+    from: process.env.EMAIL_SENDER,
+    html: rendered,
+    to,
+  };
+  mailer.messages().send(email, function(err, body) {
+
+    if (err) {
+      logger.error(err);
+    } else {
+      logger.info(`Email queued! ${JSON.stringify(body)}`);
+    }
+
+  });
 
 }
 
-module.exports = Utility;
-
-/*=====  End of Static Utility Class  ======*/
+module.exports.sendMail = sendMail;

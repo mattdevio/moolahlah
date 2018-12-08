@@ -16,6 +16,7 @@ const getBaseWebpackConfig = async () => {
     babelConfig = await readFileAsync(path.resolve(__dirname, '../.babelrc'), {encoding: 'utf8'});
     babelConfig = JSON.parse(babelConfig);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     process.exit(1);
   }
@@ -50,6 +51,10 @@ const getBaseWebpackConfig = async () => {
             options: babelConfig,
           },
         },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        }
       ],
     },
 

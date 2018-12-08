@@ -5,3 +5,9 @@ html {
   /* Set 1rem = 10px */
   font-size: 62.5%;
 }
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
