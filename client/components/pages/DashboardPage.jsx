@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
 import withAuthorization from '@/bin/hocs/withAuthorization';
-import ContentSection from '@/components/organisms/DashboardPage';
+import ContentSection from '@/components/organisms/ContentSection';
 import TabOverview from '@/components/organisms/TabOverview';
 
 /*=====================================

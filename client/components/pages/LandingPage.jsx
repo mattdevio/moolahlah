@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
-import ComboAuthBox from './ComboAuthBox';
-import MoolahlahLogo from '@/components/MoolahlahLogo';
+import ComboAuthBox from '@/components/organisms/ComboAuthBox';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 
 /*==========================================
 =            LandingPage Screen            =

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
-import MonthSelector from '@/components/atoms/MonthSelector';
+import MonthSelector from '@/components/molecules/MonthSelector';
 
 
 class DesignSection extends Component {

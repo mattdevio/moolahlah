@@ -1,5 +1,5 @@
 /*----------  Vendor Imports  ----------*/
-import { displayMonths } from '@/App/dateHelpers';
+import { displayMonths } from '@/bin/dateHelpers';
 
 /*----------  Namespace  ----------*/
 export const DESIGN = '[design]';

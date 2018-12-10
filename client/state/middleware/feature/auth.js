@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import validator from 'validator';
 
 /*----------  Custom Imports  ----------*/
-import history from '@/App/history';
+import history from '@/bin/history';
 import { DASHBOARD } from '@/constants/routes';
 import { setDisplayOn } from '@/state/ducks/ui';
 import {
