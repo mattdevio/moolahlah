@@ -5,9 +5,9 @@ import { Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 /*----------  Custom Imports  ----------*/
-import history from '@/App/history';
+import history from '@/bin/history';
 import store from '@/state/store';
-import { moolahlahTheme } from '@/App/styled_theme';
+import { moolahlahTheme } from '@/bin/styled_theme';
 
 
 /**
