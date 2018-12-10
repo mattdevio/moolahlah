@@ -5,11 +5,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 /*----------  Custom Imports  ----------*/
-import bootstrapApp from '@/hocs/bootstrapApp';
+import bootstrapApp from '@/bin/hocs/bootstrapApp';
 import * as routes from '@/constants/routes';
-import LandingPage from '@/screens/LandingPage';
-import DashboardPage from '@/screens/DashboardPage';
-import './iconLibrary';
+import LandingPage from '@/components/pages/LandingPage';
+import DashboardPage from '@/components/pages/DashboardPage';
+import '@/bin/iconLibrary';
 
 
 /*===========================
