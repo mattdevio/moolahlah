@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /*----------  Custom imports  ----------*/
-import withAuthorization from '@/hocs/withAuthorization';
-import Content from '@/screens/DashboardPage/Content';
-import TabOverview from '@/screens/DashboardPage/TabOverview';
+import withAuthorization from '@/bin/hocs/withAuthorization';
+import ContentSection from '@/components/organisms/DashboardPage';
+import TabOverview from '@/components/organisms/TabOverview';
 
 /*=====================================
 =            DashboardPage            =
@@ -15,7 +15,7 @@ class DashboardPage extends Component {
   render() {
     return (
       <DashboardPageContainer>
-        <Content />
+        <ContentSection />
         <TabOverview />
       </DashboardPageContainer>
     );
