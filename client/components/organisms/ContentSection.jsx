@@ -5,10 +5,10 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 /*----------  Custom imports  ----------*/
 import * as routes from '@/constants/routes';
-import DesignContent from './ContentSections/DesignContent';
-import TransactionContent from './ContentSections/TransactionContent';
-import VisionContent from './ContentSections/VisionContent';
-import AccountContent from './ContentSections/AccountContent';
+import DesignContent from '@/components/organisms/DesignContent';
+import TransactionContent from '@/components/organisms/TransactionContent';
+import VisionContent from '@/components/organisms/VisionContent';
+import AccountContent from '@/components/organisms/AccountContent';
 
 /*=========================================
 =            Dashboard Content            =

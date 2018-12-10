@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { number, string } from 'prop-types';
 
 /*----------  Custom imports  ----------*/
-import MoolahlahLogo from '@/components/MoolahlahLogo';
-import StartNewMonth from './StartNewMonth';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
+import StartNewMonth from '@/components/molecules/StartNewMonth';
 
 /*=====================================
 =            DesignContent            =

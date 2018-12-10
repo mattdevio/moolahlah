@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 /*----------  Custom Imports  ----------*/
-import AuthToggle from './AuthToggle';
-import RegisterForm from './RegisterForm';
-import SigninForm from './SigninForm';
+import AuthToggle from '@/components/molecules/AuthToggle';
+import RegisterForm from '@/components/molecules/RegisterForm';
+import SigninForm from '@/components/molecules/SigninForm';
 import * as routes from '@/constants/routes';
 
 /*==========================================

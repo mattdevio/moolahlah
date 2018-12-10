@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /*----------  Custom imports  ----------*/
-import StaticInput from '@/components/StaticInput';
+import StaticInput from '@/components/atoms/StaticInput';
 
 
 /*=====================================

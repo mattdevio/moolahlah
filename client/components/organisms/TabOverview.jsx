@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 /*----------  Custom imports  ----------*/
-import TabSelector from './TabSelector';
+import TabSelector from '@/components/molecules/TabSelector';
 import * as routes from '@/constants/routes';
-import DesignSection from './TabSections/DesignSection';
-import TransactionSection from './TabSections/TransactionSection';
-import VisionSection from './TabSections/VisionSection';
-import AccountSection from './TabSections/AccountSection';
+import DesignSection from '@/components/organisms/DesignSection';
+import TransactionSection from '@/components/organisms/TransactionSection';
+import VisionSection from '@/components/organisms/VisionSection';
+import AccountSection from '@/components/organisms/AccountSection';
 
 class TabOverview extends Component {
   render() {

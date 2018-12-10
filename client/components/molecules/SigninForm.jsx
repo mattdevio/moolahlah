@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 /*----------  Custom imports  ----------*/
-import FloatingInput from '@/components/FloatingInput';
+import FloatingInput from '@/components/atoms/FloatingInput';
 import {
   setSigninEmail,
   setSigninPassword,
