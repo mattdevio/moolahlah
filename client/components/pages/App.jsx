@@ -18,17 +18,13 @@ import '@/bin/iconLibrary';
 
 class App extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Fragment>
         <Switch>
-          <Route path={ routes.AUTH } component={ LandingPage } />
-          <Route path={ routes.DASHBOARD } component={ DashboardPage } />
-          <Route render={ () => <Redirect to={ routes.AUTH_REGISTER } /> } />
+          <Route path={ routes.AUTH_BASE } component={ LandingPage } />
+          <Route path={ routes.DASHBOARD_BASE } component={ DashboardPage } />
+          <Route render={ () => <Redirect to={ routes.AUTH_SIGNIN } /> } />
         </Switch>
         <ToastContainer
           style={{ boxSizing: 'border-box', fontSize: '1.4rem' }}

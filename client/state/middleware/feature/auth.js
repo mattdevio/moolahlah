@@ -4,7 +4,7 @@ import validator from 'validator';
 
 /*----------  Custom Imports  ----------*/
 import history from '@/bin/history';
-import { DASHBOARD } from '@/constants/routes';
+import { DASHBOARD_BASE } from '@/constants/routes';
 import { setDisplayOn } from '@/state/ducks/ui';
 import {
   CHECK_SESSION,
@@ -128,7 +128,7 @@ const processCheckSessionSuccess = (next, { payload }) => {
     }));
     // If user is on an authentication route, send them to the dashboard
     if (route === '/' || /^\/auth/.test(route)) {
-      history.push(DASHBOARD);
+      history.push(DASHBOARD_BASE);
     }
   }
 };
@@ -299,7 +299,7 @@ const processSigninSuccess = (next, { payload }) => {
     password: data.password,
   }));
 
-  history.push(DASHBOARD);
+  history.push(DASHBOARD_BASE);
 
 };
 
