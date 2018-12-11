@@ -3,7 +3,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 // Custom Imports
-import MoolahlahLogo from '@/components/MoolahlahLogo';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 
 describe('<MoolahlahLogo /> Component', () => {
 
