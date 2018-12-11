@@ -5,6 +5,8 @@ import React, { Component, Fragment } from 'react';
 // Custom Imports
 import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
+import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
+import TabSelector from '@/components/molecules/TabSelector';
 
 
 class BudgetDesignPage extends Component {
@@ -17,10 +19,12 @@ class BudgetDesignPage extends Component {
     return (
       <Fragment>
         <ContentSectionContainer>
-          Hi
+          <ContentSectionWrapper>
+            
+          </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer>
-          Whatup
+          <TabSelector />
         </TabContentContainer>
       </Fragment>
     );

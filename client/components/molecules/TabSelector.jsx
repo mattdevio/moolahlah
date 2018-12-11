@@ -9,17 +9,17 @@ import * as routes from '@/constants/routes';
 
 const TabSelector = () => (
   <TabSelectorContainer>
-    <TabButton to={ routes.DASHBOARD_DESIGN } bgcolor='skyBlue'>
+    <TabButton to={ routes.DASHBOARD_BUDGET_DESIGN } bgcolor='skyBlue'>
       <StyledIcon
         icon='calendar-plus'
       />
     </TabButton>
-    <TabButton to={ routes.DASHBOARD_TRANSACTION } bgcolor='lightBlue'>
+    <TabButton to={ routes.DASHBOARD_BUDGET_TRANSACTION } bgcolor='lightBlue'>
       <StyledIcon
         icon='feather-alt'
       />
     </TabButton>
-    <TabButton to={ routes.DASHBOARD_VISION } bgcolor='mediumBlue'>
+    <TabButton to={ routes.DASHBOARD_BUBDGET_VISION } bgcolor='mediumBlue'>
       <StyledIcon
         icon='chart-bar'
       />

@@ -52,5 +52,4 @@ const DashboardPageContainer = styled.div`
   height: 100%;
   min-height: 100%;
   position: relative;
-  background: yellow;
 `;

@@ -10,6 +10,8 @@ const ContentSectionWrapper = styled.div`
   width: 100%;
   max-width: 90rem;
   padding: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export default ContentSectionWrapper;
