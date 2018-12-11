@@ -7,6 +7,7 @@ import ContentSectionContainer from '@/components/atoms/ContentSectionContainer'
 import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 
 
 class BudgetDesignPage extends Component {
@@ -20,7 +21,7 @@ class BudgetDesignPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            Design Page
+            <MoolahlahLogo width='20' margin='0 auto 0 auto' />
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='skyBlue'>
