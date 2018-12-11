@@ -217,7 +217,7 @@ const processRegisterSuccess = (next, { payload }) => {
     password: data.password,
   }));
 
-  history.push(DASHBOARD);
+  history.push(DASHBOARD_BASE);
 
 };
 
