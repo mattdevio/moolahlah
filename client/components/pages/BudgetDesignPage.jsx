@@ -4,8 +4,8 @@ import React, { Component, Fragment } from 'react';
 
 // Custom Imports
 import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
-import TabContentContainer from '@/components/atoms/TabContentContainer';
 import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
+import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
 
 
@@ -20,10 +20,10 @@ class BudgetDesignPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            
+            Design Page
           </ContentSectionWrapper>
         </ContentSectionContainer>
-        <TabContentContainer>
+        <TabContentContainer bgColor='skyBlue'>
           <TabSelector />
         </TabContentContainer>
       </Fragment>

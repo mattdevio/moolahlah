@@ -12,6 +12,7 @@ const TabContentContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
+  background-color: ${({ theme, bgColor }) => theme[bgColor]};
 `;
 
 export default TabContentContainer;

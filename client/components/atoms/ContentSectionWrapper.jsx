@@ -8,10 +8,11 @@ import styled from 'styled-components';
 const ContentSectionWrapper = styled.div`
   min-height: 100%;
   width: 100%;
-  max-width: 90rem;
+  max-width: 110rem;
   padding: 1rem;
   margin-left: auto;
   margin-right: auto;
+  background:blue;
 `;
 
 export default ContentSectionWrapper;
