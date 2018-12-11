@@ -91,7 +91,7 @@ userRouter.post('/login', User.loginUserValidation(), async function(req, res, n
       status: 0,
       errors: [{
         location: 'body',
-        param: 'emailAddress',
+        param: 'email',
         value: body.email,
         msg: 'No user with that email',
       }]
