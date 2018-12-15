@@ -42,10 +42,7 @@ class User extends BaseModel {
 
   async $beforeInsert() {
     this.status_id = await Status.query().select('id').where('status_type', 'active')
-      .then(result => {
-        console.log(result);
-        return result[0].id;
-      });
+      .then(result => result[0].id);
     this.genAndEncodeUUID();
   }
   
