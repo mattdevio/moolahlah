@@ -1,5 +1,6 @@
 // Vendor imports
 const appRoot = require('app-root-path');
+const { Model } = require('objection');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
@@ -16,6 +17,22 @@ class Category extends BaseModel {
 
   static get idColumn() {
     return 'id';
+  }
+
+  static get relationMappings() {
+    const CategoryType = require(`${appRoot}/server/db/models/CategoryType`);
+    return {
+
+      categoryType: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: CategoryType,
+        join: {
+          from: 'category.category_type_id',
+          to: 'category_type.id',
+        },
+      },
+
+    };
   }
 
 }
