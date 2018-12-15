@@ -5,7 +5,7 @@ const { body } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
 // Custom Imports
-const BaseModel = require('./BaseModel');
+const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
 const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
