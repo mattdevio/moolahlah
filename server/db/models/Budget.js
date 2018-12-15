@@ -6,6 +6,7 @@ const { sanitizeBody } = require('express-validator/filter');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
+const User = require(`${appRoot}/server/db/models/User`);
 const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
@@ -62,6 +63,16 @@ class Budget extends BaseModel {
       
       body('month')
         .isInt({ min: 0, max: 11 }).withMessage('Must be an "int" between 0 and 11 inclusive'),
+
+      body()
+        .custom(({ year, month }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          const result = await Budget.query().select().where({
+            user_uuid: User.query().select('uuid').where('email', email),
+            start_date: `${year}-${month+1}-01`,
+          });
+          (result.length === 0) ? resolve() : reject('Budget instance already exists');
+        })),
 
       handleValidationErrors(),
     ];

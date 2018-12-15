@@ -10,7 +10,6 @@ import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
-import CategoryGroupSkeleton from '@/components/skeletons/CategoryGroupSkeleton';
 
 
 class BudgetDesignPage extends Component {
@@ -33,11 +32,6 @@ class BudgetDesignPage extends Component {
             <CurrentBudgetMonth>
               { `${currentMonthDisplay} ${currentYear}` }
             </CurrentBudgetMonth>
-            <CategoryGroupSkeleton />
-            <CategoryGroupSkeleton />
-            <CategoryGroupSkeleton />
-            <CategoryGroupSkeleton />
-            <CategoryGroupSkeleton />
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='skyBlue'>

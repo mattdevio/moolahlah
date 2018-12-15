@@ -8,6 +8,7 @@ const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
 const protectedRoute = require(`${appRoot}/server/middleware/protectedRoute`);
 const BudgetModel = require(`${appRoot}/server/db/models/Budget`);
 const UserModel = require(`${appRoot}/server/db/models/User`);
+const Category = require(`${appRoot}/server/db/models/Category`);
 
 // Setup
 const budgetRouter = Router();
@@ -23,9 +24,9 @@ budgetRouter.post('/start', protectedRoute(), BudgetModel.startBudgetValidation(
   const { year, month } = req.body;
   logger.debug(`Starting budget for ${email} '${year}-${month+1}-01'`);
 
-  let result;
+  let newBudget;
   try {
-    result = await BudgetModel.query().insert({
+    newBudget = await BudgetModel.query().insertAndFetch({
       user_uuid: UserModel.query().select('uuid').where('email', email),
       start_date: `${year}-${month+1}-01`,
     });
@@ -33,9 +34,20 @@ budgetRouter.post('/start', protectedRoute(), BudgetModel.startBudgetValidation(
     return next(e);
   }
 
-  logger.debug(result);
+  logger.debug(JSON.stringify(newBudget, null, 2));
 
-  res.json(apiResponse({message: 'not implemented'}));
+  let categories;
+  try {
+    categories = await Category.query().eager('categoryType(typeOnly)', {
+      typeOnly: builder => builder.select('category_type'),
+    });
+  } catch (e) {
+    return next(e);
+  }
+
+  logger.debug(JSON.stringify(categories, null, 2));
+
+  res.json(apiResponse({message: 'OK'}));
 });
 
 // Export router
