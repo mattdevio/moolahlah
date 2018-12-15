@@ -29,7 +29,10 @@ function handleRequestErrors() {
         message: `Error from ${req.method} request to ${req.path}`
       }));
     } else {
-      res.end();
+      res.json(apiResponse({
+        status: 0,
+        message: 'An unknown error occured',
+      }));
     }
 
   };
