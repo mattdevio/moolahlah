@@ -13,7 +13,7 @@ const { User } = require(`${appRoot}/server/db/models`);
 const userRouter = Router();
 
 /**
- * POST /user
+ * POST /
  * Creates a new user in the database
  * Sends Welcome Email
  * Starts a session for future REST requests
