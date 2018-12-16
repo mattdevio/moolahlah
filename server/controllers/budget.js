@@ -38,14 +38,24 @@ budgetRouter.post('/start', protectedRoute(), BudgetModel.startBudgetValidation(
 
   let categories;
   try {
-    categories = await Category.query().eager('categoryType(typeOnly)', {
-      typeOnly: builder => builder.select('category_type'),
-    });
+    categories = await Category.query()
+      .select({
+        id: 'category.id',
+        label: 'category.category_label', 
+        type: 'ct.category_type'
+      })
+      .leftJoinRelation('categoryType', { alias: 'ct' })
+      .whereIn('ct.category_type', ['Income', 'Expense']);
   } catch (e) {
     return next(e);
   }
 
   logger.debug(JSON.stringify(categories, null, 2));
+
+  // let newBudgetRecords;
+  // try {
+  //   newBudgetRecords = await 
+  // }
 
   res.json(apiResponse({message: 'OK'}));
 });
