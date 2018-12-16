@@ -22,7 +22,7 @@ class BudgetRecord extends BaseModel {
   
   static get relationMappings() {
     const Budget = require(`${appRoot}/server/db/models/Budget`);
-    const CategoryType = require(`${appRoot}/server/db/models/CategoryType`);
+    const Category = require(`${appRoot}/server/db/models/Category`);
     const Calendar = require(`${appRoot}/server/db/models/calendar`);
     return {
 
@@ -35,12 +35,12 @@ class BudgetRecord extends BaseModel {
         },
       },
 
-      categoryType: {
+      category: {
         relation: Model.BelongsToOneRelation,
-        modelClass: CategoryType,
+        modelClass: Category,
         join: {
-          from: 'budget_record.budget_id',
-          to: 'category_type.id'
+          from: 'budget_record.category_id',
+          to: 'category.id'
         },
       },
 
