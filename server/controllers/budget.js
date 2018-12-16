@@ -131,7 +131,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
       })
       .rightJoinRelation('categoryType', { alias: 'ct' })
       .where('ct.category_type', 'Expense')
-      .then(results => results.map(result => result.label))
+      .then(results => results.map(result => result.label));
   } catch (e) {
     return next(e);
   }
