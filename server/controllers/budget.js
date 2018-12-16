@@ -155,8 +155,8 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
   logger.debug(JSON.stringify(budgetRecords__, null, 2));
   
-
-  res.status(200).json(apiResponse({
+  // Send budget information back to client
+  res.status(201).json(apiResponse({
     message: 'Budget created',
     data: {
       budgetStartDate: budget__.startDate,
@@ -166,6 +166,17 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
     },
   }));
 
+});
+
+/**
+ * POST /lookup
+ * Protected Route
+ * Lookup the budget coresponding to the year and month
+ */
+budgetRouter.post('/lookup', protectedRoute(), (req, res, next) => {
+
+
+  res.json(apiResponse({ message: 'not implemented' }));
 });
 
 
