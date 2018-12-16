@@ -75,6 +75,35 @@ class Budget extends BaseModel {
         })),
 
       handleValidationErrors(),
+
+    ];
+  }
+
+  static lookupBudgetValidation() {
+    return [
+
+      sanitizeBody(['year', 'month'])
+        .toInt(),
+      
+      body('year')
+        .isInt({ min: 2012, max: 2026 }).withMessage('Must be an "int" between 2012 and 2026 inclusive'),
+      
+      body('month')
+        .isInt({ min: 0, max: 11 }).withMessage('Must be an "int" between 0 and 11 inclusive'),
+
+      body()
+        .custom(({ year, month }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          const result = await Budget.query().select().where({
+            user_uuid: User.query().select('uuid').where('email', email),
+            start_date: `${year}-${month+1}-01`,
+          });
+          console.dir(result);
+          (result.length === 1) ? resolve() : reject('Budget does not exist');
+        })),
+      
+      handleValidationErrors(),
+
     ];
   }
 

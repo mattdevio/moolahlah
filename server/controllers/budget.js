@@ -171,10 +171,11 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
 /**
  * POST /lookup
  * Protected Route
- * Lookup the budget coresponding to the year and month
+ * Returns all budget information coresponding to month and year if exists
  */
-budgetRouter.post('/lookup', protectedRoute(), (req, res, next) => {
+budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), (req, res, next) => {
 
+  
 
   res.json(apiResponse({ message: 'not implemented' }));
 });
