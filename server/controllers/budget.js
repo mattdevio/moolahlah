@@ -29,7 +29,8 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   
   const { email } = req.session.data;
   const { year, month } = req.body;
-  logger.debug(`Starting budget for ${email} '${year}-${month+1}-01'`);
+  const startDate = `${year}-${month+1}-01`;
+  logger.debug(`Starting budget for ${email} '${startDate}'`);
 
   // Start a transaction
   let trx;
@@ -44,7 +45,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   try {
     budget__ = await Budget.query(trx).insertAndFetch({
       userUuid: User.query().select('uuid').where('email', email),
-      startDate: `${year}-${month+1}-01`,
+      startDate: startDate,
     });
   } catch (e) {
     await trx.rollback();
@@ -173,11 +174,70 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
  * Protected Route
  * Returns all budget information coresponding to month and year if exists
  */
-budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), (req, res, next) => {
+budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), async (req, res, next) => {
 
-  
+  const { email } = req.session.data;
+  const { id, startDate } = req.budgetData;
 
-  res.json(apiResponse({ message: 'not implemented' }));
+  logger.debug(`Lookup budget ${startDate} #${id} for ${email}.`);
+
+  // Fetch Income Categories
+  let incomeCategories__;
+  try {
+    incomeCategories__ = await Category.query()
+      .select({
+        label: 'category.category_label',
+      })
+      .rightJoinRelation('categoryType', { alias: 'ct' })
+      .where('ct.category_type', 'Income')
+      .then(results => results.map(result => result.label));
+  } catch (e) {
+    return next(e);
+  }
+  logger.debug(JSON.stringify(incomeCategories__, null, 2));
+
+  // Fetch Expense Categories
+  let expenseCategories__;
+  try {
+    expenseCategories__ = await Category.query()
+      .select({
+        label: 'category.category_label',
+      })
+      .rightJoinRelation('categoryType', { alias: 'ct' })
+      .where('ct.category_type', 'Expense')
+      .then(results => results.map(result => result.label));
+  } catch (e) {
+    return next(e);
+  }
+  logger.debug(JSON.stringify(expenseCategories__, null, 2));
+
+  // Fetch Budget Records
+  let budgetRecords__;
+  try {
+    budgetRecords__ = await BudgetRecord.query()
+      .select({
+        accessId: 'budget_record.access_id',
+        category: 'c.category_label',
+        label: 'budget_record.label',
+        estimateDate: 'budget_record.estimate_date',
+        estimate: 'budget_record.estimate',
+      })
+      .leftJoinRelation('category', { alias: 'c' })
+      .where('budget_record.budget_id', id);
+  } catch (e) {
+    return next(e);
+  }
+  logger.debug(JSON.stringify(budgetRecords__, null, 2));
+
+  res.status(201).json(apiResponse({
+    message: 'Budget data retrieved',
+    data: {
+      budgetStartDate: startDate,
+      incomeCategories: incomeCategories__,
+      expenseCategories: expenseCategories__,
+      budgetRecords: budgetRecords__,
+    },
+  }));
 });
 
 

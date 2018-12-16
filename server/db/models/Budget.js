@@ -91,6 +91,24 @@ class Budget extends BaseModel {
       body('month')
         .isInt({ min: 0, max: 11 }).withMessage('Must be an "int" between 0 and 11 inclusive'),
       
+      body()
+        .custom(({ year, month }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let result__;
+          try {
+            result__ = await Budget.query().select('id', 'start_date')
+              .where({
+                user_uuid: User.query().select('uuid').where('email', email),
+                start_date: `${year}-${month+1}-01`,
+              }).first();
+          } catch (e) {
+            return reject('Budget lookup failed');
+          }
+          if (!result__) return reject('No budget matching that query');
+          req.budgetData = result__; // store the budget data on the request
+          resolve();
+        })),
+      
       handleValidationErrors(),
 
     ];
