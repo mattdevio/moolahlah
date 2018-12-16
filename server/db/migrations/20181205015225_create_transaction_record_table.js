@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
       table.integer('budget_record_id').unsigned().notNullable();
       table.string('label').notNullable();
       table.date('date').notNullable();
-      table.decimal('amount', 2).notNullable();
+      table.decimal('amount', 13, 4).notNullable().defaultsTo(0.00);
       table.foreign('budget_id').references('budget.id').onDelete('cascade');
       table.foreign('budget_record_id').references('budget_record.id').onDelete('cascade');
     });
