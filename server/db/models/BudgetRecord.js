@@ -10,6 +10,14 @@ const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
  */
 class BudgetRecord extends BaseModel {
 
+  static get tableName() {
+    return 'budget_record';
+  }
+
+  static get idColumn() {
+    return 'budget_record';
+  }
+
 }
 
 module.exports = BudgetRecord;
