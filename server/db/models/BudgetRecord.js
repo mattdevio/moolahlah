@@ -18,6 +18,17 @@ class BudgetRecord extends BaseModel {
     return 'budget_record';
   }
 
+  static get relationMappings() {
+    const Budget = require(`${appRoot}/server/db/models/Budget`);
+    return {
+
+      budget: {
+        
+      },
+
+    };
+  }
+
 }
 
 module.exports = BudgetRecord;
