@@ -6,9 +6,9 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.integer('budget_id').unsigned().notNullable();
       table.integer('category_id').unsigned().notNullable();
-      table.string('label').notNullable();
+      table.string('label').notNullable().defaultsTo('');
       table.date('estimate_date').notNullable();
-      table.decimal('estimate', 2).notNullable();
+      table.decimal('estimate', 2).notNullable().defaultsTo(0.00);
       table.foreign('budget_id').references('budget.id').onDelete('cascade');
       table.foreign('category_id').references('category.id').onDelete('cascade');
     });
