@@ -30,7 +30,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   const { email } = req.session.data;
   const { year, month } = req.body;
   const startDate = `${year}-${month+1}-01`;
-  logger.debug(`Starting budget for ${email} '${startDate}'`);
+  logger.debug(`Attempting to start budget for ${email} '${startDate}'`);
 
   // Start a transaction
   let trx;
@@ -48,8 +48,9 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
       startDate: startDate,
     });
   } catch (e) {
-    await trx.rollback();
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
   logger.debug(JSON.stringify(budget__, null, 2));
 
@@ -65,8 +66,9 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
       .leftJoinRelation('categoryType', { alias: 'ct' })
       .whereIn('ct.category_type', ['Income', 'Expense']);
   } catch (e) {
-    await trx.rollback();
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
   logger.debug(JSON.stringify(categories__, null, 2));
 
@@ -97,46 +99,41 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
     await Promise.all(budgetRecordInserts.map(record => BudgetRecord
       .query(trx).insert(record)));
   } catch (e) {
-    trx.rollback();
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
   // Commit the transaction
   try {
     await trx.commit();
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
-  // Fetch Income Categories
-  let incomeCategories__;
+  // Get budget categories
+  let budgetCategories__;
   try {
-    incomeCategories__ = await Category.query()
+    budgetCategories__ = await Category.query()
       .select({
         label: 'category.category_label',
+        type: 'ct.category_type',
       })
-      .rightJoinRelation('categoryType', { alias: 'ct' })
-      .where('ct.category_type', 'Income')
-      .then(results => results.map(result => result.label));
+      .leftJoinRelation('categoryType', { alias: 'ct' })
+      .whereIn('ct.category_type', ['Income', 'Expense']);
   } catch (e) {
     return next(e);
   }
-  logger.debug(JSON.stringify(incomeCategories__, null, 2));
 
-  // Fetch Expense Categories
-  let expenseCategories__;
-  try {
-    expenseCategories__ = await Category.query()
-      .select({
-        label: 'category.category_label',
-      })
-      .rightJoinRelation('categoryType', { alias: 'ct' })
-      .where('ct.category_type', 'Expense')
-      .then(results => results.map(result => result.label));
-  } catch (e) {
-    return next(e);
-  }
-  logger.debug(JSON.stringify(expenseCategories__, null, 2));
+  // Seperate categories into an array based on type
+  const incomeCategories = budgetCategories__
+    .filter(category => category.type === 'Income')
+    .map(category => category.label);
+  const expenseCategories = budgetCategories__
+    .filter(category => category.type === 'Expense')
+    .map(category => category.label);
 
   // Fetch Budget Records
   let budgetRecords__;
@@ -161,8 +158,8 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
     message: 'Budget created',
     data: {
       budgetStartDate: budget__.startDate,
-      incomeCategories: incomeCategories__,
-      expenseCategories: expenseCategories__,
+      incomeCategories: incomeCategories,
+      expenseCategories: expenseCategories,
       budgetRecords: budgetRecords__,
     },
   }));
@@ -177,39 +174,31 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
 budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), async (req, res, next) => {
 
   const { email } = req.session.data;
-  const { id, startDate } = req.budgetData;
+  const { id, startDate } = req.budgetData; // this data gets attached to the request in Budget.lookupBudgetValidation
 
   logger.debug(`Lookup budget ${startDate} #${id} for ${email}.`);
 
-  // Fetch Income Categories
-  let incomeCategories__;
+  // Get budget categories
+  let budgetCategories__;
   try {
-    incomeCategories__ = await Category.query()
+    budgetCategories__ = await Category.query()
       .select({
         label: 'category.category_label',
+        type: 'ct.category_type',
       })
-      .rightJoinRelation('categoryType', { alias: 'ct' })
-      .where('ct.category_type', 'Income')
-      .then(results => results.map(result => result.label));
+      .leftJoinRelation('categoryType', { alias: 'ct' })
+      .whereIn('ct.category_type', ['Income', 'Expense']);
   } catch (e) {
     return next(e);
   }
-  logger.debug(JSON.stringify(incomeCategories__, null, 2));
 
-  // Fetch Expense Categories
-  let expenseCategories__;
-  try {
-    expenseCategories__ = await Category.query()
-      .select({
-        label: 'category.category_label',
-      })
-      .rightJoinRelation('categoryType', { alias: 'ct' })
-      .where('ct.category_type', 'Expense')
-      .then(results => results.map(result => result.label));
-  } catch (e) {
-    return next(e);
-  }
-  logger.debug(JSON.stringify(expenseCategories__, null, 2));
+  // Seperate categories into an array based on type
+  const incomeCategories = budgetCategories__
+    .filter(category => category.type === 'Income')
+    .map(category => category.label);
+  const expenseCategories = budgetCategories__
+    .filter(category => category.type === 'Expense')
+    .map(category => category.label);
 
   // Fetch Budget Records
   let budgetRecords__;
@@ -233,13 +222,12 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     message: 'Budget data retrieved',
     data: {
       budgetStartDate: startDate,
-      incomeCategories: incomeCategories__,
-      expenseCategories: expenseCategories__,
+      incomeCategories: incomeCategories,
+      expenseCategories: expenseCategories,
       budgetRecords: budgetRecords__,
     },
   }));
 });
-
 
 
 // Export router
