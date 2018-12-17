@@ -26,6 +26,7 @@ class User extends BaseModel {
 
   static get relationMappings() {
     const Status = require(`${appRoot}/server/db/models/Status`);
+    const BudgetRecord = require(`${appRoot}/server/db/models/BudgetRecord`);
     return {
 
       status: {
@@ -34,6 +35,19 @@ class User extends BaseModel {
         join: {
           from: 'users.status_id',
           to: 'status.id',
+        },
+      },
+
+      budgetRecord: {
+        relation: Model.HasOneThroughRelation,
+        modelClass: BudgetRecord,
+        join: {
+          from: 'users.uuid',
+          through: {
+            from: 'budget.user_uuid',
+            to: 'budget.id'
+          },
+          to: 'budget_record.budget_id'
         },
       },
 

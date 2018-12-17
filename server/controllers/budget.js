@@ -235,11 +235,52 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
  * Protected Route
  * Updates the budget line record with new information
  */
-budgetRouter.post('/update_record', protectedRoute(), async (req, res, next) => {
+budgetRouter.post('/update_record', protectedRoute(), Budget.updateRecordValidation(), async (req, res, next) => {
 
   const { email } = req.session.data;
+  const { accessId, label, estimateDate, estimate } = req.body;
 
-  res.json(apiResponse({ message: 'Not Complete' }));
+  // Build the update object
+  const updateObject = {};
+  if (typeof label !== 'undefined') updateObject['br.label'] = label; 
+  if (typeof estimateDate !== 'undefined') updateObject['br.estimateDate'] = estimateDate;
+  if (typeof estimate !== 'undefined') updateObject['br.estimate'] = estimate;
+
+  let budgetRecordUpdate__;
+  try {
+    budgetRecordUpdate__ = await User.query()
+      .leftJoinRelation('budgetRecord', { alias: 'br' })
+      .where('email', email)
+      .andWhere('br.access_id', accessId)
+      .update(updateObject);
+  } catch (e) {
+    return next(e);
+  }
+  logger.debug(JSON.stringify(budgetRecordUpdate__, null, 2));
+
+  // Update query will return the number of rows affected, we are expecint that to be 1.
+  if (budgetRecordUpdate__ !== 1) {
+    return res.status(406).json(apiResponse({
+      status: 0,
+      message: 'No update'
+    }));
+  }
+
+  // Fetch the updated budget
+  let budgetRecord__;
+  try {
+    budgetRecord__ = await BudgetRecord.query()
+      .select('access_id', 'label', 'estimate_date', 'estimate')
+      .where('access_id', accessId).first();
+  } catch (e) {
+    return next(e);
+  }
+  logger.debug(JSON.stringify(budgetRecord__, null, 2));
+
+  res.status(200).json(apiResponse({
+    message: 'Record updated',
+    data: budgetRecord__,
+  }));
 
 });
 

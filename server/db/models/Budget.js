@@ -114,6 +114,31 @@ class Budget extends BaseModel {
     ];
   }
 
+  static updateRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+
+      body('')
+        .custom(({ label, estimateDate, estimate }) => new Promise(async function(resolve, reject) {
+          if (typeof label === 'undefined' && typeof estimateDate === 'undefined' && typeof estimate === 'undefined') {
+            return reject('Atleast one field required: label, estimateDate, estimate');
+          }
+          resolve();
+        })),
+
+      body('estimateDate')
+        .isISO8601().withMessage('Must be ISO date').optional(),
+      
+      body('estimate')
+        .isDecimal().withMessage('Must be a decimal').optional(),
+      
+      handleValidationErrors(),
+
+    ];
+  }
+
 }
 
 module.exports = Budget;
