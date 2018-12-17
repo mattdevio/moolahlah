@@ -230,5 +230,19 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
 });
 
 
+/**
+ * POST /update_record
+ * Protected Route
+ * Updates the budget line record with new information
+ */
+budgetRouter.post('/update_record', protectedRoute(), async (req, res, next) => {
+
+  const { email } = req.session.data;
+
+  res.json(apiResponse({ message: 'Not Complete' }));
+
+});
+
+
 // Export router
 module.exports = budgetRouter;
