@@ -229,7 +229,7 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
   }
   logger.debug(JSON.stringify(budgetRecords__, null, 2));
 
-  res.status(201).json(apiResponse({
+  res.status(200).json(apiResponse({
     message: 'Budget data retrieved',
     data: {
       budgetStartDate: startDate,
