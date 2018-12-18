@@ -1,6 +1,3 @@
-// Custom Imports
-import { displayMonths } from '@/bin/dateHelpers';
-
 // Namespace
 export const BUDGET = '[budget]';
 
@@ -14,7 +11,6 @@ const TODAY = new Date();
 const BUDGET_INITIAL_STATE = {
   currentYear: TODAY.getFullYear(),
   currentMonth: TODAY.getMonth(),
-  currentMonthDisplay: displayMonths[TODAY.getMonth()],
 };
 
 // Action Creators
@@ -28,8 +24,10 @@ export const setCurrentMonth = currentMonth => ({
   currentMonth,
 });
 
-export const requestBudget = () => ({
+export const lookupBudget = ({ currentMonth, currentYear }) => ({
   type: LOOKUP,
+  currentYear,
+  currentMonth,
 });
 
 
@@ -48,7 +46,6 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     case CURRENT_MONTH:
       return Object.assign({}, state, {
         currentMonth: action.currentMonth,
-        currentMonthDisplay: displayMonths[action.currentMonth],
       });
 
     default:

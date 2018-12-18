@@ -10,6 +10,7 @@ import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
+import { lookupBudget } from '@/state/ducks/budget';
 
 
 class BudgetDesignPage extends Component {
@@ -18,19 +19,20 @@ class BudgetDesignPage extends Component {
     super(props);
   }
 
-  componentDidUpdate(prevProps) {
-    console.dir(prevProps);
+  componentDidMount() {
+    const { dispatchLookupBudget, currentYear, currentMonth } = this.props;
+    dispatchLookupBudget(currentMonth, currentYear);
   }
 
   render() {
-    const { currentYear, currentMonthDisplay } = this.props;
+    const { currentYear } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 0 auto' />
             <CurrentBudgetMonth>
-              { `${currentMonthDisplay} ${currentYear}` }
+              { `${currentYear}` }
             </CurrentBudgetMonth>
           </ContentSectionWrapper>
         </ContentSectionContainer>
@@ -45,15 +47,20 @@ class BudgetDesignPage extends Component {
 
 BudgetDesignPage.propTypes = {
   currentYear: PropTypes.number.isRequired,
-  currentMonthDisplay: PropTypes.string.isRequired,
+  currentMonth: PropTypes.number.isRequired,
+  dispatchLookupBudget: PropTypes.func.isRequired,
 };
 
 const mapStatetoProps = state => ({
   currentYear: state.budget.currentYear,
-  currentMonthDisplay: state.budget.currentMonthDisplay,
+  currentMonth: state.budget.currentMonth,
 });
 
-export default connect(mapStatetoProps)(BudgetDesignPage);
+const mapDispatchToProps = dispatch => ({
+  dispatchLookupBudget: (currentMonth, currentYear) => dispatch(lookupBudget({ currentMonth, currentYear })),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(BudgetDesignPage);
 
 
 const CurrentBudgetMonth = styled.h3`
