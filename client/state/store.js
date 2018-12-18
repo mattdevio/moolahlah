@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from '@/state/ducks';
 import uiMiddleware from '@/state/middleware/feature/ui';
 import authMiddleware from '@/state/middleware/feature/auth';
+import budgetMiddleware from '@/state/middleware/feature/budget';
 import apiMiddleware from '@/state/middleware/core/api';
 import toastMiddleware from '@/state/middleware/core/toast';
 
@@ -16,6 +17,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const featureMiddleware = [
   uiMiddleware,
   authMiddleware,
+  budgetMiddleware,
 ];
 const coreMiddleware = [
   apiMiddleware,

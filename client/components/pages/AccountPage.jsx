@@ -23,7 +23,7 @@ class AccountPage extends Component {
             Account Page
           </ContentSectionWrapper>
         </ContentSectionContainer>
-        <TabContentContainer bgColor='skyBlue'>
+        <TabContentContainer bgColor='darkBlue'>
           <TabSelector />
         </TabContentContainer>
       </Fragment>

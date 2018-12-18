@@ -22,7 +22,7 @@ class BudgetVisionPage extends Component {
             Vision Page
           </ContentSectionWrapper>
         </ContentSectionContainer>
-        <TabContentContainer bgColor='skyBlue'>
+        <TabContentContainer bgColor='mediumBlue'>
           <TabSelector />
         </TabContentContainer>
       </Fragment>

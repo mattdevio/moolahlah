@@ -22,7 +22,7 @@ class BudgetDesignPage extends Component {
             Transaction Page
           </ContentSectionWrapper>
         </ContentSectionContainer>
-        <TabContentContainer bgColor='skyBlue'>
+        <TabContentContainer bgColor='lightBlue'>
           <TabSelector />
         </TabContentContainer>
       </Fragment>

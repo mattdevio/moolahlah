@@ -49,8 +49,8 @@ BudgetDesignPage.propTypes = {
 };
 
 const mapStatetoProps = state => ({
-  currentYear: state.design.currentYear,
-  currentMonthDisplay: state.design.currentMonthDisplay,
+  currentYear: state.budget.currentYear,
+  currentMonthDisplay: state.budget.currentMonthDisplay,
 });
 
 export default connect(mapStatetoProps)(BudgetDesignPage);

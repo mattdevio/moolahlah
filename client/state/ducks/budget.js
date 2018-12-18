@@ -1,22 +1,23 @@
-/*----------  Vendor Imports  ----------*/
+// Custom Imports
 import { displayMonths } from '@/bin/dateHelpers';
 
-/*----------  Namespace  ----------*/
-export const DESIGN = '[design]';
+// Namespace
+export const BUDGET = '[budget]';
 
-/*----------  Actions  ----------*/
-export const CURRENT_YEAR = `${DESIGN} CURRENT_YEAR`;
-export const CURRENT_MONTH = `${DESIGN} CURRENT_MONTH`;
+// Actions
+export const CURRENT_YEAR = `${BUDGET} CURRENT_YEAR`;
+export const CURRENT_MONTH = `${BUDGET} CURRENT_MONTH`;
+export const LOOKUP = `${BUDGET} LOOKUP`;
 
-/*----------  Initial State  ----------*/
+// Initial State
 const TODAY = new Date();
-const DESIGN_INITIAL_STATE = {
+const BUDGET_INITIAL_STATE = {
   currentYear: TODAY.getFullYear(),
   currentMonth: TODAY.getMonth(),
   currentMonthDisplay: displayMonths[TODAY.getMonth()],
 };
 
-/*----------  Action Creators  ----------*/
+// Action Creators
 export const setCurrentYear = currentYear => ({
   type: CURRENT_YEAR,
   currentYear,
@@ -27,11 +28,16 @@ export const setCurrentMonth = currentMonth => ({
   currentMonth,
 });
 
-/*=====================================
-=            designReducer            =
-=====================================*/
+export const requestBudget = () => ({
+  type: LOOKUP,
+});
 
-const designReducer = (state = DESIGN_INITIAL_STATE, action) => {
+
+/**
+ * budgetReducer
+ * Manage the state of the budget
+ */
+const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
   switch (action.type) {
 
     case CURRENT_YEAR:
@@ -51,6 +57,4 @@ const designReducer = (state = DESIGN_INITIAL_STATE, action) => {
   } // end switch
 };
 
-export default designReducer;
-
-/*=====  End of designReducer  ======*/
+export default budgetReducer;
