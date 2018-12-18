@@ -9,7 +9,7 @@ import { number, func } from 'prop-types';
 import {
   setCurrentYear,
   setCurrentMonth,
-} from '@/state/ducks/design';
+} from '@/state/ducks/budget';
 
 /*===============================================
 =            MonthSelector Component            =
@@ -89,8 +89,8 @@ MonthSelector.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  currentYear: state.design.currentYear,
-  currentMonth: state.design.currentMonth,
+  currentYear: state.budget.currentYear,
+  currentMonth: state.budget.currentMonth,
 });
 
 const mapDispatchToProps = dispatch => ({

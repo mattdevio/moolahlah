@@ -178,6 +178,9 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
 
   logger.debug(`Lookup budget ${startDate} #${id} for ${email}.`);
 
+  // Fake a network request delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   // Get budget categories
   let budgetCategories__;
   try {

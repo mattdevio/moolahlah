@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
 import StaticInput from '@/components/atoms/StaticInput';
@@ -16,7 +17,7 @@ class CategoryGroup extends Component {
     return (
       <CategoryGroupContainer baseColor={ this.props.baseColor }>
         <HeadingGroupContainer>
-          <HeadingTitle>{ this.props.title }</HeadingTitle>
+          <HeadingTitle>{ this.props.category }</HeadingTitle>
           <HeadingButtonGroup>
             <ButtonIcon icon='minus-circle' />
             <ButtonIcon icon='plus-circle' />
@@ -86,6 +87,17 @@ class CategoryGroup extends Component {
     );
   }
 }
+
+CategoryGroup.propTypes = {
+  category: PropTypes.string.isRequired,
+  budgetRecords: PropTypes.arrayOf(PropTypes.shape({
+    accessId: PropTypes.string,
+    label: PropTypes.string,
+    estimateDate: PropTypes.string,
+    estimate: PropTypes.number,
+  })).isRequired, 
+  baseColor: PropTypes.string.isRequired,
+};
 
 export default CategoryGroup;
 

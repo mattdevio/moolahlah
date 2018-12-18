@@ -15,6 +15,7 @@ export const setDisplayOn = (readyToDisplay) => ({
   readyToDisplay,
 });
 
+
 /*=================================
 =            uiReducer            =
 =================================*/

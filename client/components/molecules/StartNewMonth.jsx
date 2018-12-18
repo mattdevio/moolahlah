@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { string } from 'prop-types';
+import { number } from 'prop-types';
 
 /*----------  Custom imports  ----------*/
+import { displayMonths } from '@/bin/dateHelpers';
 
 /*===============================================
 =            StartNewMonth Component            =
@@ -12,13 +13,14 @@ import { string } from 'prop-types';
 
 class StartNewMonth extends Component {
   render() {
+    const { currentMonth } = this.props;
     return (
       <StartNewMonthContainer>
         <NewMonthHeadline>
           Nothing Here Yet...
         </NewMonthHeadline>
         <StartNewMonthButton>
-          { `Start ${this.props.currentMonthDisplay}'s Budget` }
+          { `Start ${displayMonths[currentMonth]}'s Budget` }
         </StartNewMonthButton>
       </StartNewMonthContainer>
     );
@@ -26,11 +28,11 @@ class StartNewMonth extends Component {
 }
 
 StartNewMonth.propTypes = {
-  currentMonthDisplay: string.isRequired,
+  currentMonth: number.isRequired,
 };
 
 const mapStateToProps = state => ({
-  currentMonthDisplay: state.design.currentMonthDisplay,
+  currentMonth: state.budget.currentMonth,
 });
 
 export default connect(mapStateToProps)(StartNewMonth);
