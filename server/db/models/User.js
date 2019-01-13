@@ -1,11 +1,13 @@
 // Vendor Imports
 const appRoot = require('app-root-path');
 const uuid = require('uuid/v4');
+const { Model } = require('objection');
 const { body } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
 // Custom Imports
-const BaseModel = require('./BaseModel');
+const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
+const Status = require(`${appRoot}/server/db/models/Status`);
 const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
@@ -22,7 +24,39 @@ class User extends BaseModel {
     return 'uuid';
   }
 
-  $beforeInsert() {
+  static get relationMappings() {
+    const Status = require(`${appRoot}/server/db/models/Status`);
+    const BudgetRecord = require(`${appRoot}/server/db/models/BudgetRecord`);
+    return {
+
+      status: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Status,
+        join: {
+          from: 'users.status_id',
+          to: 'status.id',
+        },
+      },
+
+      budgetRecord: {
+        relation: Model.HasOneThroughRelation,
+        modelClass: BudgetRecord,
+        join: {
+          from: 'users.uuid',
+          through: {
+            from: 'budget.user_uuid',
+            to: 'budget.id'
+          },
+          to: 'budget_record.budget_id'
+        },
+      },
+
+    };
+  }
+
+  async $beforeInsert() {
+    this.status_id = await Status.query().select('id').where('status_type', 'active')
+      .then(result => result[0].id);
     this.genAndEncodeUUID();
   }
   

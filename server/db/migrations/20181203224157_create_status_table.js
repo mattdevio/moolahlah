@@ -8,8 +8,8 @@ exports.up = function(knex, Promise) {
       table.unique('status_type');
     });
     await knex.schema.table('users', (table) => {
-      table.integer('status').unsigned();
-      table.foreign('status').references(`${tableName}.id`);
+      table.integer('status_id').unsigned().notNullable();
+      table.foreign('status_id').references(`${tableName}.id`);
     });
     resolve();
   });
@@ -18,8 +18,8 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return new Promise(async function(resolve) {
     await knex.schema.table('users', (table) => {
-      table.dropForeign('status');
-      table.dropColumn('status');
+      table.dropForeign('status_id');
+      table.dropColumn('status_id');
     });
     await knex.schema.dropTableIfExists(tableName);
     resolve();

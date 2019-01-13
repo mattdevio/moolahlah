@@ -13,7 +13,7 @@ const { User } = require(`${appRoot}/server/db/models`);
 const userRouter = Router();
 
 /**
- * POST /user
+ * POST /
  * Creates a new user in the database
  * Sends Welcome Email
  * Starts a session for future REST requests
@@ -91,7 +91,7 @@ userRouter.post('/login', User.loginUserValidation(), async function(req, res, n
       status: 0,
       errors: [{
         location: 'body',
-        param: 'emailAddress',
+        param: 'email',
         value: body.email,
         msg: 'No user with that email',
       }]

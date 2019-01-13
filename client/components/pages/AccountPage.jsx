@@ -1,0 +1,35 @@
+// Vendor Imports
+import React, { Component, Fragment } from 'react';
+// import styled from 'styled-components';
+
+// Custom Imports
+import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
+import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
+import TabContentContainer from '@/components/atoms/TabContentContainer';
+import TabSelector from '@/components/molecules/TabSelector';
+
+
+class AccountPage extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <ContentSectionContainer>
+          <ContentSectionWrapper>
+            Account Page
+          </ContentSectionWrapper>
+        </ContentSectionContainer>
+        <TabContentContainer bgColor='darkBlue'>
+          <TabSelector />
+        </TabContentContainer>
+      </Fragment>
+    );
+  }
+
+}
+
+export default AccountPage;
