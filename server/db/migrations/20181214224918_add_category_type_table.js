@@ -1,3 +1,10 @@
+// Vendor Imports
+const appRoot = require('app-root-path');
+
+// Custom Imports
+const populate_categories_type_and_categories = require(`${appRoot}/server/db/seeds/populate_categories_type_and_categories`);
+
+// Setup
 const tableName = 'category_type';
 
 exports.up = function(knex, Promise) {
@@ -10,6 +17,7 @@ exports.up = function(knex, Promise) {
       table.integer('category_type_id').unsigned().notNullable();
       table.foreign('category_type_id').references(`${tableName}.id`).onDelete('cascade');
     });
+    await populate_categories_type_and_categories.seed(knex, Promise);
     resolve();
   });
 };
