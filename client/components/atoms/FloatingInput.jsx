@@ -88,7 +88,6 @@ const TextLabel = styled.label`
   position: absolute;
   top: 2rem;
   left: 0;
-  font-size: 2.6rem;
   font-family: ${({ theme }) => theme.typeFont};
   color: ${({ theme, hasError }) => hasError ? theme.alertRed : theme.darkBlue};
   pointer-events: none;
