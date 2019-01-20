@@ -1,9 +1,16 @@
+// Vendor Imports
+const appRoot = require('app-root-path');
+
+// Custom Imports
+const run_populate_calendar_proc = require(`${appRoot}/server/db/seeds/run_populate_calendar_proc`);
+
+// Setup
 const tableName = 'calendar';
 const procedureName = 'populate_calendar';
 
 exports.up = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.createTable(tableName, function(table) {
+  return new Promise(async function(resolve) {
+    await knex.schema.createTable(tableName, function(table) {
       table.integer('id').primary();                        // year*10000 + month*100 + day = yyyymmdd
       table.date('db_date').notNullable();                  // date string
       table.integer('year').notNullable();                  // yyyy
@@ -17,9 +24,9 @@ exports.up = function(knex, Promise) {
       table.boolean('weekend_flag').defaultTo(false);       // true or false
       table.unique(['year', 'month', 'day']);
       table.unique('db_date');
-    }),
+    });
     // When creating a stored proc remotely, you don't use delimiters
-    knex.raw(`
+    await knex.raw(`
       CREATE PROCEDURE ${procedureName}(IN startdate DATE,IN stopdate DATE)
       BEGIN
           DECLARE currentdate DATE;
@@ -40,8 +47,10 @@ exports.up = function(knex, Promise) {
               SET currentdate = ADDDATE(currentdate,INTERVAL 1 DAY);
           END WHILE;
       END
-    `),
-  ]);
+    `);
+    await run_populate_calendar_proc.seed(knex, Promise);
+    resolve();
+  });
 };
 
 exports.down = function(knex, Promise) {
