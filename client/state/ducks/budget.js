@@ -2,6 +2,7 @@
 export const BUDGET = '[budget]';
 
 // Actions
+export const START = `${BUDGET} START`;
 export const CURRENT_YEAR = `${BUDGET} CURRENT_YEAR`;
 export const CURRENT_MONTH = `${BUDGET} CURRENT_MONTH`;
 export const LOOKUP = `${BUDGET} LOOKUP`;
@@ -28,6 +29,11 @@ const BUDGET_INITIAL_STATE = {
 };
 
 // Action Creators
+
+export const startBudget = () => ({
+  type: START,
+});
+
 export const setCurrentYear = currentYear => ({
   type: CURRENT_YEAR,
   currentYear,

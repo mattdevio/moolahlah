@@ -1,23 +1,26 @@
 // Vendor Imports
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { number } from 'prop-types';
+import { number, func } from 'prop-types';
 
 // Custom Imports
 import { displayMonths } from '@/bin/dateHelpers';
+import { startBudget } from '@/state/ducks/budget';
 
 
-class StartNewMonth extends Component {
+class StartNewMonth extends PureComponent {
   render() {
-    const { currentMonth, currentYear } = this.props;
+    const { currentMonth, currentYear, dispatchStartBudget } = this.props;
     return (
       <StartNewMonthContainer>
         <WelcomeTitle>Welcome to the budget designer!</WelcomeTitle>
         <WelcomeDirections>
           This tool is used to help you plan and predict your monthly expenses. In this area, you will itemize your budget by breaking down each expense into categoriezed groups. These categorized groups will not only help you gain insight into your spending, but serve as a blueprint; which gives you an outline of possible expenses you might overlooked. When you are ready to start planning your budget for this month, press the button below!
         </WelcomeDirections>
-        <StartBudgetButton>Start Planning for {displayMonths[currentMonth]} {currentYear}</StartBudgetButton>
+        <StartBudgetButton onClick={dispatchStartBudget}>
+          Start Planning for {displayMonths[currentMonth]} {currentYear}
+        </StartBudgetButton>
       </StartNewMonthContainer>
     );
   }
@@ -26,6 +29,7 @@ class StartNewMonth extends Component {
 StartNewMonth.propTypes = {
   currentMonth: number.isRequired,
   currentYear: number.isRequired,
+  dispatchStartBudget: func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -33,7 +37,11 @@ const mapStateToProps = state => ({
   currentYear: state.budget.currentYear,
 });
 
-export default connect(mapStateToProps)(StartNewMonth);
+const mapDispatchToProps = dispatch => ({
+  dispatchStartBudget: () => dispatch(startBudget()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartNewMonth);
 
 const StartNewMonthContainer = styled.div`
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
