@@ -2,6 +2,7 @@
 import { apiRequest, API_SUCCESS, API_ERROR } from '@/state/ducks/api';
 import { showErrorMessage } from '@/state/ducks/toast';
 import {
+  START,
   LOOKUP,
   setBudgetData,
   setBudgetStatusLoading,
@@ -17,6 +18,24 @@ const budgetMiddleware = ({ getState }) => next => action => {
   next(action);
 
   switch (action.type) {
+
+    case START:
+      processStartBudget(getState(), next);
+      break;
+    
+    case `${START} ${API_SUCCESS}`:
+      next(setBudgetData({
+        incomeCategories: action.payload.data.incomeCategories,
+        expenseCategories: action.payload.data.expenseCategories,
+        budgetRecords: action.payload.data.budgetRecords,
+      }));
+      next(setBudgetStatusLoaded());
+      break;
+    
+    case `${START} ${API_ERROR}`:
+      // Needs a more robust solution, for now this will work.
+      next(showErrorMessage('Start Budget API Error: Unhandled Error!'));
+      break;
 
     case LOOKUP:
       next(setBudgetStatusLoading());
@@ -45,6 +64,18 @@ const budgetMiddleware = ({ getState }) => next => action => {
 
 export default budgetMiddleware;
 
+const processStartBudget = ({ budget }, next) => {
+  const { currentYear, currentMonth } = budget;
+  next(apiRequest({
+    data: {
+      year: currentYear,
+      month: currentMonth,
+    },
+    method: 'POST',
+    url: '/budget/start',
+    feature: START,
+  }));
+};
 
 const processLookupApiSuccess = ({ budget }, next, { payload }) => {
   const {
