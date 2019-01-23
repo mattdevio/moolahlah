@@ -8,6 +8,9 @@ const CustomDayPicker = () => (
     inputProps={{
 
     }}
+    classNames={{
+      overlay: 'rightOverlay',
+    }}
     component={ props => <StyledInput {...props} /> }
     dayPickerProps={{
       initialMonth: new Date(),
@@ -25,7 +28,15 @@ const StyledInput = styled.input`
   font-weight: 700;
   border: 1px solid #333;
   padding: 0.3rem;
+  text-align: right;
   &:focus {
     outline: 0;
+  }
+  .rightOverlay {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   }
 `;

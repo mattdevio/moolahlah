@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
 import CustomDayPicker from '@/components/atoms/CustomDayPicker';
+import StaticInput from '@/components/atoms/staticInput';
 
 /*=====================================
 =            CategoryGroup            =
@@ -44,7 +45,7 @@ class LineItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: false,
+      isEditing: true,
     };
     this.handleEditClick = this.handleEditClick.bind(this);
   }
@@ -57,29 +58,26 @@ class LineItem extends Component {
 
   render() {
     return (
-      <LineItemContainer onClick={this.handleEditClick}>
+      <LineItemContainer>
         {
           this.state.isEditing ?
-            <Fragment>
-              <LineItemLabelDisplay>
-                Label Name
-              </LineItemLabelDisplay>
+            <LineItemFlexContainer>
+              <StaticInput
+                placeHolder='Hello'
+              />
               <CustomDayPicker />
-              <DisplayField>
-                {'$933.25'}
-              </DisplayField>
-            </Fragment> :
-            <Fragment>
-              <LineItemLabelDisplay>
-                Label Name
-              </LineItemLabelDisplay>
-              <DisplayField>
-                {'01.18.2018'}
-              </DisplayField>
-              <DisplayField>
-                {'$933.25'}
-              </DisplayField>
-            </Fragment>
+            </LineItemFlexContainer> :
+            <ClickableLineItemFlexContainer onClick={this.handleEditClick}>
+              <LabelDisplayField>
+                Line Item Test
+              </LabelDisplayField>
+              <AttributeDisplayField>
+                Friday, 3rd
+              </AttributeDisplayField>
+              <AttributeDisplayField>
+                $235.00
+              </AttributeDisplayField>
+            </ClickableLineItemFlexContainer>
         }
       </LineItemContainer>
     );
@@ -89,34 +87,40 @@ class LineItem extends Component {
 
 const LineItemContainer = styled.div`
   width: 100%;
+`;
+
+const LineItemFlexContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.3rem 0;
-  cursor: pointer;
-  > *:nth-child(2) {
-    margin-left: auto;
-  }
+`;
+
+const ClickableLineItemFlexContainer = LineItemFlexContainer.extend`
   &:hover {
     background-color: ${({theme}) => theme.skyBlue};
   }
+  cursor: pointer;
 `;
 
-const LineItemLabelDisplay = styled.p`
-  margin: 0;
-  font-size: 2.5rem;
-  font-family: ${({theme}) => theme.typeFont};
-  color: ${({theme}) => theme.black};
-  font-weight: 700;
-`;
-
-const DisplayField = styled.p`
-  margin: 0;
+const LabelDisplayField = styled.p`
   font-size: 2.5rem;
   font-family: ${({theme}) => theme.typeFont};
   color: ${({theme}) => theme.black};
   font-weight: 700;
   width: 100%;
-  max-width: 25rem;
+  margin: 0;
+  padding: 0.3rem 0;
+`;
+
+const AttributeDisplayField = styled.p`
+  font-size: 2.5rem;
+  font-family: ${({theme}) => theme.typeFont};
+  color: ${({theme}) => theme.black};
+  font-weight: 700;
+  margin: 0;
   text-align: right;
+  width: 100%;
+  max-width: 25rem;
+  padding: 0.3rem 0;
 `;
