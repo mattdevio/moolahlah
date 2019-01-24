@@ -1,7 +1,7 @@
 /*----------  Vendor Imports  ----------*/
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import moment from 'moment';
 
 /*----------  Custom imports  ----------*/
