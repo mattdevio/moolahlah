@@ -1,7 +1,7 @@
 // Vendor Import
 import React, { Component } from 'react';
 import styled from 'styled-components';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // Custom Imports
 
@@ -57,19 +57,20 @@ class ToggleInput extends Component {
             <ToggleInputTextField
               value={ value }
               onBlur={ this.handleOnBlur }
-              innerRef={ this.inputRef }
+              ref={ this.inputRef }
               onChange={ this.handleChange }
+              placeholder='Category Title'
             /> :
-            <ToggleInputDisplay onClick={ this.handleClick }>{ value }</ToggleInputDisplay>
+            <ToggleInputDisplay onClick={ this.handleClick }>{ value.trim() === '' ? 'Category Title' : value }</ToggleInputDisplay>
         }
       </ToggleInputContainer>
     );
   }
 }
 
-// ToggleInput.propTypes = {
-//   value: PropTypes.string.isRequired,
-// };
+ToggleInput.propTypes = {
+  value: PropTypes.string.isRequired,
+};
 
 export default ToggleInput;
 

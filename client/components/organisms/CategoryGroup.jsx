@@ -2,11 +2,11 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
-import CustomDayPicker from '@/components/atoms/CustomDayPicker';
-import StaticInput from '@/components/atoms/staticInput';
+import LineDayPicker from '@/components/atoms/LineDayPicker';
 
 /*=====================================
 =            CategoryGroup            =
@@ -27,11 +27,10 @@ CategoryGroup.propTypes = {
 
 };
 
-
-
 export default CategoryGroup;
 
 /*=====  End of CategoryGroup  ======*/
+
 
 const CategoryGroupContainer = styled.div`
   width: 100%;
@@ -40,12 +39,13 @@ const CategoryGroupContainer = styled.div`
   padding: 1rem;
 `;
 
+
 class LineItem extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: true,
+      isEditing: false,
     };
     this.handleEditClick = this.handleEditClick.bind(this);
   }
@@ -62,17 +62,14 @@ class LineItem extends Component {
         {
           this.state.isEditing ?
             <LineItemFlexContainer>
-              <StaticInput
-                placeHolder='Hello'
-              />
-              <CustomDayPicker />
+              <LineDayPicker />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={this.handleEditClick}>
               <LabelDisplayField>
                 Line Item Test
               </LabelDisplayField>
               <AttributeDisplayField>
-                Friday, 3rd
+                {moment(new Date()).format('MM/DD/YYYY')}
               </AttributeDisplayField>
               <AttributeDisplayField>
                 $235.00
@@ -96,7 +93,7 @@ const LineItemFlexContainer = styled.div`
   align-items: center;
 `;
 
-const ClickableLineItemFlexContainer = LineItemFlexContainer.extend`
+const ClickableLineItemFlexContainer = styled(LineItemFlexContainer)`
   &:hover {
     background-color: ${({theme}) => theme.skyBlue};
   }

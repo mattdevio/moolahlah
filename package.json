@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon server",
+    "start": "nodemon -i 'client/*' server",
     "config": "node scripts/configure",
     "migrate:latest": "docker exec -it moolahlah /bin/bash -c 'npx knex migrate:latest'",
     "migrate:rollback": "docker exec -it moolahlah /bin/bash -c 'npx knex migrate:rollback'",
@@ -40,6 +40,7 @@
     "helmet": "3.14.0",
     "knex": "0.15.2",
     "mailgun-js": "0.21.0",
+    "moment": "^2.24.0",
     "morgan": "1.9.1",
     "mysql2": "1.6.4",
     "objection": "1.4.0",
