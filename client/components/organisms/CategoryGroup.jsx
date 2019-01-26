@@ -7,6 +7,7 @@ import moment from 'moment';
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
 import LineDayPicker from '@/components/atoms/LineDayPicker';
+import LineInput from '@/components/atoms/LineInput';
 
 /*=====================================
 =            CategoryGroup            =
@@ -17,6 +18,10 @@ class CategoryGroup extends Component {
     return (
       <CategoryGroupContainer>
         <CategoryGroupHeader />
+        <LineItem />
+        <LineItem />
+        <LineItem />
+        <LineItem />
         <LineItem />
       </CategoryGroupContainer>
     );
@@ -62,17 +67,19 @@ class LineItem extends Component {
         {
           this.state.isEditing ?
             <LineItemFlexContainer>
+              <LineInput minWidth='25rem' placeholder='Budget Item Label' />
               <LineDayPicker />
+              <LineInput maxWidth='25rem' alignRight placeholder='$0.00' />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={this.handleEditClick}>
               <LabelDisplayField>
-                Line Item Test
+                Budget Item Label 
               </LabelDisplayField>
-              <AttributeDisplayField>
+              <AttributeDisplayField margin='0 1rem'>
                 {moment(new Date()).format('MM/DD/YYYY')}
               </AttributeDisplayField>
               <AttributeDisplayField>
-                $235.00
+                $0.00
               </AttributeDisplayField>
             </ClickableLineItemFlexContainer>
         }
@@ -119,5 +126,6 @@ const AttributeDisplayField = styled.p`
   text-align: right;
   width: 100%;
   max-width: 25rem;
+  margin: ${({ margin }) => !!margin && margin };
   padding: 0.3rem 0;
 `;

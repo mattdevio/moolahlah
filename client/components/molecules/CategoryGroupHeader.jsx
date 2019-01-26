@@ -9,7 +9,7 @@ import ToggleInput from '@/components/atoms/ToggleInput';
 const CategoryGroupHeader = () => (
   <CategoryGroupHeaderContainer>
     <ToggleInput />
-    <HeadHelper>Date</HeadHelper>
+    <HeadHelper margin='0 1rem'>Date</HeadHelper>
     <HeadHelper>Planned</HeadHelper>
   </CategoryGroupHeaderContainer>
 );
@@ -29,7 +29,7 @@ const CategoryGroupHeaderContainer = styled.div`
 
 const HeadHelper = styled.p`
   padding: 0;
-  margin: 0;
+  margin: ${({ margin }) => margin ? margin : 0 };
   font-size: 2.5rem;
   font-family: ${({theme}) => theme.typeFont};
   color: #777;

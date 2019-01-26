@@ -77,8 +77,9 @@ export default ToggleInput;
 
 
 const ToggleInputContainer = styled.div`
-  min-width: 20rem;
+  min-width: 25rem;
   display: inline-block;
+  margin: 0 1rem 0 0;
 `;
 
 const ToggleInputDisplay = styled.p`
@@ -99,11 +100,12 @@ const ToggleInputTextField = styled.input.attrs({
   type: 'text',
 })`
   font-size: 2.5rem;
-  font-family: ${({theme}) => theme.typeFont};
-  color: ${({ theme }) => theme.black};
+  font-family: ${({theme}) => theme.typeFont };
+  color: ${({ theme }) => theme.black };
   font-weight: 700;
-  border: 1px solid #333;
+  border: 1px solid ${({ theme }) => theme.black };
   padding: 0.3rem;
+  width: 100%;
   &:focus {
     outline: 0;
   }

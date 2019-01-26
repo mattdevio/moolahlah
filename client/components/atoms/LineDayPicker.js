@@ -68,6 +68,11 @@ export const LineDayPickerStyles = createGlobalStyle`
     background: ${({theme}) => theme.white};
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   }
+  .daypickerinput__container {
+    width: 100%;
+    max-width: 25rem;
+    margin: 0 1rem;
+  }
   .daypickerinput__container input {
     font-size: 2.5rem;
     font-family: ${({theme}) => theme.typeFont};
@@ -75,9 +80,11 @@ export const LineDayPickerStyles = createGlobalStyle`
     border: 0.1rem solid ${({ theme }) => theme.black};
     font-weight: 700;
     width: 100%;
-    max-width: 25rem;
     margin: 0;
+    border: 0;
+    border-bottom: 0.3rem solid ${({ theme }) => theme.black };
     padding: 0.3rem 0;
+    text-align: right;
     &:focus {
       outline: 0;
     }
