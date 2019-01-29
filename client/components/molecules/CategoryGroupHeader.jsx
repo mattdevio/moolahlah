@@ -21,6 +21,7 @@ const CategoryGroupHeaderContainer = styled.div`
   flex-direction: row;
   align-items:center;
   width: 100%;
+  padding: 1rem;
   margin-bottom: 0.5rem;
   > *:nth-child(2) {
     margin-left: auto;

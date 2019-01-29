@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import DayPickerClassNames from 'react-day-picker/lib/src/classNames';
 import { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 // Day picker utility extensions for moment.js
 import {
@@ -15,42 +17,93 @@ import {
  * A styled day picker for a line item.
  */
 class LineDayPicker extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      showSelector: false,
+      hasFocus: false,
     };
+    this.handleOnFocus = this.handleOnFocus.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
+  }
+
+  handleOnBlur(event) {
+    this.setState({
+      hasFocus: false,
+    });
+    if (this.props.onBlur) {
+      this.props.onBlur(event);
+    }
+  }
+
+  handleOnFocus(event) {
+    this.setState({
+      hasFocus: true,
+    });
+    if (this.props.onFocus) {
+      this.props.onFocus(event);
+    }
   }
 
   render() {
     return (
-      <DayPickerInput
-        formatDate={formatDate} // format date selected from picker
-        parseDate={parseDate} // parse input from the text field
-        placeholder={`${formatDate(new Date())}`}
-        classNames={{
-          container: 'daypickerinput__container',
-          overlayWrapper: 'daypickerinput__overlaywrapper',
-          overlay: 'daypickerinput__overlay',
-        }}
-        dayPickerProps={{
-          classNames: {
-            ...DayPickerClassNames,
-            container: 'linedaypicker__picker__container',
-            selected: 'linedaypicker__picker__selected',
-            month: 'linedaypicker__picker__month',
-            wrapper: 'linedaypicker__picker__wrapper',
-          },
-          canChangeMonth: false,
-        }}
-      />
+      <LineDayPickerContainer>
+        <DayPickerInput
+          formatDate={formatDate} // format date selected from picker
+          parseDate={parseDate} // parse input from the text field
+          placeholder={`${formatDate(new Date())}`}
+          classNames={{
+            container: 'daypickerinput__container',
+            overlayWrapper: 'daypickerinput__overlaywrapper',
+            overlay: 'daypickerinput__overlay',
+          }}
+          inputProps={{
+            onFocus: this.handleOnFocus,
+            onBlur: this.handleOnBlur,
+          }}
+          dayPickerProps={{
+            classNames: {
+              ...DayPickerClassNames,
+              container: 'linedaypicker__picker__container',
+              selected: 'linedaypicker__picker__selected',
+              month: 'linedaypicker__picker__month',
+              wrapper: 'linedaypicker__picker__wrapper',
+            },
+            canChangeMonth: false,
+
+          }}
+        />
+        <SpanHighlight hasFocus={this.state.hasFocus} />
+      </LineDayPickerContainer>
     );
   }
-
 }
 
+LineDayPicker.propTypes = {
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+};
+
 export default LineDayPicker;
+
+
+const LineDayPickerContainer = styled.div`
+  width: 100%;
+  position: relative;
+  max-width: 25rem;
+  margin: 0 1rem;
+`;
+
+const SpanHighlight = styled.span`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.4rem;
+  transition:0.2s ease all;
+  max-width: ${({ hasFocus }) => hasFocus ? '100%' : '0' };
+  background: ${({ theme }) => theme.skyBlue};
+`;
+
 
 /**
  * LineDayPickerStyles
@@ -70,8 +123,7 @@ export const LineDayPickerStyles = createGlobalStyle`
   }
   .daypickerinput__container {
     width: 100%;
-    max-width: 25rem;
-    margin: 0 1rem;
+    margin: 0;
   }
   .daypickerinput__container input {
     font-size: 2.5rem;
@@ -82,7 +134,7 @@ export const LineDayPickerStyles = createGlobalStyle`
     width: 100%;
     margin: 0;
     border: 0;
-    border-bottom: 0.3rem solid ${({ theme }) => theme.black };
+    border-bottom: 0.4rem solid ${({ theme }) => theme.black };
     padding: 0.3rem 0;
     text-align: right;
     &:focus {
@@ -112,5 +164,4 @@ export const LineDayPickerStyles = createGlobalStyle`
       outline: 0;
     }
   }
-
 `;
