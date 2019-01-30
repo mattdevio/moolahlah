@@ -16,7 +16,11 @@ class CategoryGroup extends Component {
     return (
       <CategoryGroupContainer>
         <CategoryGroupHeader />
-        <LineItem />
+        <LineItem
+          labelValue='What up!'
+          dayPickerValue={ '20180814' }
+          plannedValue={ '0.00' }
+        />
       </CategoryGroupContainer>
     );
   }
@@ -34,6 +38,7 @@ export default CategoryGroup;
 const CategoryGroupContainer = styled.div`
   width: 100%;
   margin-bottom: 2rem;
+  min-width: 55rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
   padding: 1rem;
 `;

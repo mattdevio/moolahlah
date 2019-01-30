@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 // Custom Imports
@@ -18,6 +19,7 @@ class LineItem extends Component {
       labelHasFocus: false,
       dayPickerHasFocus: false,
       plannedHasFocus: false,
+      trashHasFocus: false,
     };
     this.labelRef = React.createRef();
     this.editLineItem = this.editLineItem.bind(this);
@@ -45,8 +47,8 @@ class LineItem extends Component {
         [blurredField]: false,
       }, () => {
         setTimeout(() => {
-          const { labelHasFocus, dayPickerHasFocus, plannedHasFocus  } = this.state;
-          if (!(labelHasFocus || dayPickerHasFocus || plannedHasFocus)) {
+          const { labelHasFocus, dayPickerHasFocus, plannedHasFocus, trashHasFocus  } = this.state;
+          if (!(labelHasFocus || dayPickerHasFocus || plannedHasFocus || trashHasFocus)) {
             this.setState({
               hasFocus: false,
             });
@@ -64,24 +66,28 @@ class LineItem extends Component {
   }
 
   render() {
-    const {
-      hasFocus,
-    } = this.state;
     return (
       <LineItemContainer>
         {
-          hasFocus ?
-            <LineItemFlexContainer hasFocus={ hasFocus }>
+          this.state.hasFocus ?
+            <LineItemFlexContainer hasFocus={ this.state.hasFocus }>
+              <TrashButton
+                tabIndex={0}
+                onFocus={ this.setKeyTrue('trashHasFocus') }
+                onBlur={ this.handleInputBlur('trashHasFocus') }
+              />
               <LineInput
                 minWidth='25rem'
                 placeholder='Budget Item Label'
                 forwardRef={ this.labelRef }
                 onFocus={ this.setKeyTrue('labelHasFocus') }
                 onBlur={ this.handleInputBlur('labelHasFocus') }
+                value={ this.props.labelValue }
               />
               <LineDayPicker
                 onFocus={ this.setKeyTrue('dayPickerHasFocus') }
                 onBlur={ this.handleInputBlur('dayPickerHasFocus') }
+                value={ moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY') }
               />
               <LineInput
                 maxWidth='25rem'
@@ -89,17 +95,18 @@ class LineItem extends Component {
                 placeholder='$0.00'
                 onFocus={ this.setKeyTrue('plannedHasFocus') }
                 onBlur={ this.handleInputBlur('plannedHasFocus') }
+                value={ this.props.plannedValue }
               />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={ this.editLineItem } tabIndex={0} onFocus={ this.editLineItem }>
               <LabelDisplayField>
-                Budget Item Label 
+                { this.props.labelValue }
               </LabelDisplayField>
               <AttributeDisplayField margin='0 1rem'>
-                {moment(new Date()).format('MM/DD/YYYY')}
+                { `${moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY')}` }
               </AttributeDisplayField>
               <AttributeDisplayField>
-                $0.00
+                { this.props.plannedValue }
               </AttributeDisplayField>
             </ClickableLineItemFlexContainer>
         }
@@ -108,9 +115,11 @@ class LineItem extends Component {
   }
 }
 
-// LineItem.propTypes = {
-//   hasFocus: PropTypes.bool.isRequired,
-// };
+LineItem.propTypes = {
+  labelValue: PropTypes.string.isRequired,
+  dayPickerValue: PropTypes.string.isRequired,
+  plannedValue: PropTypes.string.isRequired,
+};
 
 export default LineItem;
 
@@ -142,6 +151,7 @@ const LabelDisplayField = styled.p`
   color: ${({theme}) => theme.black};
   font-weight: 700;
   width: 100%;
+  min-width: 25rem;
   margin: 0;
   padding: 0.3rem 0;
   border-bottom: 0.4rem solid transparent;
@@ -159,4 +169,21 @@ const AttributeDisplayField = styled.p`
   margin: ${({ margin }) => !!margin && margin };
   padding: 0.3rem 0;
   border-bottom: 0.4rem solid transparent;
+`;
+
+const TrashButton = styled(FontAwesomeIcon).attrs({
+  icon: 'trash',
+})`
+  font-size: 3rem;
+  color: ${({ theme }) => theme.black};
+  margin: 0 1rem 0 0;
+  padding: 0.5rem;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: ${({ theme }) => theme.alertRed};
+    color: ${({ theme }) => theme.white};
+    outline: 0;
+    border: 0.1rem solid ${({ theme }) => theme.skyBlue};
+  }
 `;

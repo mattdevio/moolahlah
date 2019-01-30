@@ -69,8 +69,8 @@ class LineDayPicker extends Component {
               wrapper: 'linedaypicker__picker__wrapper',
             },
             canChangeMonth: false,
-
           }}
+          value={ this.props.value }
         />
         <SpanHighlight hasFocus={this.state.hasFocus} />
       </LineDayPickerContainer>
@@ -81,6 +81,7 @@ class LineDayPicker extends Component {
 LineDayPicker.propTypes = {
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
+  value: PropTypes.string,
 };
 
 export default LineDayPicker;

@@ -15,7 +15,7 @@ class ToggleInput extends Component {
       value: 'Test Category',
     };
     this.inputRef = React.createRef();
-    this.handleClick = this.handleClick.bind(this);
+    this.turnOnInput = this.turnOnInput.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
   }
@@ -30,7 +30,7 @@ class ToggleInput extends Component {
     }
   }
   
-  handleClick() {
+  turnOnInput() {
     this.setState({
       isInput: true,
     });
@@ -61,7 +61,13 @@ class ToggleInput extends Component {
               onChange={ this.handleChange }
               placeholder='Category Title'
             /> :
-            <ToggleInputDisplay onClick={ this.handleClick }>{ value.trim() === '' ? 'Category Title' : value }</ToggleInputDisplay>
+            <ToggleInputDisplay
+              onClick={ this.turnOnInput }
+              tabIndex={ 0 }
+              onFocus={ this.turnOnInput }
+            >
+              { value.trim() === '' ? 'Category Title' : value }
+            </ToggleInputDisplay>
         }
       </ToggleInputContainer>
     );
