@@ -8,6 +8,7 @@ import styled from 'styled-components';
  */
 const LineInput = ({ maxWidth, minWidth, forwardRef, ...props }) => (
   <LineInputContainer maxWidth={maxWidth} minWidth={minWidth} >
+    { console.dir(props) }
     <LineInputBox {...props} ref={forwardRef} />
     <Hightlight />
   </LineInputContainer>

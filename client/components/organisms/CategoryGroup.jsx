@@ -20,6 +20,25 @@ class CategoryGroup extends Component {
           labelValue='What up!'
           dayPickerValue={ '20180814' }
           plannedValue={ '0.00' }
+          identity={ '25' }
+        />
+        <LineItem
+          labelValue='What up!'
+          dayPickerValue={ '20180814' }
+          plannedValue={ '0.00' }
+          identity={ '25' }
+        />
+        <LineItem
+          labelValue='What up!'
+          dayPickerValue={ '20180814' }
+          plannedValue={ '0.00' }
+          identity={ '25' }
+        />
+        <LineItem
+          labelValue='What up!'
+          dayPickerValue={ '20180814' }
+          plannedValue={ '0.00' }
+          identity={ '25' }
         />
       </CategoryGroupContainer>
     );

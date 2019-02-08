@@ -4,10 +4,18 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import isCurrency from 'validator/lib/isCurrency';
 
 // Custom Imports
 import LineDayPicker from '@/components/atoms/LineDayPicker';
 import LineInput from '@/components/atoms/LineInput';
+import {
+  deleteLineItem,
+  lineItemLabel,
+  lineItemDate,
+  lineItemPlanned,
+} from '@/state/ducks/budget';
 
 
 class LineItem extends Component {
@@ -25,6 +33,11 @@ class LineItem extends Component {
     this.editLineItem = this.editLineItem.bind(this);
     this.setKeyTrue = this.setKeyTrue.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.getDateString = this.getDateString.bind(this);
+    this.destoryLineItem = this.destoryLineItem.bind(this);
+    this.updateLabel = this.updateLabel.bind(this);
+    this.updateDate = this.updateDate.bind(this);
+    this.updatePlanned = this.updatePlanned.bind(this);
   }
 
   editLineItem() {
@@ -58,12 +71,38 @@ class LineItem extends Component {
     };
   }
 
+  getDateString() {
+    return `${moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY')}`;
+  }
+
+  destoryLineItem() {
+    this.props.dispatchDeleteLineItem(this.props.identity);
+  }
+
+  updateLabel(event) {
+    this.props.dispatchLineItemLabel(this.props.identity, event.target.value);
+  }
+
+  updateDate(date) {
+    // date will be undefined if not valid  =>  http://react-day-picker.js.org/api/DayPickerInput/#onDayChange
+    if (date) {
+      this.props.dispatchLineItemDate(this.props.identity, date);
+    }
+  }
+
+  updatePlanned(event) {
+    if (isCurrency(event.target.value)) {
+      this.props.dispatchLineItemPlanned(this.props.identity, event.target.value);
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.hasFocus && this.state.hasFocus) {
       this.labelRef.current.select();
       this.labelRef.current.focus();
     }
   }
+
 
   render() {
     return (
@@ -72,9 +111,10 @@ class LineItem extends Component {
           this.state.hasFocus ?
             <LineItemFlexContainer hasFocus={ this.state.hasFocus }>
               <TrashButton
-                tabIndex={0}
+                tabIndex={ 0 }
                 onFocus={ this.setKeyTrue('trashHasFocus') }
                 onBlur={ this.handleInputBlur('trashHasFocus') }
+                onClick={ this.destoryLineItem }
               />
               <LineInput
                 minWidth='25rem'
@@ -83,11 +123,13 @@ class LineItem extends Component {
                 onFocus={ this.setKeyTrue('labelHasFocus') }
                 onBlur={ this.handleInputBlur('labelHasFocus') }
                 value={ this.props.labelValue }
+                onChange={ this.updateLabel }
               />
               <LineDayPicker
                 onFocus={ this.setKeyTrue('dayPickerHasFocus') }
                 onBlur={ this.handleInputBlur('dayPickerHasFocus') }
-                value={ moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY') }
+                value={ this.getDateString() }
+                onChange={ this.updateDate }
               />
               <LineInput
                 maxWidth='25rem'
@@ -95,7 +137,8 @@ class LineItem extends Component {
                 placeholder='$0.00'
                 onFocus={ this.setKeyTrue('plannedHasFocus') }
                 onBlur={ this.handleInputBlur('plannedHasFocus') }
-                value={ this.props.plannedValue }
+                defaultValue={ this.props.plannedValue }
+                onChange={ this.updatePlanned }
               />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={ this.editLineItem } tabIndex={0} onFocus={ this.editLineItem }>
@@ -103,10 +146,10 @@ class LineItem extends Component {
                 { this.props.labelValue }
               </LabelDisplayField>
               <AttributeDisplayField margin='0 1rem'>
-                { `${moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY')}` }
+                { this.getDateString() }
               </AttributeDisplayField>
               <AttributeDisplayField>
-                { this.props.plannedValue }
+                ${ this.props.plannedValue }
               </AttributeDisplayField>
             </ClickableLineItemFlexContainer>
         }
@@ -115,13 +158,26 @@ class LineItem extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  dispatchDeleteLineItem: identity => dispatch(deleteLineItem({ identity })),
+  dispatchLineItemLabel: (identity, label) => dispatch(lineItemLabel({ identity, label })),
+  dispatchLineItemDate: (identity, date) => dispatch(lineItemDate({ identity, date })),
+  dispatchLineItemPlanned: (identity, planned) => dispatch(lineItemPlanned({ identity, planned })),
+});
+
+export default connect(null, mapDispatchToProps)(LineItem);
+
 LineItem.propTypes = {
   labelValue: PropTypes.string.isRequired,
   dayPickerValue: PropTypes.string.isRequired,
   plannedValue: PropTypes.string.isRequired,
+  identity: PropTypes.string.isRequired,
+  dispatchDeleteLineItem: PropTypes.func.isRequired,
+  dispatchLineItemLabel: PropTypes.func.isRequired,
+  dispatchLineItemDate: PropTypes.func.isRequired,
+  dispatchLineItemPlanned: PropTypes.func.isRequired,
 };
 
-export default LineItem;
 
 const LineItemContainer = styled.div`
   width: 100%;
