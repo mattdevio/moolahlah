@@ -37,7 +37,7 @@ class LineItem extends Component {
     this.destoryLineItem = this.destoryLineItem.bind(this);
     this.updateLabel = this.updateLabel.bind(this);
     this.updateDate = this.updateDate.bind(this);
-    this.updatePlanned = this.updatePlanned.bind(this);
+    this.validateCurrencyAndUpdate = this.validateCurrencyAndUpdate.bind(this);
   }
 
   editLineItem() {
@@ -90,9 +90,11 @@ class LineItem extends Component {
     }
   }
 
-  updatePlanned(event) {
-    if (isCurrency(event.target.value)) {
-      this.props.dispatchLineItemPlanned(this.props.identity, event.target.value);
+  validateCurrencyAndUpdate(event) {
+    const { value } = event.target;
+    if (isCurrency(value)) {
+      const { dispatchLineItemPlanned, identity } = this.props;
+      dispatchLineItemPlanned(identity, value);
     }
   }
 
@@ -138,7 +140,7 @@ class LineItem extends Component {
                 onFocus={ this.setKeyTrue('plannedHasFocus') }
                 onBlur={ this.handleInputBlur('plannedHasFocus') }
                 defaultValue={ this.props.plannedValue }
-                onChange={ this.updatePlanned }
+                onChange={ this.validateCurrencyAndUpdate }
               />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={ this.editLineItem } tabIndex={0} onFocus={ this.editLineItem }>
