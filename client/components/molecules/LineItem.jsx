@@ -30,6 +30,7 @@ class LineItem extends Component {
       trashHasFocus: false,
     };
     this.labelRef = React.createRef();
+    this.plannedRef = React.createRef();
     this.editLineItem = this.editLineItem.bind(this);
     this.setKeyTrue = this.setKeyTrue.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
@@ -38,6 +39,7 @@ class LineItem extends Component {
     this.updateLabel = this.updateLabel.bind(this);
     this.updateDate = this.updateDate.bind(this);
     this.validateCurrencyAndUpdate = this.validateCurrencyAndUpdate.bind(this);
+    this.setPlannedHasFocusAndSelectAllText = this.setPlannedHasFocusAndSelectAllText.bind(this);
   }
 
   editLineItem() {
@@ -98,6 +100,15 @@ class LineItem extends Component {
     }
   }
 
+  setPlannedHasFocusAndSelectAllText() {
+    const phfTrue = this.setKeyTrue('plannedHasFocus');
+    return () => {
+      phfTrue();
+      this.plannedRef.current.select();
+      this.plannedRef.current.focus();
+    };
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.hasFocus && this.state.hasFocus) {
       this.labelRef.current.select();
@@ -137,7 +148,8 @@ class LineItem extends Component {
                 maxWidth='25rem'
                 alignRight
                 placeholder='$0.00'
-                onFocus={ this.setKeyTrue('plannedHasFocus') }
+                forwardRef={ this.plannedRef }
+                onFocus={ this.setPlannedHasFocusAndSelectAllText() }
                 onBlur={ this.handleInputBlur('plannedHasFocus') }
                 defaultValue={ this.props.plannedValue }
                 onChange={ this.validateCurrencyAndUpdate }
