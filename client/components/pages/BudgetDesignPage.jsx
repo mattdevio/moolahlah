@@ -12,9 +12,16 @@ import TabSelector from '@/components/molecules/TabSelector';
 import MonthSelector from '@/components/molecules/MonthSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import CategoryGroup from '@/components/organisms/CategoryGroup';
+import StartNewMonth from '@/components/molecules/StartNewMonth';
+import { lookupBudget } from '@/state/ducks/budget';
 
 
 class BudgetDesignPage extends Component {
+
+  componentDidMount() {
+    const { currentYear, currentMonth, dispatchLookupBudget } = this.props;
+    dispatchLookupBudget(currentYear, currentMonth);
+  }
 
   render() {
     return (
@@ -22,11 +29,6 @@ class BudgetDesignPage extends Component {
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 2rem auto' />
-
-
-            <CategoryGroup
-            />
-
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='skyBlue'>
@@ -39,4 +41,19 @@ class BudgetDesignPage extends Component {
 
 }
 
-export default BudgetDesignPage;
+const mapStateToProps = state => ({
+  currentYear: state.budget.currentYear,
+  currentMonth: state.budget.currentMonth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchLookupBudget: (currentYear, currentMonth) => dispatch(lookupBudget({ currentYear, currentMonth }))
+});
+
+BudgetDesignPage.propTypes = {
+  currentYear: PropTypes.number.isRequired,
+  currentMonth: PropTypes.number.isRequired,
+  dispatchLookupBudget: PropTypes.func.isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BudgetDesignPage);
