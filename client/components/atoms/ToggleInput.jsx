@@ -12,18 +12,13 @@ class ToggleInput extends Component {
     super(props);
     this.state = {
       isInput: false,
-      value: 'Test Category',
     };
     this.inputRef = React.createRef();
     this.turnOnInput = this.turnOnInput.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(prevProps.value !== this.props.value) {
-      this.setState({ value: this.props.value });
-    }
     if (this.state.isInput && (this.state.isInput !== prevState.isInput)) {
       this.inputRef.current.select();
       this.inputRef.current.focus();
@@ -42,14 +37,18 @@ class ToggleInput extends Component {
     });
   }
 
-  handleChange(event) {
-    this.setState({
-      value: event.target.value,
-    });
-  }
-
   render() {
-    const { isInput, value } = this.state;
+    const { isInput } = this.state;
+    const { value, onValueChange, placeholder, canNotEdit } = this.props;
+    if (canNotEdit) {
+      return (
+        <ToggleInputContainer>
+          <NoEditDisplay>
+            { value }
+          </NoEditDisplay>
+        </ToggleInputContainer>
+      );
+    }
     return (
       <ToggleInputContainer>
         {
@@ -58,8 +57,8 @@ class ToggleInput extends Component {
               value={ value }
               onBlur={ this.handleOnBlur }
               ref={ this.inputRef }
-              onChange={ this.handleChange }
-              placeholder='Category Title'
+              onChange={ e => onValueChange(e.target.value)}
+              placeholder={ placeholder }
             /> :
             <ToggleInputDisplay
               onClick={ this.turnOnInput }
@@ -76,6 +75,9 @@ class ToggleInput extends Component {
 
 ToggleInput.propTypes = {
   value: PropTypes.string.isRequired,
+  onValueChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  canNotEdit: PropTypes.bool,
 };
 
 export default ToggleInput;
@@ -114,5 +116,12 @@ const ToggleInputTextField = styled.input.attrs({
   width: 100%;
   &:focus {
     outline: 0;
+  }
+`;
+
+const NoEditDisplay = styled(ToggleInputDisplay)`
+  cursor: inherit;
+  &:hover {
+    background-color: transparent;
   }
 `;

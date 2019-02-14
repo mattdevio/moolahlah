@@ -15,7 +15,10 @@ class CategoryGroup extends Component {
   render() {
     return (
       <CategoryGroupContainer>
-        <CategoryGroupHeader />
+        <CategoryGroupHeader
+          value='What up?!'
+          canNotEdit={true}
+        />
         <LineItem
           labelValue='What up!'
           dayPickerValue={ '20180814' }

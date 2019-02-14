@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import ToggleInput from '@/components/atoms/ToggleInput';
 
 
-const CategoryGroupHeader = () => (
+const CategoryGroupHeader = (props) => (
   <CategoryGroupHeaderContainer>
-    <ToggleInput />
+    <ToggleInput {...props} />
     <HeadHelper margin='0 1rem'>Date</HeadHelper>
     <HeadHelper>Planned</HeadHelper>
   </CategoryGroupHeaderContainer>
