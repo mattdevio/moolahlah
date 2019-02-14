@@ -9,6 +9,7 @@ import {
   faChevronCircleRight,
   faPlusCircle,
   faMinusCircle,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -21,4 +22,5 @@ library.add(
   faChevronCircleRight,  // chevron-circle-right
   faPlusCircle,          // plus-circle
   faMinusCircle,         // minus-circle
+  faTrash,               // fa-trash
 );
