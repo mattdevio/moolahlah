@@ -40,6 +40,7 @@ class LineItem extends Component {
     this.updateDate = this.updateDate.bind(this);
     this.validateCurrencyAndUpdate = this.validateCurrencyAndUpdate.bind(this);
     this.setPlannedHasFocusAndSelectAllText = this.setPlannedHasFocusAndSelectAllText.bind(this);
+    this.normalizePlannedValueAndUnfocus = this.normalizePlannedValueAndUnfocus.bind(this);
   }
 
   editLineItem() {
@@ -109,6 +110,13 @@ class LineItem extends Component {
     };
   }
 
+  normalizePlannedValueAndUnfocus() {
+    const phb = this.handleInputBlur('plannedHasFocus');
+    return () => {
+      phb();
+    };
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.hasFocus && this.state.hasFocus) {
       this.labelRef.current.select();
@@ -150,7 +158,7 @@ class LineItem extends Component {
                 placeholder='$0.00'
                 forwardRef={ this.plannedRef }
                 onFocus={ this.setPlannedHasFocusAndSelectAllText() }
-                onBlur={ this.handleInputBlur('plannedHasFocus') }
+                onBlur={ this.normalizePlannedValueAndUnfocus() }
                 defaultValue={ this.props.plannedValue }
                 onChange={ this.validateCurrencyAndUpdate }
               />
