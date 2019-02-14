@@ -14,9 +14,56 @@ exports[`<MoolahlahLogo /> Component Should match the snapshot 1`] = `
   margin="0 0 2rem 0"
   width="30"
 >
-  <span
-    className="c0"
+  <StyledComponent
+    forwardedComponent={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "attrs": Array [],
+        "componentStyle": ComponentStyle {
+          "componentId": "sc-bdVaJa",
+          "isStatic": false,
+          "lastClassName": "c0",
+          "rules": Array [
+            "
+  background: url(/assets/image/moolahlah_logo.png) no-repeat;
+  background-size: ",
+            [Function],
+            ";
+  width: ",
+            [Function],
+            ";
+  height: ",
+            [Function],
+            ";
+  margin: ",
+            [Function],
+            ";
+  display: block;
+",
+          ],
+        },
+        "defaultProps": Object {
+          "margin": "0 0 2rem 0",
+          "width": "30",
+        },
+        "displayName": "styled.span",
+        "foldedComponentIds": Array [],
+        "render": [Function],
+        "styledComponentId": "sc-bdVaJa",
+        "target": "span",
+        "toString": [Function],
+        "warnTooManyClasses": [Function],
+        "withComponent": [Function],
+      }
+    }
+    forwardedRef={null}
+    margin="0 0 2rem 0"
     width="30"
-  />
+  >
+    <span
+      className="c0"
+      width="30"
+    />
+  </StyledComponent>
 </styled.span>
 `;

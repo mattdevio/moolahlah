@@ -8,6 +8,10 @@ export const CURRENT_MONTH = `${BUDGET} CURRENT_MONTH`;
 export const LOOKUP = `${BUDGET} LOOKUP`;
 export const STATUS = `${BUDGET} STATUS`;
 export const SET_DATA = `${BUDGET} SET_DATA`;
+export const DELETE_LINE_ITEM = `${BUDGET} DELETE_LINE_ITEM`;
+export const LINE_ITEM_LABEL = `${BUDGET} LINE_ITEM_LABEL`;
+export const LINE_ITEM_DATE = `${BUDGET} LINE_ITEM_DATE`;
+export const LINE_ITEM_PLANNED = `${BUDGET} LINE_ITEM_PLANNED`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -75,6 +79,29 @@ export const setBudgetData = ({ incomeCategories, expenseCategories, budgetRecor
   incomeCategories,
   expenseCategories,
   budgetRecords,
+});
+
+export const deleteLineItem = ({ identity }) => ({
+  type: DELETE_LINE_ITEM,
+  identity,
+});
+
+export const lineItemLabel = ({ identity, label }) => ({
+  type: LINE_ITEM_LABEL,
+  identity,
+  label, 
+});
+
+export const lineItemDate = ({ identity, date }) => ({
+  type: LINE_ITEM_DATE,
+  identity,
+  date,
+});
+
+export const lineItemPlanned = ({ identity, planned }) => ({
+  type: LINE_ITEM_PLANNED,
+  identity,
+  planned,
 });
 
 /**
