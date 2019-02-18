@@ -5,13 +5,14 @@ export const API_ERROR = 'API_ERROR';
 
 
 /*----------  Action Creators  ----------*/
-export const apiRequest = ({ data, method, url, feature }) => ({
+export const apiRequest = ({ data, method, url, feature, cancelable = false }) => ({
   type: `${feature} ${API_REQUEST}`,
   payload: data,
   meta: {
     method,
     url,
     feature,
+    cancelable,
   },
 });
 

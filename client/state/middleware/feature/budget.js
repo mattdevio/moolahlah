@@ -47,6 +47,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
         method: 'POST',
         url: '/budget/lookup',
         feature: LOOKUP,
+        cancelable: true,
       }));
       break;
 
