@@ -52,7 +52,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
       break;
 
     case `${LOOKUP} ${API_SUCCESS}`:
-      processLookupApiSuccess(getState(), next, action);
+      processLookupApiSuccess(next, action);
       break;
 
     case `${LOOKUP} ${API_ERROR}`:
@@ -78,21 +78,14 @@ const processStartBudget = ({ budget }, next) => {
   }));
 };
 
-const processLookupApiSuccess = ({ budget }, next, { payload }) => {
+const processLookupApiSuccess = (next, { payload }) => {
   const {
-    budgetStartDate,
     incomeCategories,
     expenseCategories,
     budgetRecords,
   } = payload.data;
-  const parsedStartDate = new Date(budgetStartDate);
-
-  // Ignore responses that dont match the currently selected year and month
-  if (parsedStartDate.getUTCFullYear() === budget.currentYear && parsedStartDate.getUTCMonth() === budget.currentMonth) {
-    next(setBudgetData({ incomeCategories, expenseCategories, budgetRecords }));
-    next(setBudgetStatusLoaded());
-  }
-
+  next(setBudgetData({ incomeCategories, expenseCategories, budgetRecords }));
+  next(setBudgetStatusLoaded());
 }; 
 
 const processLookupApiError = (next, { payload }) => {
