@@ -91,7 +91,6 @@ const processLookupApiSuccess = (next, { payload }) => {
 const processLookupApiError = (next, { payload }) => {
   const error = payload && payload.errors && payload.errors[0];
   if (error && error.msg === 'No budget matching that query') {
-    next(showErrorMessage(error.msg));
     next(setBudgetStatusNotStarted());
   } else {
     next(showErrorMessage('An unknown error occured attempting to load budget'));
