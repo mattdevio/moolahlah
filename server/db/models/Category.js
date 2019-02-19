@@ -20,15 +20,15 @@ class Category extends BaseModel {
   }
 
   static get relationMappings() {
-    const CategoryType = require(`${appRoot}/server/db/models/CategoryType`);
+    const Budget = require(`${appRoot}/server/db/models/Budget`);
     return {
 
       categoryType: {
         relation: Model.BelongsToOneRelation,
-        modelClass: CategoryType,
+        modelClass: Budget,
         join: {
-          from: 'category.category_type_id',
-          to: 'category_type.id',
+          from: 'category.budget_id',
+          to: 'budget.id',
         },
       },
 
