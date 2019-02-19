@@ -147,58 +147,50 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
 
   logger.debug(`Lookup budget ${startDate} #${id} for ${email}.`);
 
-  // Fake a network request delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // Get budget categories
-  let budgetCategories__;
+  // Get categories labels
+  let categories__;
   try {
-    budgetCategories__ = await Category.query()
-      .select({
-        label: 'category.category_label',
-        type: 'ct.category_type',
-      })
-      .leftJoinRelation('categoryType', { alias: 'ct' })
-      .whereIn('ct.category_type', ['Income', 'Expense']);
+    categories__ = await Category.query().where('budget_id', id);
   } catch (e) {
     return next(e);
   }
 
-  // Seperate categories into an array based on type
-  const incomeCategories = budgetCategories__
-    .filter(category => category.type === 'Income')
-    .map(category => category.label);
-  const expenseCategories = budgetCategories__
-    .filter(category => category.type === 'Expense')
-    .map(category => category.label);
-
-  // Fetch Budget Records
+  // Get budget records
   let budgetRecords__;
   try {
-    budgetRecords__ = await BudgetRecord.query()
-      .select({
-        accessId: 'budget_record.access_id',
-        category: 'c.category_label',
-        label: 'budget_record.label',
-        estimateDate: 'budget_record.estimate_date',
-        estimate: 'budget_record.estimate',
-      })
-      .leftJoinRelation('category', { alias: 'c' })
-      .where('budget_record.budget_id', id);
+    budgetRecords__ = await BudgetRecord.query().where('budget_id', id);
   } catch (e) {
     return next(e);
   }
-  logger.debug(JSON.stringify(budgetRecords__, null, 2));
 
+  // Build category groups data structure
+  const categoryGroups = categories__.map(categoryRecord => {    
+    const lineItems = budgetRecords__
+      .filter(record => record.categoryId === categoryRecord.id)
+      .map(record => ({
+        accessId: record.accessId,
+        label: record.label,
+        estimateDate: record.estimateDate,
+        estimate: record.estimate,
+      }));
+    return {
+      categoryLabel: categoryRecord.categoryLabel,
+      accessId: categoryRecord.accessId,
+      canEdit: categoryRecord.canEdit,
+      isDebit: categoryRecord.isDebit,
+      lineItems: lineItems,
+    };
+  });
+
+  // Send budget information back to client
   res.status(200).json(apiResponse({
-    message: 'Budget data retrieved',
+    message: 'Existing budget data retrieved',
     data: {
       budgetStartDate: startDate,
-      incomeCategories: incomeCategories,
-      expenseCategories: expenseCategories,
-      budgetRecords: budgetRecords__,
+      categoryGroups: categoryGroups,
     },
   }));
+
 });
 
 
