@@ -6,6 +6,9 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('category_label').notNullable();
       table.unique('category_label');
+      table.boolean('can_edit').notNullable().defaultTo(true);
+      table.integer('budget_id').unsigned().notNullable();
+      table.foreign('budget_id').references('budget.id').onDelete('cascade');
     });
     resolve();
   });
