@@ -37,6 +37,8 @@ class BudgetDesignPage extends Component {
             <CurrentBudgetDisplay />
             { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
             { budgetStatus === BudgetStatusEnum.notStarted && <StartNewMonth /> }
+            { budgetStatus === BudgetStatusEnum.loaded && alert('loaded') }
+            { budgetStatus === BudgetStatusEnum.error && alert('an error happened') }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='skyBlue'>
