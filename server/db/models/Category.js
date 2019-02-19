@@ -1,6 +1,7 @@
 // Vendor imports
 const appRoot = require('app-root-path');
 const { Model } = require('objection');
+const uuid = require('uuid/v4');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
@@ -33,6 +34,27 @@ class Category extends BaseModel {
       },
 
     };
+  }
+
+  async $beforeInsert() {
+    const newUUID = uuid().replace(/-/g, '').substr(0, 16);
+    const idBuf = Buffer.from(newUUID);
+    this.accessId = idBuf;
+  }
+  
+  $afterInsert() {
+    this.parseUUID();
+  }
+  
+  $afterGet() {
+    this.parseUUID();
+  }
+
+  parseUUID() {
+    if (!this.accessId) return; // Sometimes, your selects don't return the id
+    const buf = Buffer.from(this.accessId, 'binary');
+    const access_id = buf.toString('utf8');
+    this.accessId = access_id;
   }
 
 }

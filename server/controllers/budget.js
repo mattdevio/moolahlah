@@ -7,6 +7,7 @@ const { transaction } = require('objection');
 const { logger } = require(`${appRoot}/server/bin/utility`);
 const apiResponse = require(`${appRoot}/server/middleware/apiResponse`);
 const protectedRoute = require(`${appRoot}/server/middleware/protectedRoute`);
+const categoryGroupDefaults = require(`${appRoot}/server/bin/categoryGroupDefaults`);
 const {
   Budget,
   User,
@@ -54,17 +55,14 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
   logger.debug(JSON.stringify(budget__, null, 2));
 
-  // Retrieve the default categories for the database
+  // Insert and fetch the default categories w/ their ID
   let categories__;
   try {
-    categories__ = await Category.query(trx)
-      .select({
-        id: 'category.id',
-        label: 'category.category_label', 
-        type: 'ct.category_type'
-      })
-      .leftJoinRelation('categoryType', { alias: 'ct' })
-      .whereIn('ct.category_type', ['Income', 'Expense']);
+    categories__ = await Promise.all(categoryGroupDefaults.map(categoryDefault => Category
+      .query(trx).insertAndFetch({
+        ...categoryDefault,
+        budgetId: budget__.id,
+      })));
   } catch (e) {
     return trx.rollback(e)
       .then(next)
@@ -72,37 +70,31 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
   logger.debug(JSON.stringify(categories__, null, 2));
 
-  // Build deefault budget_record entries for a budget
+  // Build 2 budget_record entries for each category
   const budgetRecordInserts = [];
-  categories__.forEach(category => {
-    if (category.type === 'Income') {
-      for(let i=0; i<2; i++) {
-        budgetRecordInserts.push({
-          budgetId: budget__.id,
-          categoryId: category.id,
-          estimateDate: budget__.startDate,
-        });
-      }
-    } else {
-      for(let i=0; i<3; i++) {
-        budgetRecordInserts.push({
-          budgetId: budget__.id,
-          categoryId: category.id,
-          estimateDate: budget__.startDate,
-        });
-      }
+  categories__.forEach(categoryRecord => {
+    for(let i=0; i<2; i++) {
+      budgetRecordInserts.push({
+        budgetId: budget__.id,
+        categoryId: categoryRecord.id,
+        label: '',
+        estimateDate: startDate,
+        estimate: 0.00,
+      });
     }
   });
 
   // Insert budget records in to the database
+  let budgetRecords__;
   try {
-    await Promise.all(budgetRecordInserts.map(record => BudgetRecord
-      .query(trx).insert(record)));
+    budgetRecords__ = await Promise.all(budgetRecordInserts.map(record => BudgetRecord
+      .query(trx).insertAndFetch(record)));
   } catch (e) {
     return trx.rollback(e)
       .then(next)
       .catch(next);
   }
+  logger.debug(JSON.stringify(budgetRecords__, null, 2));
 
   // Commit the transaction
   try {
@@ -113,54 +105,31 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
       .catch(next);
   }
 
-  // Get budget categories
-  let budgetCategories__;
-  try {
-    budgetCategories__ = await Category.query()
-      .select({
-        label: 'category.category_label',
-        type: 'ct.category_type',
-      })
-      .leftJoinRelation('categoryType', { alias: 'ct' })
-      .whereIn('ct.category_type', ['Income', 'Expense']);
-  } catch (e) {
-    return next(e);
-  }
-
-  // Seperate categories into an array based on type
-  const incomeCategories = budgetCategories__
-    .filter(category => category.type === 'Income')
-    .map(category => category.label);
-  const expenseCategories = budgetCategories__
-    .filter(category => category.type === 'Expense')
-    .map(category => category.label);
-
-  // Fetch Budget Records
-  let budgetRecords__;
-  try {
-    budgetRecords__ = await BudgetRecord.query()
-      .select({
-        accessId: 'budget_record.access_id',
-        category: 'c.category_label',
-        label: 'budget_record.label',
-        estimateDate: 'budget_record.estimate_date',
-        estimate: 'budget_record.estimate',
-      })
-      .leftJoinRelation('category', { alias: 'c' })
-      .where('budget_record.budget_id', budget__.id);
-  } catch (e) {
-    return next(e);
-  }
-  logger.debug(JSON.stringify(budgetRecords__, null, 2));
+  // Build category groups data structure
+  const categoryGroups = categories__.map(categoryRecord => {    
+    const lineItems = budgetRecords__
+      .filter(record => record.categoryId === categoryRecord.id)
+      .map(record => ({
+        accessId: record.accessId,
+        label: record.label,
+        estimateDate: record.estimateDate,
+        estimate: record.estimate,
+      }));
+    return {
+      categoryLabel: categoryRecord.categoryLabel,
+      accessId: categoryRecord.accessId,
+      canEdit: categoryRecord.canEdit,
+      isDebit: categoryRecord.isDebit,
+      lineItems: lineItems,
+    };
+  });
   
   // Send budget information back to client
   res.status(201).json(apiResponse({
     message: 'Budget created',
     data: {
       budgetStartDate: budget__.startDate,
-      incomeCategories: incomeCategories,
-      expenseCategories: expenseCategories,
-      budgetRecords: budgetRecords__,
+      categoryGroups: categoryGroups,
     },
   }));
 

@@ -4,8 +4,8 @@ exports.up = function(knex, Promise) {
   return new Promise(async function(resolve) {
     await knex.schema.createTable(tableName, (table) => {
       table.increments('id').primary();
+      table.binary('access_id', 16).notNullable();
       table.string('category_label').notNullable();
-      table.unique('category_label');
       table.boolean('can_edit').notNullable().defaultTo(true);
       table.boolean('is_debit').notNullable().defaultTo(true);
       table.integer('budget_id').unsigned().notNullable();

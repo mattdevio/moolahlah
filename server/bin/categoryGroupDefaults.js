@@ -4,50 +4,50 @@
  */
 const categoryGroupDefaults = [
   {
-    label: 'Income',
+    categoryLabel: 'Income',
     canEdit: false,
     isDebit: false,
   },
   {
-    label: 'Housing',
+    categoryLabel: 'Housing',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Food',
+    categoryLabel: 'Food',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Transportation',
+    categoryLabel: 'Transportation',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Taxes',
+    categoryLabel: 'Taxes',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Lifestyle',
+    categoryLabel: 'Lifestyle',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Giving',
+    categoryLabel: 'Giving',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Saving & Investments',
+    categoryLabel: 'Saving & Investments',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
   {
-    label: 'Debt',
+    categoryLabel: 'Debt',
     canEdit: true,
-    isDebit: true
+    isDebit: true,
   },
 ];
 
-export default categoryGroupDefaults;
+module.exports = categoryGroupDefaults;
