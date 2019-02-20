@@ -78,13 +78,12 @@ class Category extends BaseModel {
             result__ = await Category.query()
               .leftJoinRelation('users')
               .where('users.email', email)
-              .andWhere('category.access_id', accessId)
-              .first();
+              .andWhere('category.access_id', accessId);
           } catch (e) {
             return reject('Category label lookup failed');
           }
-          if (!result__) return reject('That category label doesn\' exist');
-          if (!result__.canEdit) return reject('That category label can not be changed');
+          if (result__.length !== 1) return reject('No record matching that accessId');
+          if (!result__[0].canEdit) return reject('Record can not be edited');
           resolve();
         })),
       

@@ -1,10 +1,12 @@
 // Vendor imports
 const appRoot = require('app-root-path');
 const { Model } = require('objection');
+const { body } = require('express-validator/check');
 const uuid = require('uuid/v4');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
+const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
  * BudgetRecord Model
@@ -21,35 +23,22 @@ class BudgetRecord extends BaseModel {
   }
   
   static get relationMappings() {
-    const Budget = require(`${appRoot}/server/db/models/Budget`);
-    const Category = require(`${appRoot}/server/db/models/Category`);
-    const Calendar = require(`${appRoot}/server/db/models/calendar`);
+
+    // Import here to avoid require loops
+    const User = require(`${appRoot}/server/db/models/User`);
+
     return {
 
-      budget: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: Budget,
+      users: {
+        relation: Model.HasOneThroughRelation,
+        modelClass: User,
         join: {
           from: 'budget_record.budget_id',
-          to: 'budget.id',
-        },
-      },
-
-      category: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: Category,
-        join: {
-          from: 'budget_record.category_id',
-          to: 'category.id'
-        },
-      },
-
-      estimate: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: Calendar,
-        join: {
-          from: 'budget_record.estimate_date',
-          to: 'calendar.db_date',
+          through: {
+            from: 'budget.id',
+            to: 'budget.user_uuid',
+          },
+          to: 'users.uuid',
         },
       },
 
@@ -75,6 +64,42 @@ class BudgetRecord extends BaseModel {
     const buf = Buffer.from(this.accessId, 'binary');
     const access_id = buf.toString('utf8');
     this.accessId = access_id;
+  }
+
+  static updateRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+
+      body('')
+        .custom(({ accessId, label, estimateDate, estimate }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let recordOwnership__;
+          try {
+            recordOwnership__ = await BudgetRecord.query().leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('budget_record.access_id', accessId);
+          } catch (e) {
+            return reject('Budget record lookup failed');
+          }
+          console.dir(recordOwnership__);
+          if (recordOwnership__.length !== 1) return reject('No record matching that accessId');
+          if (typeof label === 'undefined' && typeof estimateDate === 'undefined' && typeof estimate === 'undefined') {
+            return reject('Atleast one field required: label, estimateDate, estimate');
+          }
+          resolve();
+        })),
+
+      body('estimateDate')
+        .isISO8601().withMessage('Must be ISO date').optional(),
+      
+      body('estimate')
+        .isDecimal().withMessage('Must be a decimal').optional(),
+      
+      handleValidationErrors(),
+
+    ];
   }
 
 }
