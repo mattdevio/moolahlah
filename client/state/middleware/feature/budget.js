@@ -1,9 +1,13 @@
+// Vendor Imports
+import { debounce } from 'debounce';
+
 // Custom Imports
 import { apiRequest, API_SUCCESS, API_ERROR } from '@/state/ducks/api';
 import { showErrorMessage } from '@/state/ducks/toast';
 import {
   START,
   LOOKUP,
+  UPDATE_CATEGORY_GROUP_LABEL,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -53,6 +57,18 @@ const budgetMiddleware = ({ getState }) => next => action => {
     case `${LOOKUP} ${API_ERROR}`:
       processLookupApiError(next, action);
       break;
+    
+    case UPDATE_CATEGORY_GROUP_LABEL:
+      updateCategoryLabelRequest_Debounced(next, action);
+      break;
+    
+    case `${UPDATE_CATEGORY_GROUP_LABEL} ${API_SUCCESS}`:
+      processUpdateCategoryGroupLabelApiSuccess(next, action);
+      break;
+
+    case `${UPDATE_CATEGORY_GROUP_LABEL} ${API_ERROR}`:
+      processUpdateCategoryGroupLabelApiError(next, action);
+      break;
 
   }
 
@@ -92,5 +108,34 @@ const processLookupApiError = (next, { payload }) => {
     next(setBudgetStatusNotStarted());
   } else {
     next(showErrorMessage('An unknown error occured attempting to load budget'));
+  }
+};
+
+/* Debounce the api request for 1 second */
+const updateCategoryLabelRequest_Debounced = debounce((next, action) => {
+  next(apiRequest({
+    data: {
+      accessId: action.accessId,
+      categoryLabel: action.categoryLabel,
+    },
+    method: 'POST',
+    url: '/budget/update_category',
+    feature: UPDATE_CATEGORY_GROUP_LABEL,
+  }));
+}, 1000);
+
+
+const processUpdateCategoryGroupLabelApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  if (status === 1 && message === 'Category label updated') return; // no-op if OK
+  next(showErrorMessage(`Unexpected: ${message}`));
+};
+
+const processUpdateCategoryGroupLabelApiError = (next, { payload }) => {
+  const { message, errors } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
   }
 };

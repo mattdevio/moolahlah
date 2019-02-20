@@ -76,10 +76,11 @@ export const setLoadedData = ({ categoryGroups, currentMonth, currentYear }) => 
   currentYear,
 });
 
-export const updateCategoryGroupLabel = ({ accessId, categoryLabel }) => ({
+export const updateCategoryGroupLabel = ({ isDebit, accessId, categoryLabel }) => ({
   type: UPDATE_CATEGORY_GROUP_LABEL,
   accessId,
   categoryLabel,
+  isDebit,
 });
 
 /**
@@ -110,6 +111,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
         currentMonth: action.currentMonth,
         currentYear: action.currentYear,
       });
+    
+    case UPDATE_CATEGORY_GROUP_LABEL:
+      return reduceCategoryGroupLabel(state, action);
 
     default:
       return state;
@@ -118,3 +122,19 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 };
 
 export default budgetReducer;
+
+const reduceCategoryGroupLabel = (state, { isDebit, categoryLabel, accessId }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [accessId]: {
+          ...state['categoryGroups'][groupKey][accessId],
+          categoryLabel: categoryLabel,
+        },
+      },
+    },
+  });
+};

@@ -19,12 +19,14 @@ class CategoryGroup extends Component {
 
   render() {
     const { accessId, categoryLabel, canEdit, isDebit, lineItems } = this.props;
+    console.dir(isDebit)
     return (
       <CategoryGroupContainer>
         <CategoryGroupHeader
           categoryLabel={ categoryLabel }
           canEdit={ canEdit }
           accessId={ accessId }
+          isDebit={ isDebit }
         />
       </CategoryGroupContainer>
     );
@@ -34,8 +36,8 @@ class CategoryGroup extends Component {
 CategoryGroup.propTypes = {
   accessId: PropTypes.string.isRequired,
   categoryLabel: PropTypes.string.isRequired,
-  canEdit: PropTypes.number.isRequired,
-  isDebit: PropTypes.number.isRequired,
+  canEdit: PropTypes.bool.isRequired,
+  isDebit: PropTypes.bool.isRequired,
   lineItems: PropTypes.object.isRequired,
 };
 

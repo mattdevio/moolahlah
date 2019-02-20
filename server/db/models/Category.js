@@ -82,8 +82,8 @@ class Category extends BaseModel {
           } catch (e) {
             return reject('Category label lookup failed');
           }
-          if (result__.length !== 1) return reject('No record matching that accessId');
-          if (!result__[0].canEdit) return reject('Record can not be edited');
+          if (result__.length !== 1) return reject('Unknown category label accessId');
+          if (!result__[0].canEdit) return reject('Category label can not be edited');
           resolve();
         })),
       

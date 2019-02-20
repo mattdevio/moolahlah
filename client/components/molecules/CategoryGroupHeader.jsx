@@ -16,14 +16,14 @@ class CategoryGroupHeader extends Component {
   }
 
   render() {
-    const { categoryLabel, canEdit, dispatchUpdateCategoryGroupLabel, accessId } = this.props;
+    const { categoryLabel, canEdit, dispatchUpdateCategoryGroupLabel, accessId, isDebit } = this.props;
     return (
       <CategoryGroupHeaderContainer>
         <ToggleInput
           value={ categoryLabel }
           placeholder='Category Label'
-          onValueChange={ categoryLabel => dispatchUpdateCategoryGroupLabel({ accessId, categoryLabel }) }
-          canEdit={ true }
+          onValueChange={ categoryLabel => dispatchUpdateCategoryGroupLabel({ isDebit, accessId, categoryLabel }) }
+          canEdit={ canEdit }
         />
         <HeadHelper margin='0 1rem'>Date</HeadHelper>
         <HeadHelper>Planned</HeadHelper>
@@ -34,15 +34,19 @@ class CategoryGroupHeader extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchUpdateCategoryGroupLabel: ({ accessId, categoryLabel }) => dispatch(updateCategoryGroupLabel({
+  dispatchUpdateCategoryGroupLabel: ({ isDebit, accessId, categoryLabel }) => dispatch(updateCategoryGroupLabel({
     accessId,
     categoryLabel,
+    isDebit,
   })),
 });
 
 CategoryGroupHeader.propTypes = {
   categoryLabel: PropTypes.string.isRequired,
-  canEdit: PropTypes.number.isRequired,
+  canEdit: PropTypes.bool.isRequired,
+  isDebit: PropTypes.bool.isRequired,
+  dispatchUpdateCategoryGroupLabel: PropTypes.func.isRequired,
+  accessId: PropTypes.string.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(CategoryGroupHeader);
@@ -69,5 +73,3 @@ const HeadHelper = styled.p`
   max-width: 25rem;
   text-align: right;
 `;
-
-

@@ -44,7 +44,7 @@ class ToggleInput extends Component {
           {
             isInput ?
               <ToggleInputTextField
-                defaultValue={ value }
+                value={ value }
                 onBlur={ this.handleOnBlur }
                 ref={ this.inputRef }
                 onChange={ e => onValueChange(e.target.value)}
@@ -75,7 +75,7 @@ ToggleInput.propTypes = {
   value: PropTypes.string.isRequired,
   onValueChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
-  canEdit: PropTypes.number.isRequired,
+  canEdit: PropTypes.bool.isRequired,
 };
 
 export default ToggleInput;
