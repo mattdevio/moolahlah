@@ -249,5 +249,67 @@ budgetRouter.post('/update_record', protectedRoute(), Budget.updateRecordValidat
 });
 
 
+
+budgetRouter.post('/update_category', protectedRoute(), Category.updateCategoryValidation(), async (req, res, next) => {
+
+  const { accessId, categoryLabel } = req.body;
+
+  // Start a transaction
+  let trx;
+  try {
+    trx = await transaction.start(KNEX_INSTANCE);
+  } catch (e) {
+    return next(e);
+  }
+
+  let updateCategoryLabel__;
+  try {
+    updateCategoryLabel__ = await Category.query(trx)
+      .update({
+        categoryLabel: categoryLabel,
+      })
+      .where('access_id', accessId);
+  } catch (e) {
+    return next(e);
+  }
+
+  // updateCategoryLabel__ will be 0 if the row was not updated
+  if (!updateCategoryLabel__) return res.json(apiResponse({
+    message: 'Category label was not updated',
+    status: 0,
+  }));
+
+  // Fetch the updated record
+  let categoryLabel__;
+  try {
+    categoryLabel__ = await Category.query(trx)
+      .where('access_id', accessId).first();
+  } catch (e) {
+    return next(e);
+  }
+
+  // Commit the transaction
+  try {
+    await trx.commit();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  // Send the data back as updated
+  res.json(apiResponse({
+    message: 'Category label updated',
+    data: {
+      accessId: categoryLabel__.accessId,
+      categoryLabel: categoryLabel__.categoryLabel,
+      canEdit: categoryLabel__.canEdit,
+      isDebit: categoryLabel__.isDebit,
+    },
+  }));
+
+});
+
+
 // Export router
 module.exports = budgetRouter;
