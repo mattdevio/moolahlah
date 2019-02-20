@@ -4,7 +4,7 @@ import { showErrorMessage } from '@/state/ducks/toast';
 import {
   START,
   LOOKUP,
-  setBudgetData,
+  setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
   setBudgetStatusNotStarted,
@@ -24,12 +24,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
       break;
     
     case `${START} ${API_SUCCESS}`:
-      next(setBudgetData({
-        incomeCategories: action.payload.data.incomeCategories,
-        expenseCategories: action.payload.data.expenseCategories,
-        budgetRecords: action.payload.data.budgetRecords,
-      }));
-      next(setBudgetStatusLoaded());
+      processBudgetData(next, action);
       break;
     
     case `${START} ${API_ERROR}`:
@@ -52,7 +47,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
       break;
 
     case `${LOOKUP} ${API_SUCCESS}`:
-      processLookupApiSuccess(next, action);
+      processBudgetData(next, action);
       break;
 
     case `${LOOKUP} ${API_ERROR}`:
@@ -78,13 +73,16 @@ const processStartBudget = ({ budget }, next) => {
   }));
 };
 
-const processLookupApiSuccess = (next, { payload }) => {
+const processBudgetData = (next, { payload }) => {
   const {
-    incomeCategories,
-    expenseCategories,
-    budgetRecords,
+    budgetStartDate,
+    categoryGroups,
   } = payload.data;
-  next(setBudgetData({ incomeCategories, expenseCategories, budgetRecords }));
+  const parsedStartDate = new Date(budgetStartDate);
+  const currentMonth = parsedStartDate.getUTCMonth();
+  const currentYear = parsedStartDate.getUTCFullYear();
+
+  next(setLoadedData({ categoryGroups, currentMonth, currentYear }));
   next(setBudgetStatusLoaded());
 }; 
 

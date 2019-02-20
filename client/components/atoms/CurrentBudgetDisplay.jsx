@@ -33,7 +33,7 @@ const CBD = styled.h2`
   letter-spacing: 0.3rem;
   display: block;
   text-align: center;
-  margin: 0;
+  margin: 0 0 3rem 0;
   padding: 0;
   color: ${({ theme }) => theme.mediumBlue};
   font-family: ${({ theme }) => theme.typeFont};

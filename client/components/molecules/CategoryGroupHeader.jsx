@@ -1,20 +1,51 @@
 // Vendor Imports
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 // Custom Imports
 import ToggleInput from '@/components/atoms/ToggleInput';
+import { updateCategoryGroupLabel } from '@/state/ducks/budget';
 
 
-const CategoryGroupHeader = (props) => (
-  <CategoryGroupHeaderContainer>
-    <ToggleInput {...props} />
-    <HeadHelper margin='0 1rem'>Date</HeadHelper>
-    <HeadHelper>Planned</HeadHelper>
-  </CategoryGroupHeaderContainer>
-);
+class CategoryGroupHeader extends Component {
 
-export default CategoryGroupHeader;
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { categoryLabel, canEdit, dispatchUpdateCategoryGroupLabel, accessId } = this.props;
+    return (
+      <CategoryGroupHeaderContainer>
+        <ToggleInput
+          value={ categoryLabel }
+          placeholder='Category Label'
+          onValueChange={ categoryLabel => dispatchUpdateCategoryGroupLabel({ accessId, categoryLabel }) }
+          canEdit={ true }
+        />
+        <HeadHelper margin='0 1rem'>Date</HeadHelper>
+        <HeadHelper>Planned</HeadHelper>
+      </CategoryGroupHeaderContainer>
+    );
+  }
+
+}
+
+const mapDispatchToProps = dispatch => ({
+  dispatchUpdateCategoryGroupLabel: ({ accessId, categoryLabel }) => dispatch(updateCategoryGroupLabel({
+    accessId,
+    categoryLabel,
+  })),
+});
+
+CategoryGroupHeader.propTypes = {
+  categoryLabel: PropTypes.string.isRequired,
+  canEdit: PropTypes.number.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(CategoryGroupHeader);
 
 const CategoryGroupHeaderContainer = styled.div`
   display: flex;
@@ -22,7 +53,6 @@ const CategoryGroupHeaderContainer = styled.div`
   align-items:center;
   width: 100%;
   padding: 1rem;
-  margin-bottom: 0.5rem;
   > *:nth-child(2) {
     margin-left: auto;
   }

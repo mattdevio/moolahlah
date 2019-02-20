@@ -7,11 +7,8 @@ export const CURRENT_YEAR = `${BUDGET} CURRENT_YEAR`;
 export const CURRENT_MONTH = `${BUDGET} CURRENT_MONTH`;
 export const LOOKUP = `${BUDGET} LOOKUP`;
 export const STATUS = `${BUDGET} STATUS`;
-export const SET_DATA = `${BUDGET} SET_DATA`;
-export const DELETE_LINE_ITEM = `${BUDGET} DELETE_LINE_ITEM`;
-export const LINE_ITEM_LABEL = `${BUDGET} LINE_ITEM_LABEL`;
-export const LINE_ITEM_DATE = `${BUDGET} LINE_ITEM_DATE`;
-export const LINE_ITEM_PLANNED = `${BUDGET} LINE_ITEM_PLANNED`;
+export const SET_LOADED_DATA = `${BUDGET} SET_LOADED_DATA`;
+export const UPDATE_CATEGORY_GROUP_LABEL = `${BUDGET} UPDATE_CATEGORY_GROUP_LABEL`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -27,9 +24,7 @@ const BUDGET_INITIAL_STATE = {
   currentYear: TODAY.getFullYear(),
   currentMonth: TODAY.getMonth(),
   budgetStatus: BudgetStatusEnum.loading,
-  incomeCategories: [],
-  expenseCategories: [],
-  budgetRecords: [],
+  categoryGroups: {},
 };
 
 // Action Creators
@@ -74,34 +69,17 @@ export const setBudgetStatusErrored = () => ({
   budgetStatus: BudgetStatusEnum.error,
 });
 
-export const setBudgetData = ({ incomeCategories, expenseCategories, budgetRecords }) => ({
-  type: SET_DATA,
-  incomeCategories,
-  expenseCategories,
-  budgetRecords,
+export const setLoadedData = ({ categoryGroups, currentMonth, currentYear }) => ({
+  type: SET_LOADED_DATA,
+  categoryGroups,
+  currentMonth,
+  currentYear,
 });
 
-export const deleteLineItem = ({ identity }) => ({
-  type: DELETE_LINE_ITEM,
-  identity,
-});
-
-export const lineItemLabel = ({ identity, label }) => ({
-  type: LINE_ITEM_LABEL,
-  identity,
-  label, 
-});
-
-export const lineItemDate = ({ identity, date }) => ({
-  type: LINE_ITEM_DATE,
-  identity,
-  date,
-});
-
-export const lineItemPlanned = ({ identity, planned }) => ({
-  type: LINE_ITEM_PLANNED,
-  identity,
-  planned,
+export const updateCategoryGroupLabel = ({ accessId, categoryLabel }) => ({
+  type: UPDATE_CATEGORY_GROUP_LABEL,
+  accessId,
+  categoryLabel,
 });
 
 /**
@@ -126,11 +104,11 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
         budgetStatus: action.budgetStatus,
       });
     
-    case SET_DATA:
+    case SET_LOADED_DATA:
       return Object.assign({}, state, {
-        incomeCategories: action.incomeCategories,
-        expenseCategories: action.expenseCategories,
-        budgetRecords: action.budgetRecords,
+        categoryGroups: action.categoryGroups,
+        currentMonth: action.currentMonth,
+        currentYear: action.currentYear,
       });
 
     default:

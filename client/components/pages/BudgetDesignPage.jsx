@@ -22,9 +22,33 @@ import {
 
 class BudgetDesignPage extends Component {
 
+  constructor(props) {
+    super(props);
+    this.renderCategoryGroups = this.renderCategoryGroups.bind(this);
+  }
+
   componentDidMount() {
     const { currentYear, currentMonth, dispatchLookupBudget } = this.props;
     dispatchLookupBudget(currentYear, currentMonth);
+  }
+
+  renderCategoryGroups() {
+    const { categoryGroups } = this.props;
+    const { income, debit } = categoryGroups;
+    return (
+      <Fragment>
+        {Object.keys(income).map(key => {
+          const incomeRecord = income[key];
+          return (
+            <CategoryGroup
+              key={ key }
+              accessId={ key }
+              { ...incomeRecord }
+            />
+          );
+        })}
+      </Fragment>
+    );
   }
 
   render() {
@@ -37,7 +61,7 @@ class BudgetDesignPage extends Component {
             <CurrentBudgetDisplay />
             { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
             { budgetStatus === BudgetStatusEnum.notStarted && <StartNewMonth /> }
-            { budgetStatus === BudgetStatusEnum.loaded && alert('loaded') }
+            { budgetStatus === BudgetStatusEnum.loaded && this.renderCategoryGroups() }
             { budgetStatus === BudgetStatusEnum.error && alert('an error happened') }
           </ContentSectionWrapper>
         </ContentSectionContainer>
@@ -54,7 +78,8 @@ class BudgetDesignPage extends Component {
 const mapStateToProps = state => ({
   currentYear: state.budget.currentYear,
   currentMonth: state.budget.currentMonth,
-  budgetStatus: state.budget.budgetStatus
+  budgetStatus: state.budget.budgetStatus,
+  categoryGroups: state.budget.categoryGroups,
 });
 
 const mapDispatchToProps = dispatch => ({

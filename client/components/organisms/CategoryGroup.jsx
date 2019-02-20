@@ -1,7 +1,7 @@
 /*----------  Vendor Imports  ----------*/
 import React, { Component } from 'react';
 import styled from 'styled-components';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
@@ -12,45 +12,32 @@ import LineItem from '@/components/molecules/LineItem';
 =====================================*/
 
 class CategoryGroup extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
+    const { accessId, categoryLabel, canEdit, isDebit, lineItems } = this.props;
     return (
       <CategoryGroupContainer>
         <CategoryGroupHeader
-          value='What up?!'
-          canNotEdit={true}
-        />
-        <LineItem
-          labelValue='What up!'
-          dayPickerValue={ '20180814' }
-          plannedValue={ '0.00' }
-          identity={ '25' }
-        />
-        <LineItem
-          labelValue='What up!'
-          dayPickerValue={ '20180814' }
-          plannedValue={ '0.00' }
-          identity={ '25' }
-        />
-        <LineItem
-          labelValue='What up!'
-          dayPickerValue={ '20180814' }
-          plannedValue={ '0.00' }
-          identity={ '25' }
-        />
-        <LineItem
-          labelValue='What up!'
-          dayPickerValue={ '20180814' }
-          plannedValue={ '0.00' }
-          identity={ '25' }
+          categoryLabel={ categoryLabel }
+          canEdit={ canEdit }
+          accessId={ accessId }
         />
       </CategoryGroupContainer>
     );
   }
 }
 
-// CategoryGroup.propTypes = {
-
-// };
+CategoryGroup.propTypes = {
+  accessId: PropTypes.string.isRequired,
+  categoryLabel: PropTypes.string.isRequired,
+  canEdit: PropTypes.number.isRequired,
+  isDebit: PropTypes.number.isRequired,
+  lineItems: PropTypes.object.isRequired,
+};
 
 export default CategoryGroup;
 

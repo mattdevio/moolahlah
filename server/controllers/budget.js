@@ -106,23 +106,25 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
 
   // Build category groups data structure
-  const categoryGroups = categories__.map(categoryRecord => {    
+  const categoryGroups = categories__.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
-      .filter(record => record.categoryId === categoryRecord.id)
-      .map(record => ({
-        accessId: record.accessId,
-        label: record.label,
-        estimateDate: record.estimateDate,
-        estimate: record.estimate,
-      }));
-    return {
-      categoryLabel: categoryRecord.categoryLabel,
-      accessId: categoryRecord.accessId,
-      canEdit: categoryRecord.canEdit,
-      isDebit: categoryRecord.isDebit,
+      .filter(record => record.categoryId === value.id)
+      .reduce((acc, val) => {
+        acc[val.accessId] = {
+          label: val.label,
+          estimateDate: val.estimateDate,
+          estimate: val.estimate,
+        };
+        return acc;
+      }, {});
+    accumulator[value.accessId] = {
+      categoryLabel: value.categoryLabel,
+      canEdit: value.canEdit,
+      isDebit: value.isDebit,
       lineItems: lineItems,
     };
-  });
+    return accumulator;
+  }, {});
   
   // Send budget information back to client
   res.status(201).json(apiResponse({
@@ -164,23 +166,34 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
   }
 
   // Build category groups data structure
-  const categoryGroups = categories__.map(categoryRecord => {    
+  const categoryGroups = categories__.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
-      .filter(record => record.categoryId === categoryRecord.id)
-      .map(record => ({
-        accessId: record.accessId,
-        label: record.label,
-        estimateDate: record.estimateDate,
-        estimate: record.estimate,
-      }));
-    return {
-      categoryLabel: categoryRecord.categoryLabel,
-      accessId: categoryRecord.accessId,
-      canEdit: categoryRecord.canEdit,
-      isDebit: categoryRecord.isDebit,
-      lineItems: lineItems,
-    };
-  });
+      .filter(record => record.categoryId === value.id)
+      .reduce((acc, val) => {
+        acc[val.accessId] = {
+          label: val.label,
+          estimateDate: val.estimateDate,
+          estimate: val.estimate,
+        };
+        return acc;
+      }, {});
+    if (value.isDebit) {
+      accumulator.debit[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } else {
+      accumulator.income[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } 
+    return accumulator;
+  }, { debit: {}, income: {} });
 
   // Send budget information back to client
   res.status(200).json(apiResponse({
