@@ -8,8 +8,6 @@ const { sanitizeBody } = require('express-validator/filter');
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
 const Status = require(`${appRoot}/server/db/models/Status`);
-const BudgetRecord = require(`${appRoot}/server/db/models/BudgetRecord`);
-const Category = require(`${appRoot}/server/db/models/Category`);
 const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
@@ -27,6 +25,11 @@ class User extends BaseModel {
   }
 
   static get relationMappings() {
+
+    // Import here to avoid require loops
+    const Status = require(`${appRoot}/server/db/models/Status`);
+    const BudgetRecord = require(`${appRoot}/server/db/models/BudgetRecord`);
+
     return {
 
       status: {

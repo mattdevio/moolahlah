@@ -249,7 +249,10 @@ budgetRouter.post('/update_record', protectedRoute(), Budget.updateRecordValidat
 });
 
 
-
+/**
+ * POST /update_category
+ * Updates a category label by the accessId
+ */
 budgetRouter.post('/update_category', protectedRoute(), Category.updateCategoryValidation(), async (req, res, next) => {
 
   const { accessId, categoryLabel } = req.body;
