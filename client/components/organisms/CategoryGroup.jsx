@@ -41,6 +41,7 @@ class CategoryGroup extends Component {
             />
           );
         })}
+        <AddLineItem>Add Line Item</AddLineItem>
       </CategoryGroupContainer>
     );
   }
@@ -65,4 +66,25 @@ const CategoryGroupContainer = styled.div`
   min-width: 55rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
   padding: 1rem;
+`;
+
+const AddLineItem = styled.button`
+  display: block;
+  width: 100%;
+  border: 0;
+  background-color: ${({ theme }) => theme.mediumBlue};
+  color: ${({ theme }) => theme.white};
+  font-family: ${({ theme }) => theme.typeFont};
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  margin: 0.5rem 0 0 0;
+  padding: 0.3rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+  &:hover,
+  &:focus, {
+    opacity: 0.9;
+  }
 `;

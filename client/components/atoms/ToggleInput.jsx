@@ -97,6 +97,7 @@ const ToggleInputDisplay = styled.p`
   cursor: pointer;
   padding: 0.3rem 0;
   border: 1px solid transparent;
+  text-transform: uppercase;
   &:hover {
     background-color: ${({theme}) => theme.skyBlue};
   }
@@ -112,6 +113,7 @@ const ToggleInputTextField = styled.input.attrs({
   border: 1px solid ${({ theme }) => theme.black };
   padding: 0.3rem;
   width: 100%;
+  text-transform: uppercase;
   &:focus {
     outline: 0;
   }
