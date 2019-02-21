@@ -99,8 +99,10 @@ class LineItem extends Component {
     // date will be undefined if not valid  =>  http://react-day-picker.js.org/api/DayPickerInput/#onDayChange
     if (date) {
       const { dispatchUpdateLineitem, accessId, parent, isDebit } = this.props;
+      const parsedDate = moment(date.toISOString()).format('YYYY-MM-DD');
+      console.dir(date.toISOString())
       dispatchUpdateLineitem({
-        estimateDate: moment(date).format(),
+        estimateDate: date.toISOString(),
         parent,
         accessId,
         isDebit,

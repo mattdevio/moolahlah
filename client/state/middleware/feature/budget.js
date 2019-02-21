@@ -8,6 +8,7 @@ import {
   START,
   LOOKUP,
   UPDATE_CATEGORY_GROUP_LABEL,
+  UPDATE_LINEITEM,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -69,6 +70,10 @@ const budgetMiddleware = ({ getState }) => next => action => {
     case `${UPDATE_CATEGORY_GROUP_LABEL} ${API_ERROR}`:
       processUpdateCategoryGroupLabelApiError(next, action);
       break;
+    
+    case UPDATE_LINEITEM:
+      updateLineitemRequest_Debounced(next, action);
+      break;
 
   }
 
@@ -124,7 +129,6 @@ const updateCategoryLabelRequest_Debounced = debounce((next, action) => {
   }));
 }, 1000);
 
-
 const processUpdateCategoryGroupLabelApiSuccess = (next, { payload }) => {
   const { status, message } = payload;
   if (status === 1 && message === 'Category label updated') return; // no-op if OK
@@ -139,3 +143,16 @@ const processUpdateCategoryGroupLabelApiError = (next, { payload }) => {
     next(showErrorMessage(message));
   }
 };
+
+const updateLineitemRequest_Debounced = debounce((next, action) => {
+  const payload = { accessId: action.accessId };
+  if (typeof action.label !== 'undefined') payload.label = action.label;
+  if (typeof action.estimateDate !== 'undefined') payload.estimateDate = action.estimateDate;
+  if (typeof action.estimate !== 'undefined') payload.estimate = action.estimate;
+  next(apiRequest({
+    data: payload,
+    method: 'POST',
+    url: '/budget/update_record',
+    feature: UPDATE_LINEITEM,
+  }));
+}, 1000);

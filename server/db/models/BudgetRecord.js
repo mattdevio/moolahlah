@@ -3,6 +3,7 @@ const appRoot = require('app-root-path');
 const { Model } = require('objection');
 const { body } = require('express-validator/check');
 const uuid = require('uuid/v4');
+const moment = require('moment');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
@@ -74,6 +75,9 @@ class BudgetRecord extends BaseModel {
 
       body('')
         .custom(({ accessId, label, estimateDate, estimate }, { req }) => new Promise(async function(resolve, reject) {
+          if (!moment(estimateDate, 'YYYY-MM-DD', true).isValid()) {
+            return reject('Date format must be YYYY-MM-DD');
+          }
           const { email } = req.session.data;
           let recordOwnership__;
           try {
@@ -83,16 +87,12 @@ class BudgetRecord extends BaseModel {
           } catch (e) {
             return reject('Budget record lookup failed');
           }
-          console.dir(recordOwnership__);
           if (recordOwnership__.length !== 1) return reject('No record matching that accessId');
           if (typeof label === 'undefined' && typeof estimateDate === 'undefined' && typeof estimate === 'undefined') {
             return reject('Atleast one field required: label, estimateDate, estimate');
           }
           resolve();
         })),
-
-      body('estimateDate')
-        .isISO8601().withMessage('Must be ISO date').optional(),
       
       body('estimate')
         .isDecimal().withMessage('Must be a decimal').optional(),

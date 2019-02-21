@@ -237,7 +237,9 @@ budgetRouter.post('/update_record', protectedRoute(), BudgetRecord.updateRecordV
       .update(updateObject)
       .where('access_id', accessId);
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
   // Make sure the record was updated
@@ -261,7 +263,9 @@ budgetRouter.post('/update_record', protectedRoute(), BudgetRecord.updateRecordV
       })
       .where('access_id', accessId).first();
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
   // Commit the transaction
@@ -307,7 +311,9 @@ budgetRouter.post('/update_category', protectedRoute(), Category.updateCategoryV
       })
       .where('access_id', accessId);
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
   // Make sure the label was updated
@@ -331,7 +337,9 @@ budgetRouter.post('/update_category', protectedRoute(), Category.updateCategoryV
       })
       .where('access_id', accessId).first();
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
   // Commit the transaction
