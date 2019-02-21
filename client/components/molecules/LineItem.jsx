@@ -100,9 +100,8 @@ class LineItem extends Component {
     if (date) {
       const { dispatchUpdateLineitem, accessId, parent, isDebit } = this.props;
       const parsedDate = moment(date.toISOString()).format('YYYY-MM-DD');
-      console.dir(date.toISOString())
       dispatchUpdateLineitem({
-        estimateDate: date.toISOString(),
+        estimateDate: parsedDate,
         parent,
         accessId,
         isDebit,

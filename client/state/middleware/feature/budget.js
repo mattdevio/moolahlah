@@ -74,6 +74,14 @@ const budgetMiddleware = ({ getState }) => next => action => {
     case UPDATE_LINEITEM:
       updateLineitemRequest_Debounced(next, action);
       break;
+    
+    case `${UPDATE_LINEITEM} ${API_SUCCESS}`:
+      processUpdateLineitemApiSuccess(next, action);
+      break;
+    
+    case `${UPDATE_LINEITEM} ${API_ERROR}`:
+      processUpdateLineitemApiError(next, action);
+      break;
 
   }
 
@@ -156,3 +164,18 @@ const updateLineitemRequest_Debounced = debounce((next, action) => {
     feature: UPDATE_LINEITEM,
   }));
 }, 1000);
+
+const processUpdateLineitemApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  if (status === 1 && message === 'Record updated') return; // no-op if OK
+  next(showErrorMessage(`Unexpected: ${message}`));
+};
+
+const processUpdateLineitemApiError = (next, { payload }) => {
+  const { message, errors } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
