@@ -75,7 +75,7 @@ class BudgetRecord extends BaseModel {
 
       body('')
         .custom(({ accessId, label, estimateDate, estimate }, { req }) => new Promise(async function(resolve, reject) {
-          if (!moment(estimateDate, 'YYYY-MM-DD', true).isValid()) {
+          if (typeof estimateDate !== 'undefined' && !moment(estimateDate, 'YYYY-MM-DD', true).isValid()) {
             return reject('Date format must be YYYY-MM-DD');
           }
           const { email } = req.session.data;
