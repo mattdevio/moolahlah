@@ -11,10 +11,7 @@ import isCurrency from 'validator/lib/isCurrency';
 import LineDayPicker from '@/components/atoms/LineDayPicker';
 import LineInput from '@/components/atoms/LineInput';
 import {
-  deleteLineItem,
-  lineItemLabel,
-  lineItemDate,
-  lineItemPlanned,
+  updateLineitem,
 } from '@/state/ducks/budget';
 
 
@@ -35,6 +32,7 @@ class LineItem extends Component {
     this.setKeyTrue = this.setKeyTrue.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.getDateString = this.getDateString.bind(this);
+    this.getDecimalValue = this.getDecimalValue.bind(this);
     this.destoryLineItem = this.destoryLineItem.bind(this);
     this.updateLabel = this.updateLabel.bind(this);
     this.updateDate = this.updateDate.bind(this);
@@ -75,29 +73,53 @@ class LineItem extends Component {
   }
 
   getDateString() {
-    return `${moment(this.props.dayPickerValue, 'YYYYMMDD').format('MM/DD/YYYY')}`;
+    return `${moment(this.props.dayPickerValue).format('MM/DD/YYYY')}`;
+  }
+
+  getDecimalValue() {
+    const { plannedValue } = this.props;
+    return parseFloat(Math.round(plannedValue * 100) / 100).toFixed(2);
   }
 
   destoryLineItem() {
-    this.props.dispatchDeleteLineItem(this.props.identity);
+
   }
 
   updateLabel(event) {
-    this.props.dispatchLineItemLabel(this.props.identity, event.target.value);
+    const { dispatchUpdateLineitem, accessId, parent, isDebit } = this.props;
+    dispatchUpdateLineitem({
+      label: event.target.value,
+      parent,
+      accessId,
+      isDebit,
+    });
   }
 
   updateDate(date) {
     // date will be undefined if not valid  =>  http://react-day-picker.js.org/api/DayPickerInput/#onDayChange
     if (date) {
-      this.props.dispatchLineItemDate(this.props.identity, date);
+      const { dispatchUpdateLineitem, accessId, parent, isDebit } = this.props;
+      dispatchUpdateLineitem({
+        estimateDate: moment(date).format(),
+        parent,
+        accessId,
+        isDebit,
+      });
     }
   }
 
   validateCurrencyAndUpdate(event) {
     const { value } = event.target;
-    if (isCurrency(value)) {
-      const { dispatchLineItemPlanned, identity } = this.props;
-      dispatchLineItemPlanned(identity, value);
+    if (isCurrency(value, {
+      digits_after_decimal: [1, 2],
+    })) {
+      const { dispatchUpdateLineitem, accessId, parent, isDebit } = this.props;
+      dispatchUpdateLineitem({
+        estimate: value,
+        parent,
+        accessId,
+        isDebit,
+      });
     }
   }
 
@@ -159,19 +181,19 @@ class LineItem extends Component {
                 forwardRef={ this.plannedRef }
                 onFocus={ this.setPlannedHasFocusAndSelectAllText() }
                 onBlur={ this.normalizePlannedValueAndUnfocus() }
-                defaultValue={ this.props.plannedValue }
+                defaultValue={ this.getDecimalValue() }
                 onChange={ this.validateCurrencyAndUpdate }
               />
             </LineItemFlexContainer> :
             <ClickableLineItemFlexContainer onClick={ this.editLineItem } tabIndex={0} onFocus={ this.editLineItem }>
               <LabelDisplayField>
-                { this.props.labelValue }
+                { this.props.labelValue.trim() === '' ? 'Budget Item Label' : this.props.labelValue }
               </LabelDisplayField>
               <AttributeDisplayField margin='0 1rem'>
                 { this.getDateString() }
               </AttributeDisplayField>
               <AttributeDisplayField>
-                ${ this.props.plannedValue }
+                ${ this.getDecimalValue() }
               </AttributeDisplayField>
             </ClickableLineItemFlexContainer>
         }
@@ -181,10 +203,7 @@ class LineItem extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchDeleteLineItem: identity => dispatch(deleteLineItem({ identity })),
-  dispatchLineItemLabel: (identity, label) => dispatch(lineItemLabel({ identity, label })),
-  dispatchLineItemDate: (identity, date) => dispatch(lineItemDate({ identity, date })),
-  dispatchLineItemPlanned: (identity, planned) => dispatch(lineItemPlanned({ identity, planned })),
+  dispatchUpdateLineitem: (updateObject) => dispatch(updateLineitem(updateObject)),
 });
 
 export default connect(null, mapDispatchToProps)(LineItem);
@@ -193,11 +212,10 @@ LineItem.propTypes = {
   labelValue: PropTypes.string.isRequired,
   dayPickerValue: PropTypes.string.isRequired,
   plannedValue: PropTypes.string.isRequired,
-  identity: PropTypes.string.isRequired,
-  dispatchDeleteLineItem: PropTypes.func.isRequired,
-  dispatchLineItemLabel: PropTypes.func.isRequired,
-  dispatchLineItemDate: PropTypes.func.isRequired,
-  dispatchLineItemPlanned: PropTypes.func.isRequired,
+  accessId: PropTypes.string.isRequired,
+  parent: PropTypes.string.isRequired,
+  isDebit: PropTypes.bool.isRequired,
+  dispatchUpdateLineitem: PropTypes.func.isRequired,
 };
 
 

@@ -9,6 +9,7 @@ export const LOOKUP = `${BUDGET} LOOKUP`;
 export const STATUS = `${BUDGET} STATUS`;
 export const SET_LOADED_DATA = `${BUDGET} SET_LOADED_DATA`;
 export const UPDATE_CATEGORY_GROUP_LABEL = `${BUDGET} UPDATE_CATEGORY_GROUP_LABEL`;
+export const UPDATE_LINEITEM = `${BUDGET} UPDATE_LINEITEM`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -83,6 +84,16 @@ export const updateCategoryGroupLabel = ({ isDebit, accessId, categoryLabel }) =
   isDebit,
 });
 
+export const updateLineitem = ({ isDebit, parent, accessId, label, estimateDate, estimate }) => ({
+  type: UPDATE_LINEITEM,
+  accessId,
+  label,
+  estimateDate,
+  estimate,
+  parent,
+  isDebit,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -114,6 +125,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     
     case UPDATE_CATEGORY_GROUP_LABEL:
       return reduceCategoryGroupLabel(state, action);
+    
+    case UPDATE_LINEITEM:
+      return reduceUpdateLineitem(state, action);
 
     default:
       return state;
@@ -133,6 +147,36 @@ const reduceCategoryGroupLabel = (state, { isDebit, categoryLabel, accessId }) =
         [accessId]: {
           ...state['categoryGroups'][groupKey][accessId],
           categoryLabel: categoryLabel,
+        },
+      },
+    },
+  });
+};
+
+const reduceUpdateLineitem = (state, { isDebit, parent, accessId, label, estimateDate, estimate }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [parent]: {
+          ...state['categoryGroups'][groupKey][parent],
+          lineItems: {
+            ...state['categoryGroups'][groupKey][parent]['lineItems'],
+            [accessId]: {
+              ...state['categoryGroups'][groupKey][parent]['lineItems'][accessId],
+              label: typeof label === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].label :
+                label,
+              estimateDate: typeof estimateDate === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].estimateDate :
+                estimateDate,
+              estimate: typeof estimate === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].estimate :
+                estimate,
+            },
+          },
         },
       },
     },

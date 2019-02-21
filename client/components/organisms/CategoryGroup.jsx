@@ -19,7 +19,6 @@ class CategoryGroup extends Component {
 
   render() {
     const { accessId, categoryLabel, canEdit, isDebit, lineItems } = this.props;
-    console.dir(isDebit)
     return (
       <CategoryGroupContainer>
         <CategoryGroupHeader
@@ -28,6 +27,20 @@ class CategoryGroup extends Component {
           accessId={ accessId }
           isDebit={ isDebit }
         />
+        {Object.keys(lineItems).map(key => {
+          const li = lineItems[key];
+          return (
+            <LineItem
+              key={ key }
+              accessId={ key}
+              labelValue={ li.label }
+              dayPickerValue={ li.estimateDate }
+              plannedValue={ li.estimate }
+              parent={ accessId }
+              isDebit={ isDebit }
+            />
+          );
+        })}
       </CategoryGroupContainer>
     );
   }
