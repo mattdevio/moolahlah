@@ -21,6 +21,7 @@ function protectedRoute() {
         status: 0,
       }));
     } else {
+      req.session.touch(); // refresh session
       next();
     }
 

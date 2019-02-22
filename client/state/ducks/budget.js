@@ -2,11 +2,14 @@
 export const BUDGET = '[budget]';
 
 // Actions
+export const START = `${BUDGET} START`;
 export const CURRENT_YEAR = `${BUDGET} CURRENT_YEAR`;
 export const CURRENT_MONTH = `${BUDGET} CURRENT_MONTH`;
 export const LOOKUP = `${BUDGET} LOOKUP`;
 export const STATUS = `${BUDGET} STATUS`;
-export const SET_DATA = `${BUDGET} SET_DATA`;
+export const SET_LOADED_DATA = `${BUDGET} SET_LOADED_DATA`;
+export const UPDATE_CATEGORY_GROUP_LABEL = `${BUDGET} UPDATE_CATEGORY_GROUP_LABEL`;
+export const UPDATE_LINEITEM = `${BUDGET} UPDATE_LINEITEM`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -22,12 +25,15 @@ const BUDGET_INITIAL_STATE = {
   currentYear: TODAY.getFullYear(),
   currentMonth: TODAY.getMonth(),
   budgetStatus: BudgetStatusEnum.loading,
-  incomeCategories: [],
-  expenseCategories: [],
-  budgetRecords: [],
+  categoryGroups: {},
 };
 
 // Action Creators
+
+export const startBudget = () => ({
+  type: START,
+});
+
 export const setCurrentYear = currentYear => ({
   type: CURRENT_YEAR,
   currentYear,
@@ -64,11 +70,28 @@ export const setBudgetStatusErrored = () => ({
   budgetStatus: BudgetStatusEnum.error,
 });
 
-export const setBudgetData = ({ incomeCategories, expenseCategories, budgetRecords }) => ({
-  type: SET_DATA,
-  incomeCategories,
-  expenseCategories,
-  budgetRecords,
+export const setLoadedData = ({ categoryGroups, currentMonth, currentYear }) => ({
+  type: SET_LOADED_DATA,
+  categoryGroups,
+  currentMonth,
+  currentYear,
+});
+
+export const updateCategoryGroupLabel = ({ isDebit, accessId, categoryLabel }) => ({
+  type: UPDATE_CATEGORY_GROUP_LABEL,
+  accessId,
+  categoryLabel,
+  isDebit,
+});
+
+export const updateLineitem = ({ isDebit, parent, accessId, label, estimateDate, estimate }) => ({
+  type: UPDATE_LINEITEM,
+  accessId,
+  label,
+  estimateDate,
+  estimate,
+  parent,
+  isDebit,
 });
 
 /**
@@ -93,12 +116,18 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
         budgetStatus: action.budgetStatus,
       });
     
-    case SET_DATA:
+    case SET_LOADED_DATA:
       return Object.assign({}, state, {
-        incomeCategories: action.incomeCategories,
-        expenseCategories: action.expenseCategories,
-        budgetRecords: action.budgetRecords,
+        categoryGroups: action.categoryGroups,
+        currentMonth: action.currentMonth,
+        currentYear: action.currentYear,
       });
+    
+    case UPDATE_CATEGORY_GROUP_LABEL:
+      return reduceCategoryGroupLabel(state, action);
+    
+    case UPDATE_LINEITEM:
+      return reduceUpdateLineitem(state, action);
 
     default:
       return state;
@@ -107,3 +136,49 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 };
 
 export default budgetReducer;
+
+const reduceCategoryGroupLabel = (state, { isDebit, categoryLabel, accessId }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [accessId]: {
+          ...state['categoryGroups'][groupKey][accessId],
+          categoryLabel: categoryLabel,
+        },
+      },
+    },
+  });
+};
+
+const reduceUpdateLineitem = (state, { isDebit, parent, accessId, label, estimateDate, estimate }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [parent]: {
+          ...state['categoryGroups'][groupKey][parent],
+          lineItems: {
+            ...state['categoryGroups'][groupKey][parent]['lineItems'],
+            [accessId]: {
+              ...state['categoryGroups'][groupKey][parent]['lineItems'][accessId],
+              label: typeof label === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].label :
+                label,
+              estimateDate: typeof estimateDate === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].estimateDate :
+                estimateDate,
+              estimate: typeof estimate === 'undefined' ?
+                state['categoryGroups'][groupKey][parent]['lineItems'][accessId].estimate :
+                estimate,
+            },
+          },
+        },
+      },
+    },
+  });
+};
