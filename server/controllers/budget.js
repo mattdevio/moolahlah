@@ -359,6 +359,37 @@ budgetRouter.post('/update_category', protectedRoute(), Category.updateCategoryV
 
 });
 
+/**
+ * POST /delete_record
+ * Removes a line item from a category group
+ */
+budgetRouter.post('/delete_record', protectedRoute(), BudgetRecord.deleteRecordValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  let deleteRecord__;
+  try {
+    deleteRecord__ = await BudgetRecord.query()
+      .delete()
+      .where('access_id', accessId);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (deleteRecord__ !== 1) return res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Failed to delete record',
+  }));
+
+  res.json(apiResponse({
+    message: 'Record deleted',
+    data: {
+      accessId: accessId,
+    },
+  }));
+
+});
+
 
 // Export router
 module.exports = budgetRouter;

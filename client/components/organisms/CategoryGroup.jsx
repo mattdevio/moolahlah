@@ -64,7 +64,7 @@ const CategoryGroupContainer = styled.div`
   width: 100%;
   margin-bottom: 2rem;
   min-width: 55rem;
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
   padding: 1rem;
 `;
 
@@ -81,10 +81,9 @@ const AddLineItem = styled.button`
   margin: 0.5rem 0 0 0;
   padding: 0.3rem;
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.3s;
   &:hover,
   &:focus, {
     opacity: 0.9;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
   }
 `;

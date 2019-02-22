@@ -102,6 +102,32 @@ class BudgetRecord extends BaseModel {
     ];
   }
 
+  static deleteRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+      
+      body('')
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let recordOwnership__;
+          try {
+            recordOwnership__ = await BudgetRecord.query().leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('budget_record.access_id', accessId);
+          } catch (e) {
+            return reject('Budget record lookup failed');
+          }
+          if (recordOwnership__.length !== 1) return reject('No record matching that accessId');
+          resolve();
+        })),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
 }
 
 module.exports = BudgetRecord;

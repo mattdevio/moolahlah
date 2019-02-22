@@ -30,13 +30,14 @@ $ docker-compose build
 $ docker-compose up
 ```
 
-**Notice:** The first time you start the application, it will take a _long time_ to download the docker images and initialize the services. After the services are started you will need to run the database migrations and seeders to initialize the db. A good indication that the containers have finished building is when you see the webpack compiler output.
+**Notice:** The first time you start the application, it will take a _long time_ to download the docker images and initialize the services. After the services are started you will need to run the database migrations to initialize the db. A good indication that the containers have finished building is when you see the webpack compiler output.
 
 You can read more about the migration tools in [database management](#database_management).
 
+You **DO NOT** have to run the seeders as the migration files will make the seed calls for you.
+
 ```bash
 $ npm run migrate:latest
-$ npm run seed:run
 ```
 
 <table>
