@@ -25,6 +25,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
   switch (action.type) {
 
     case START:
+      next(setBudgetStatusLoading());
       processStartBudget(getState(), next);
       break;
     
@@ -34,6 +35,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
     
     case `${START} ${API_ERROR}`:
       // Needs a more robust solution, for now this will work.
+      next(setBudgetStatusNotStarted());
       next(showErrorMessage('Start Budget API Error: Unhandled Error!'));
       break;
 

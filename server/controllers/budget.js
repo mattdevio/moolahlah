@@ -117,14 +117,23 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
         };
         return acc;
       }, {});
-    accumulator[value.accessId] = {
-      categoryLabel: value.categoryLabel,
-      canEdit: value.canEdit,
-      isDebit: value.isDebit,
-      lineItems: lineItems,
-    };
+    if (value.isDebit) {
+      accumulator.debit[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } else {
+      accumulator.income[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } 
     return accumulator;
-  }, {});
+  }, { debit: {}, income: {} });
   
   // Send budget information back to client
   res.status(201).json(apiResponse({

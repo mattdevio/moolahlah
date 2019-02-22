@@ -35,6 +35,7 @@ class BudgetDesignPage extends Component {
   renderCategoryGroups() {
     const { categoryGroups } = this.props;
     const { income, debit } = categoryGroups;
+    console.dir(income);
     return (
       <Fragment>
         {Object.keys(income).map(key => {
