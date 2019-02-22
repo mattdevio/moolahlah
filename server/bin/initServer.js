@@ -77,6 +77,9 @@ const initServer = () => {
       publicPath: fullWebpackConfig.output.publicPath,
     }));
 
+    // Add some fake network latency
+    app.use((req, res, next) => setTimeout(next, 50));
+
     // Mount Controllers
     loadControllers(app);
 

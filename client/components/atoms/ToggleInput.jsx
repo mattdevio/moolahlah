@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-// Custom Imports
-
 
 class ToggleInput extends Component {
 
@@ -39,35 +37,35 @@ class ToggleInput extends Component {
 
   render() {
     const { isInput } = this.state;
-    const { value, onValueChange, placeholder, canNotEdit } = this.props;
-    if (canNotEdit) {
+    const { value, onValueChange, placeholder, canEdit } = this.props;
+    if (canEdit) {
       return (
         <ToggleInputContainer>
-          <NoEditDisplay>
-            { value }
-          </NoEditDisplay>
+          {
+            isInput ?
+              <ToggleInputTextField
+                value={ value }
+                onBlur={ this.handleOnBlur }
+                ref={ this.inputRef }
+                onChange={ e => onValueChange(e.target.value)}
+                placeholder={ placeholder }
+              /> :
+              <ToggleInputDisplay
+                onClick={ this.turnOnInput }
+                tabIndex={ 0 }
+                onFocus={ this.turnOnInput }
+              >
+                { value.trim() === '' ? placeholder : value }
+              </ToggleInputDisplay>
+          }
         </ToggleInputContainer>
       );
     }
     return (
       <ToggleInputContainer>
-        {
-          isInput ?
-            <ToggleInputTextField
-              value={ value }
-              onBlur={ this.handleOnBlur }
-              ref={ this.inputRef }
-              onChange={ e => onValueChange(e.target.value)}
-              placeholder={ placeholder }
-            /> :
-            <ToggleInputDisplay
-              onClick={ this.turnOnInput }
-              tabIndex={ 0 }
-              onFocus={ this.turnOnInput }
-            >
-              { value.trim() === '' ? 'Category Title' : value }
-            </ToggleInputDisplay>
-        }
+        <NoEditDisplay>
+          { value.trim() === '' ? placeholder : value }
+        </NoEditDisplay>
       </ToggleInputContainer>
     );
   }
@@ -77,7 +75,7 @@ ToggleInput.propTypes = {
   value: PropTypes.string.isRequired,
   onValueChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
-  canNotEdit: PropTypes.bool,
+  canEdit: PropTypes.bool.isRequired,
 };
 
 export default ToggleInput;
@@ -99,6 +97,7 @@ const ToggleInputDisplay = styled.p`
   cursor: pointer;
   padding: 0.3rem 0;
   border: 1px solid transparent;
+  text-transform: uppercase;
   &:hover {
     background-color: ${({theme}) => theme.skyBlue};
   }
@@ -114,6 +113,7 @@ const ToggleInputTextField = styled.input.attrs({
   border: 1px solid ${({ theme }) => theme.black };
   padding: 0.3rem;
   width: 100%;
+  text-transform: uppercase;
   &:focus {
     outline: 0;
   }

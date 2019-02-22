@@ -26,6 +26,13 @@ module.exports = {
       database: MYSQL_DB_NAME,
       user:     MYSQL_USERNAME,
       password: MYSQL_PASSWORD,
+      typeCast (field, next) {
+        if (field.type === 'TINY' && field.length === 1) {
+          const value = field.string();
+          return value ? value === '1' : null;
+        }
+        return next();
+      }
     },
     pool: {
       min: 0,
@@ -48,6 +55,13 @@ module.exports = {
       database: MYSQL_DB_NAME,
       user:     MYSQL_USERNAME,
       password: MYSQL_PASSWORD,
+      typeCast (field, next) {
+        if (field.type === 'TINY' && field.length === 1) {
+          const value = field.string();
+          return value ? value === '1' : null;
+        }
+        return next();
+      }
     },
     pool: {
       min: 2,

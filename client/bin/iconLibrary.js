@@ -10,6 +10,7 @@ import {
   faPlusCircle,
   faMinusCircle,
   faTrash,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -23,4 +24,5 @@ library.add(
   faPlusCircle,          // plus-circle
   faMinusCircle,         // minus-circle
   faTrash,               // fa-trash
+  faSpinner,             // spinner
 );
