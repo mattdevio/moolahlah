@@ -1,3 +1,10 @@
+// Vendor Imports
+const appRoot = require('app-root-path');
+
+// Custom Imports
+const populate_status_table = require(`${appRoot}/server/db/seeds/populate_status_table`);
+
+// Setup
 const tableName = 'status';
 
 exports.up = function(knex, Promise) {
@@ -11,6 +18,7 @@ exports.up = function(knex, Promise) {
       table.integer('status_id').unsigned().notNullable();
       table.foreign('status_id').references(`${tableName}.id`);
     });
+    await populate_status_table.seed(knex, Promise);
     resolve();
   });
 };

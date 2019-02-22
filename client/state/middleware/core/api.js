@@ -1,5 +1,5 @@
 /*----------  Vendor Imports  ----------*/
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 
 /*----------  Custom Imports  ----------*/
 import {
@@ -9,23 +9,37 @@ import {
 } from '@/state/ducks/api';
 import { showErrorMessage } from '@/state/ducks/toast';
 
+// Cancelation Store
+const cancelStore = {};
+
 /*----------  apiMiddleware  ----------*/
 const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
   next(action);
 
   if (action.type.includes(API_REQUEST)) {
-    const { url, method, feature } = action.meta;
+    const { url, method, feature, cancelable } = action.meta;
 
-    let request = {
+    // Init Request Body
+    const request = {
       method,
       url,
       data: action.payload,
     };
 
+    // Handle cancel request option.
+    if (cancelable) {
+      if (typeof cancelStore[action.type] !== typeof undefined) {
+        cancelStore[action.type].cancel('Operation canceled due to new request');
+      }
+      cancelStore[action.type] = CancelToken.source();
+      request.cancelToken = cancelStore[action.type].token;
+    }
+
     let thunk;
     try {
       thunk = await axios(request);
     } catch (error) {
+      if (axios.isCancel(error)) return; // No-op for canceled requests
       if (error && error.response && error.response.data) {
         const { data } = error.response;
         return dispatch(apiError({

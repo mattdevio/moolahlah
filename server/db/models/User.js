@@ -25,8 +25,11 @@ class User extends BaseModel {
   }
 
   static get relationMappings() {
+
+    // Import here to avoid require loops
     const Status = require(`${appRoot}/server/db/models/Status`);
     const BudgetRecord = require(`${appRoot}/server/db/models/BudgetRecord`);
+
     return {
 
       status: {
