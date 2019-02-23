@@ -10,6 +10,9 @@ export const STATUS = `${BUDGET} STATUS`;
 export const SET_LOADED_DATA = `${BUDGET} SET_LOADED_DATA`;
 export const UPDATE_CATEGORY_GROUP_LABEL = `${BUDGET} UPDATE_CATEGORY_GROUP_LABEL`;
 export const UPDATE_LINEITEM = `${BUDGET} UPDATE_LINEITEM`;
+export const REQUEST_DELETE_LINEITEM = `${BUDGET} REQUEST_DELETE_LINEITEM`;
+export const SET_IS_BEING_DELETED_ATTRIBUTE = `${BUDGET} SET_IS_BEING_DELETED_ATTRIBUTE`;
+export const DELETE_LINEITEM = `${BUDGET} DELETE_LINEITEM`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -94,6 +97,28 @@ export const updateLineitem = ({ isDebit, parent, accessId, label, estimateDate,
   isDebit,
 });
 
+export const requestDeleteLineitem = ({ isDebit, parent, accessId }) => ({
+  type: REQUEST_DELETE_LINEITEM,
+  isDebit,
+  parent,
+  accessId,
+});
+
+export const setIsBeingDeletedAttribute = ({ isDebit, parent, accessId, isBeingDeleted }) => ({
+  type: SET_IS_BEING_DELETED_ATTRIBUTE,
+  isDebit,
+  parent,
+  accessId,
+  isBeingDeleted,
+});
+
+export const deleteLineitem = ({ isDebit, parent, accessId }) => ({
+  type: DELETE_LINEITEM,
+  isDebit,
+  parent,
+  accessId,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -128,6 +153,12 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     
     case UPDATE_LINEITEM:
       return reduceUpdateLineitem(state, action);
+    
+    case SET_IS_BEING_DELETED_ATTRIBUTE:
+      return reduceIsBeingDeletedAttribute(state, action);
+
+    case DELETE_LINEITEM:
+      return reduceDeleteLineitem(state, action);
 
     default:
       return state;
@@ -176,6 +207,47 @@ const reduceUpdateLineitem = (state, { isDebit, parent, accessId, label, estimat
                 state['categoryGroups'][groupKey][parent]['lineItems'][accessId].estimate :
                 estimate,
             },
+          },
+        },
+      },
+    },
+  });
+};
+
+const reduceIsBeingDeletedAttribute = (state, { isDebit, parent, accessId, isBeingDeleted }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [parent]: {
+          ...state['categoryGroups'][groupKey][parent],
+          lineItems: {
+            ...state['categoryGroups'][groupKey][parent]['lineItems'],
+            [accessId]: {
+              ...state['categoryGroups'][groupKey][parent]['lineItems'][accessId],
+              isBeingDeleted: isBeingDeleted,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+const reduceDeleteLineitem = (state, { isDebit, parent, accessId }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [parent]: {
+          ...state['categoryGroups'][groupKey][parent],
+          lineItems: {
+            ...state['categoryGroups'][groupKey][parent]['lineItems'],
+            [accessId]: undefined,
           },
         },
       },

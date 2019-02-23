@@ -29,6 +29,7 @@ class CategoryGroup extends Component {
         />
         {Object.keys(lineItems).map(key => {
           const li = lineItems[key];
+          if (!li) return; // don't remove this line
           return (
             <LineItem
               key={ key }
@@ -38,6 +39,7 @@ class CategoryGroup extends Component {
               plannedValue={ li.estimate }
               parent={ accessId }
               isDebit={ isDebit }
+              isBeingDeleted={ li.isBeingDeleted }
             />
           );
         })}

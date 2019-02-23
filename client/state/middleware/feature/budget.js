@@ -9,10 +9,13 @@ import {
   LOOKUP,
   UPDATE_CATEGORY_GROUP_LABEL,
   UPDATE_LINEITEM,
+  REQUEST_DELETE_LINEITEM,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
   setBudgetStatusNotStarted,
+  setIsBeingDeletedAttribute,
+  deleteLineitem,
 } from '@/state/ducks/budget';
 
 /**
@@ -84,6 +87,32 @@ const budgetMiddleware = ({ getState }) => next => action => {
     case `${UPDATE_LINEITEM} ${API_ERROR}`:
       processUpdateLineitemApiError(next, action);
       break;
+    
+    case REQUEST_DELETE_LINEITEM:
+      next(setIsBeingDeletedAttribute({
+        isDebit: action.isDebit,
+        parent: action.parent,
+        accessId: action.accessId,
+        isBeingDeleted: true,
+      }));
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/delete_record',
+        feature: REQUEST_DELETE_LINEITEM,
+        cacheAction: action,
+      }));
+      break;
+    
+    case `${REQUEST_DELETE_LINEITEM} ${API_SUCCESS}`:
+      processRequestDeleteItemApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_DELETE_LINEITEM} ${API_ERROR}`:
+      processRequestDeleteItemApiError(next, action);
+      break;
 
   }
 
@@ -112,6 +141,14 @@ const processBudgetData = (next, { payload }) => {
   const parsedStartDate = new Date(budgetStartDate);
   const currentMonth = parsedStartDate.getUTCMonth();
   const currentYear = parsedStartDate.getUTCFullYear();
+  // Add extra option to line item so I can tell when its being deleted
+  Object.keys(categoryGroups).forEach(catKeys => {
+    Object.keys(categoryGroups[catKeys]).forEach(cats => {
+      Object.keys(categoryGroups[catKeys][cats].lineItems).forEach(li => {
+        categoryGroups[catKeys][cats].lineItems[li].isBeingDeleted = false;
+      });
+    });
+  });
 
   next(setLoadedData({ categoryGroups, currentMonth, currentYear }));
   next(setBudgetStatusLoaded());
@@ -175,6 +212,40 @@ const processUpdateLineitemApiSuccess = (next, { payload }) => {
 
 const processUpdateLineitemApiError = (next, { payload }) => {
   const { message, errors } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestDeleteItemApiSuccess = (next, { meta, payload }) => {
+  const { status, message } = payload;
+  const { isDebit, parent, accessId } = meta.cacheAction;
+  if (status === 1 && message === 'Record deleted') {
+    next(deleteLineitem({
+      isDebit,
+      parent,
+      accessId,
+    }));
+  } else {
+    next(deleteLineitem({
+      isDebit,
+      parent,
+      accessId,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestDeleteItemApiError = (next, { meta, payload }) => {
+  const { message, errors } = payload;
+  const { isDebit, parent, accessId } = meta.cacheAction;
+  next(setIsBeingDeletedAttribute({
+    isDebit,
+    parent,
+    accessId,
+  }));
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));
   } else {
