@@ -2,7 +2,6 @@
 const appRoot = require('app-root-path');
 const { Router } = require('express');
 const { transaction } = require('objection');
-const moment = require('moment');
 
 // Custom imports
 const { logger } = require(`${appRoot}/server/bin/utility`);

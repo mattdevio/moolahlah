@@ -115,7 +115,7 @@ class Category extends BaseModel {
             categoryIsValid__ = await Category.query()
               .leftJoinRelation('users')
               .where('users.email', email)
-              .andWhere('category.access_id', accessId)
+              .andWhere('category.access_id', accessId);
           } catch (e) {
             return reject('Category lookup failed');
           }
