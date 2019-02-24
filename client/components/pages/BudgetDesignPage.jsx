@@ -39,23 +39,27 @@ class BudgetDesignPage extends Component {
       <Fragment>
         {Object.keys(income).map(key => {
           const incomeRecord = income[key];
-          return (
-            <CategoryGroup
-              key={ key }
-              accessId={ key }
-              { ...incomeRecord }
-            />
-          );
+          if (incomeRecord) {
+            return (
+              <CategoryGroup
+                key={ key }
+                accessId={ key }
+                { ...incomeRecord }
+              />
+            );
+          }
         })}
         {Object.keys(debit).map(key => {
           const debitRecord = debit[key];
-          return (
-            <CategoryGroup
-              key={ key }
-              accessId={ key }
-              { ...debitRecord }
-            />
-          );
+          if (debitRecord) {
+            return (
+              <CategoryGroup
+                key={ key }
+                accessId={ key }
+                { ...debitRecord }
+              />
+            );
+          }
         })}
       </Fragment>
     );

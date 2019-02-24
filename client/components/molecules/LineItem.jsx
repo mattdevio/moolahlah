@@ -155,10 +155,11 @@ class LineItem extends Component {
 
 
   render() {
-    if (this.props.isBeingDeleted) {
+    const { isBeingDeleted, categoryIsBeingDeleted } = this.props;
+    if (isBeingDeleted || categoryIsBeingDeleted) {
       return (
         <LineItemContainer>
-          <LineItemFlexContainer isBeingDeleted>
+          <LineItemFlexContainer isBeingDeleted={isBeingDeleted}>
             <LabelDisplayField>
               { this.props.labelValue.trim() === '' ? 'Budget Item Label' : this.props.labelValue }
             </LabelDisplayField>
@@ -243,6 +244,7 @@ LineItem.propTypes = {
   isBeingDeleted: PropTypes.bool.isRequired,
   dispatchUpdateLineitem: PropTypes.func.isRequired,
   dispatchRequestDeleteLineitem: PropTypes.func.isRequired,
+  categoryIsBeingDeleted: PropTypes.bool.isRequired,
 };
 
 

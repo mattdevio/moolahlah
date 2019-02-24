@@ -26,6 +26,9 @@ class ToggleInput extends Component {
   }
 
   deleteCategory() {
+    this.setState({
+      hasFocus: false,
+    });
     const { dispatchRequestDeleteCategory, accessId, isDebit } = this.props;
     dispatchRequestDeleteCategory({
       accessId,
@@ -73,8 +76,8 @@ class ToggleInput extends Component {
 
   render() {
     const { hasFocus } = this.state;
-    const { value, onValueChange, placeholder, canEdit } = this.props;
-    if (canEdit) {
+    const { value, onValueChange, placeholder, canEdit, categoryIsBeingDeleted } = this.props;
+    if (canEdit && !categoryIsBeingDeleted) {
       return (
         <ToggleInputContainer>
           {
@@ -125,6 +128,7 @@ ToggleInput.propTypes = {
   isDebit: PropTypes.bool.isRequired,
   accessId: PropTypes.string.isRequired,
   dispatchRequestDeleteCategory: PropTypes.func.isRequired,
+  categoryIsBeingDeleted: PropTypes.bool.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({

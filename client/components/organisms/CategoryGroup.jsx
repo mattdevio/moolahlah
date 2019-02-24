@@ -26,14 +26,15 @@ class CategoryGroup extends Component {
   }
 
   render() {
-    const { accessId, categoryLabel, canEdit, isDebit, lineItems } = this.props;
+    const { accessId, categoryLabel, canEdit, isDebit, lineItems, isBeingDeleted } = this.props;
     return (
-      <CategoryGroupContainer>
+      <CategoryGroupContainer isBeingDeleted={ isBeingDeleted }>
         <CategoryGroupHeader
           categoryLabel={ categoryLabel }
           canEdit={ canEdit }
           accessId={ accessId }
           isDebit={ isDebit }
+          categoryIsBeingDeleted={ isBeingDeleted }
         />
         {Object.keys(lineItems).map(key => {
           const li = lineItems[key];
@@ -48,6 +49,7 @@ class CategoryGroup extends Component {
               parent={ accessId }
               isDebit={ isDebit }
               isBeingDeleted={ li.isBeingDeleted }
+              categoryIsBeingDeleted={ isBeingDeleted }
             />
           );
         })}
@@ -64,6 +66,7 @@ CategoryGroup.propTypes = {
   isDebit: PropTypes.bool.isRequired,
   lineItems: PropTypes.object.isRequired,
   dispatchRequestNewLineitem: PropTypes.func.isRequired,
+  isBeingDeleted: PropTypes.bool.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -81,6 +84,13 @@ const CategoryGroupContainer = styled.div`
   min-width: 55rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
   padding: 1rem;
+  ${({ isBeingDeleted }) => {
+    if (isBeingDeleted) {
+      return `
+        opacity: 0.3;
+      `;
+    }
+  }}
 `;
 
 const AddLineItem = styled.button`

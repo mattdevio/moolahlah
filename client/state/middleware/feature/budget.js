@@ -11,6 +11,7 @@ import {
   UPDATE_LINEITEM,
   REQUEST_DELETE_LINEITEM,
   REQUEST_NEW_LINEITEM,
+  REQUEST_DELETE_CATEGORY,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -18,6 +19,8 @@ import {
   setLineitemIsBeingDeleted,
   deleteLineitem,
   addLineitem,
+  setCategoryIsBeingDeleted,
+  deleteCategory,
 } from '@/state/ducks/budget';
 
 /**
@@ -133,6 +136,36 @@ const budgetMiddleware = ({ getState }) => next => action => {
 
     case `${REQUEST_NEW_LINEITEM} ${API_ERROR}`:
       processNewLineItemApiError(next, action);
+      break;
+    
+    case REQUEST_DELETE_CATEGORY:
+      next(setCategoryIsBeingDeleted({
+        accessId: action.accessId,
+        isDebit: action.isDebit,
+        isBeingDeleted: true,
+      }));
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/delete_category',
+        feature: REQUEST_DELETE_CATEGORY,
+        cacheAction: action,
+      }));
+      break;
+    
+    case `${REQUEST_DELETE_CATEGORY} ${API_SUCCESS}`:
+      processRequestDeleteCategoryApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_DELETE_CATEGORY} ${API_ERROR}`:
+      next(setCategoryIsBeingDeleted({
+        accessId: action.accessId,
+        isDebit: action.isDebit,
+        isBeingDeleted: true,
+      }));
+      processRequestDeleteCategoryApiError(next, action);
       break;
 
   }
@@ -302,6 +335,33 @@ const processNewLineItemApiSuccess = (next, { payload }) => {
 };
 
 const processNewLineItemApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+
+const processRequestDeleteCategoryApiSuccess = (next, { meta, payload }) => {
+  const { status, message } = payload;
+  const { isDebit, accessId } = meta.cacheAction;
+  if (status === 1 && message === 'Category deleted') {
+    next(deleteCategory({
+      accessId,
+      isDebit,
+    }));
+  } else {
+    next(deleteCategory({
+      accessId,
+      isDebit,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestDeleteCategoryApiError = (next, { payload }) => {
   const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));

@@ -145,6 +145,19 @@ export const requestDeleteCategory = ({ isDebit, accessId }) => ({
   accessId,
 });
 
+export const setCategoryIsBeingDeleted = ({ isDebit, accessId, isBeingDeleted }) => ({
+  type: CATEGORY_IS_BEING_DELETED,
+  isDebit,
+  accessId,
+  isBeingDeleted,
+});
+
+export const deleteCategory = ({ isDebit, accessId }) => ({
+  type: DELETE_CATEGORY,
+  isDebit,
+  accessId,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -188,6 +201,12 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     
     case ADD_LINEITEM:
       return reduceAddLineitem(state, action);
+
+    case CATEGORY_IS_BEING_DELETED:
+      return reduceCategoryIsBeingDeleted(state, action);
+
+    case DELETE_CATEGORY:
+      return reduceDeleteCategory(state, action);
 
     default:
       return state;
@@ -302,6 +321,35 @@ const reduceAddLineitem = (state, { accessId, label, estimateDate, estimate, par
             },
           },
         },
+      },
+    },
+  });
+};
+
+const reduceCategoryIsBeingDeleted = (state, { accessId, isDebit, isBeingDeleted }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [accessId]: {
+          ...state['categoryGroups'][groupKey][accessId],
+          isBeingDeleted: isBeingDeleted,
+        }
+      },
+    },
+  });
+};
+
+const reduceDeleteCategory = (state, { accessId, isDebit }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [accessId]: undefined,
       },
     },
   });

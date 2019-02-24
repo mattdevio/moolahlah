@@ -16,7 +16,7 @@ class CategoryGroupHeader extends Component {
   }
 
   render() {
-    const { categoryLabel, canEdit, dispatchUpdateCategoryGroupLabel, accessId, isDebit } = this.props;
+    const { categoryLabel, canEdit, dispatchUpdateCategoryGroupLabel, accessId, isDebit, categoryIsBeingDeleted } = this.props;
     return (
       <CategoryGroupHeaderContainer>
         <ToggleInput
@@ -26,6 +26,7 @@ class CategoryGroupHeader extends Component {
           canEdit={ canEdit }
           accessId={ accessId }
           isDebit={ isDebit }
+          categoryIsBeingDeleted={ categoryIsBeingDeleted }
         />
         <HeadHelper margin='0 1rem'>Date</HeadHelper>
         <HeadHelper>Planned</HeadHelper>
@@ -49,6 +50,7 @@ CategoryGroupHeader.propTypes = {
   isDebit: PropTypes.bool.isRequired,
   dispatchUpdateCategoryGroupLabel: PropTypes.func.isRequired,
   accessId: PropTypes.string.isRequired,
+  categoryIsBeingDeleted: PropTypes.bool.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(CategoryGroupHeader);
