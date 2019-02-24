@@ -32,6 +32,7 @@ class Category extends BaseModel {
 
     // Import models here to prevent require loops.
     const User = require(`${appRoot}/server/db/models/User`);
+    const Budget = require(`${appRoot}/server/db/models/Budget`);
 
     return {
       users: {
@@ -44,6 +45,14 @@ class Category extends BaseModel {
             to: 'budget.user_uuid',
           },
           to: 'users.uuid',
+        },
+      },
+      budget: {
+        relation: Model.HasOneRelation,
+        modelClass: Budget,
+        join: {
+          from: 'category.budget_id',
+          to: 'budget.id',
         },
       },
     };
@@ -87,6 +96,33 @@ class Category extends BaseModel {
           resolve();
         })),
       
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static createRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+      
+      body('')
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let categoryIsValid__;
+          try {
+            categoryIsValid__ = await Category.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('category.access_id', accessId)
+          } catch (e) {
+            return reject('Category lookup failed');
+          }
+          if (categoryIsValid__.length !== 1) return reject('Unknown category accessId');
+          resolve(); 
+        })),
+
       handleValidationErrors(),
 
     ];

@@ -2,6 +2,7 @@
 const appRoot = require('app-root-path');
 const { Router } = require('express');
 const { transaction } = require('objection');
+const moment = require('moment');
 
 // Custom imports
 const { logger } = require(`${appRoot}/server/bin/utility`);
@@ -394,6 +395,61 @@ budgetRouter.post('/delete_record', protectedRoute(), BudgetRecord.deleteRecordV
     message: 'Record deleted',
     data: {
       accessId: accessId,
+    },
+  }));
+
+});
+
+budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  let categoryData__;
+  try {
+    categoryData__ = await Category.query()
+      .select({
+        budgetId: 'category.budget_id',
+        categoryId: 'category.id',
+        startDate: 'budget.start_date',
+        accessId: 'category.access_id',
+        isDebit: 'category.is_debit',
+      })
+      .leftJoinRelation('budget')
+      .where('access_id', accessId).first();
+  } catch (e) {
+    next(e);
+  }
+
+  const newBudgetRecord = {
+    budget_id: categoryData__.budgetId,
+    category_id: categoryData__.categoryId,
+    label: '',
+    estimateDate: categoryData__.startDate,
+    estimate: 0.00,
+  };
+
+  let newRecordInsert__;
+  try {
+    newRecordInsert__ = await BudgetRecord.query()
+      .insertAndFetch(newBudgetRecord);
+  } catch (e) {
+    next(e);
+  }
+
+  if (!newRecordInsert__) res.status(400).json(apiResponse({
+    message: 'Record not created',
+    status: 0,
+  }));
+
+  res.json(apiResponse({
+    message: 'Record created',
+    data: {
+      accessId: newRecordInsert__.accessId,
+      label: newRecordInsert__.label,
+      estimateDate: newRecordInsert__.estimateDate,
+      estimate: newRecordInsert__.estimate,
+      parent: categoryData__.accessId,
+      isDebit: categoryData__.isDebit,
     },
   }));
 
