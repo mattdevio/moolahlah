@@ -86,7 +86,6 @@ const CategoryGroupContainer = styled.div`
 const AddLineItem = styled.button`
   display: block;
   width: 100%;
-  border: 0;
   background-color: ${({ theme }) => theme.mediumBlue};
   color: ${({ theme }) => theme.white};
   font-family: ${({ theme }) => theme.typeFont};
@@ -96,9 +95,10 @@ const AddLineItem = styled.button`
   margin: 0.5rem 0 0 0;
   padding: 0.3rem;
   cursor: pointer;
+  border: 2px solid transparent;
   &:hover,
-  &:focus, {
-    opacity: 0.9;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+  &:focus {
+    border: 2px solid ${({ theme }) => theme.skyBlue};
+    outline: 0;
   }
 `;
