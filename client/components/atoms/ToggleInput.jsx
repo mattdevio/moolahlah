@@ -3,6 +3,10 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { connect } from 'react-redux';
+
+// Custom Imports
+import { requestDeleteCategory } from '@/state/ducks/budget';
 
 
 class ToggleInput extends Component {
@@ -22,7 +26,11 @@ class ToggleInput extends Component {
   }
 
   deleteCategory() {
-    // Dispatch a delete record here
+    const { dispatchRequestDeleteCategory, accessId, isDebit } = this.props;
+    dispatchRequestDeleteCategory({
+      accessId,
+      isDebit,
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -114,9 +122,16 @@ ToggleInput.propTypes = {
   onValueChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
   canEdit: PropTypes.bool.isRequired,
+  isDebit: PropTypes.bool.isRequired,
+  accessId: PropTypes.string.isRequired,
+  dispatchRequestDeleteCategory: PropTypes.func.isRequired,
 };
 
-export default ToggleInput;
+const mapDispatchToProps = dispatch => ({
+  dispatchRequestDeleteCategory: ({ accessId, isDebit }) => dispatch(requestDeleteCategory({ accessId, isDebit })),
+});
+
+export default connect(null, mapDispatchToProps)(ToggleInput);
 
 
 

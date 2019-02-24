@@ -24,6 +24,8 @@ class CategoryGroupHeader extends Component {
           placeholder='Category Label'
           onValueChange={ categoryLabel => dispatchUpdateCategoryGroupLabel({ isDebit, accessId, categoryLabel }) }
           canEdit={ canEdit }
+          accessId={ accessId }
+          isDebit={ isDebit }
         />
         <HeadHelper margin='0 1rem'>Date</HeadHelper>
         <HeadHelper>Planned</HeadHelper>

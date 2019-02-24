@@ -11,10 +11,13 @@ export const SET_LOADED_DATA = `${BUDGET} SET_LOADED_DATA`;
 export const UPDATE_CATEGORY_GROUP_LABEL = `${BUDGET} UPDATE_CATEGORY_GROUP_LABEL`;
 export const UPDATE_LINEITEM = `${BUDGET} UPDATE_LINEITEM`;
 export const REQUEST_DELETE_LINEITEM = `${BUDGET} REQUEST_DELETE_LINEITEM`;
-export const SET_IS_BEING_DELETED_ATTRIBUTE = `${BUDGET} SET_IS_BEING_DELETED_ATTRIBUTE`;
+export const LINEITEM_IS_BEING_DELETED = `${BUDGET} LINEITEM_IS_BEING_DELETED`;
 export const DELETE_LINEITEM = `${BUDGET} DELETE_LINEITEM`;
 export const REQUEST_NEW_LINEITEM = `${BUDGET} REQUEST_NEW_LINEITEM`;
 export const ADD_LINEITEM = `${BUDGET} ADD_LINEITEM`;
+export const REQUEST_DELETE_CATEGORY = `${BUDGET} REQUEST_DELETE_CATEGORY`;
+export const CATEGORY_IS_BEING_DELETED = `${BUDGET} CATEGORY_IS_BEING_DELETED`;
+export const DELETE_CATEGORY = `${BUDGET} DELETE_CATEGORY`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -106,8 +109,8 @@ export const requestDeleteLineitem = ({ isDebit, parent, accessId }) => ({
   accessId,
 });
 
-export const setIsBeingDeletedAttribute = ({ isDebit, parent, accessId, isBeingDeleted }) => ({
-  type: SET_IS_BEING_DELETED_ATTRIBUTE,
+export const setLineitemIsBeingDeleted = ({ isDebit, parent, accessId, isBeingDeleted }) => ({
+  type: LINEITEM_IS_BEING_DELETED,
   isDebit,
   parent,
   accessId,
@@ -134,6 +137,12 @@ export const addLineitem = ({ accessId, label, estimateDate, estimate, parent, i
   estimate,
   parent,
   isDebit,
+});
+
+export const requestDeleteCategory = ({ isDebit, accessId }) => ({
+  type: REQUEST_DELETE_CATEGORY,
+  isDebit,
+  accessId,
 });
 
 /**
@@ -171,7 +180,7 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     case UPDATE_LINEITEM:
       return reduceUpdateLineitem(state, action);
     
-    case SET_IS_BEING_DELETED_ATTRIBUTE:
+    case LINEITEM_IS_BEING_DELETED:
       return reduceIsBeingDeletedAttribute(state, action);
 
     case DELETE_LINEITEM:

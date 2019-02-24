@@ -262,9 +262,7 @@ const LineItemFlexContainer = styled.div`
   ${({ isBeingDeleted }) => {
     if (isBeingDeleted) {
       return `
-        background: #333;
-        opacity: 0.5;
-        > * { color: #FFF !important; }
+        opacity: 0.3;
       `;
     }
   }}

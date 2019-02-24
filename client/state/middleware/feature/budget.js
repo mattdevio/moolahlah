@@ -15,7 +15,7 @@ import {
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
   setBudgetStatusNotStarted,
-  setIsBeingDeletedAttribute,
+  setLineitemIsBeingDeleted,
   deleteLineitem,
   addLineitem,
 } from '@/state/ducks/budget';
@@ -91,7 +91,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
       break;
     
     case REQUEST_DELETE_LINEITEM:
-      next(setIsBeingDeletedAttribute({
+      next(setLineitemIsBeingDeleted({
         isDebit: action.isDebit,
         parent: action.parent,
         accessId: action.accessId,
@@ -165,6 +165,7 @@ const processBudgetData = (next, { payload }) => {
   // Add extra option to line item so I can tell when its being deleted
   Object.keys(categoryGroups).forEach(catKeys => {
     Object.keys(categoryGroups[catKeys]).forEach(cats => {
+      categoryGroups[catKeys][cats].isBeingDeleted = false;
       Object.keys(categoryGroups[catKeys][cats].lineItems).forEach(li => {
         categoryGroups[catKeys][cats].lineItems[li].isBeingDeleted = false;
       });
@@ -262,10 +263,11 @@ const processRequestDeleteItemApiSuccess = (next, { meta, payload }) => {
 const processRequestDeleteItemApiError = (next, { meta, payload }) => {
   const { message, errors } = payload;
   const { isDebit, parent, accessId } = meta.cacheAction;
-  next(setIsBeingDeletedAttribute({
+  next(setLineitemIsBeingDeleted({
     isDebit,
     parent,
     accessId,
+    isBeingDeleted: false,
   }));
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));
