@@ -462,6 +462,7 @@ budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValid
 /**
  * POST /delete_category
  * Removes a category group and all of children lineitesm by the categorys accessId
+ * The children line items will be deleted from the database due to foreign relationship cascading deletion
  */
 budgetRouter.post('/delete_category', protectedRoute(), Category.deleteRecordValidation(), async (req, res, next) => {
 
