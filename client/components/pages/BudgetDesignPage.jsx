@@ -14,6 +14,7 @@ import CategoryGroup from '@/components/organisms/CategoryGroup';
 import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import StartNewMonth from '@/components/molecules/StartNewMonth';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
+import AddCategoryButton from '@/components/atoms/AddCategoryButton';
 import {
   lookupBudget,
   BudgetStatusEnum,
@@ -61,6 +62,7 @@ class BudgetDesignPage extends Component {
             );
           }
         })}
+        <AddCategoryButton />
       </Fragment>
     );
   }
@@ -71,7 +73,7 @@ class BudgetDesignPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            <MoolahlahLogo width='20' margin='0 auto 2rem auto' />
+            <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             <CurrentBudgetDisplay />
             { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
             { budgetStatus === BudgetStatusEnum.notStarted && <StartNewMonth /> }
