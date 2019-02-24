@@ -81,6 +81,7 @@ class Category extends BaseModel {
       
       body()
         .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
           const { email } = req.session.data;
           let result__;
           try {
@@ -109,6 +110,7 @@ class Category extends BaseModel {
       
       body('')
         .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
           const { email } = req.session.data;
           let categoryIsValid__;
           try {
@@ -123,6 +125,34 @@ class Category extends BaseModel {
           resolve(); 
         })),
 
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static deleteRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+
+      body('')
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
+          const { email } = req.session.data;
+          let validateOwnership__;
+          try {
+            validateOwnership__ = await Category.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('category.access_id', accessId);
+          } catch (e) {
+            return reject('Category lookup failed');
+          }
+          if (validateOwnership__.length !== 1) return reject('Unknown category accessId');
+          resolve();
+        })),
+      
       handleValidationErrors(),
 
     ];

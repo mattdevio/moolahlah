@@ -399,6 +399,10 @@ budgetRouter.post('/delete_record', protectedRoute(), BudgetRecord.deleteRecordV
 
 });
 
+/**
+ * POST /create_record
+ * Creates a new line item record for a given category group accessId.
+ */
 budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValidation(), async (req, res, next) => {
 
   const { accessId } = req.body;
@@ -449,6 +453,38 @@ budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValid
       estimate: newRecordInsert__.estimate,
       parent: categoryData__.accessId,
       isDebit: categoryData__.isDebit,
+    },
+  }));
+
+});
+
+
+/**
+ * POST /delete_category
+ * Removes a category group and all of children lineitesm by the categorys accessId
+ */
+budgetRouter.post('/delete_category', protectedRoute(), Category.deleteRecordValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  let deleteCategory__;
+  try {
+    deleteCategory__ = await Category.query()
+      .delete()
+      .where('access_id', accessId);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (deleteCategory__ !== 1) return res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Failed to delete category',
+  }));
+
+  res.json(apiResponse({
+    message: 'Category deleted',
+    data: {
+      accessId: accessId,
     },
   }));
 
