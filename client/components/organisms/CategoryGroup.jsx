@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
 import LineItem from '@/components/molecules/LineItem';
+import { requestNewLineItem } from '@/state/ducks/budget';
 
 /*=====================================
 =            CategoryGroup            =
@@ -15,6 +17,12 @@ class CategoryGroup extends Component {
 
   constructor(props) {
     super(props);
+    this.requestNewLineitem = this.requestNewLineitem.bind(this);
+  }
+
+  requestNewLineitem() {
+    const { dispatchRequestNewLineitem, accessId } = this.props;
+    dispatchRequestNewLineitem(accessId);
   }
 
   render() {
@@ -43,7 +51,7 @@ class CategoryGroup extends Component {
             />
           );
         })}
-        <AddLineItem>Add Line Item</AddLineItem>
+        <AddLineItem onClick={ this.requestNewLineitem }>Add Line Item</AddLineItem>
       </CategoryGroupContainer>
     );
   }
@@ -55,9 +63,14 @@ CategoryGroup.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   isDebit: PropTypes.bool.isRequired,
   lineItems: PropTypes.object.isRequired,
+  dispatchRequestNewLineitem: PropTypes.func.isRequired,
 };
 
-export default CategoryGroup;
+const mapDispatchToProps = dispatch => ({
+  dispatchRequestNewLineitem: accessId => dispatch(requestNewLineItem({ accessId })),
+});
+
+export default connect(null, mapDispatchToProps)(CategoryGroup);
 
 /*=====  End of CategoryGroup  ======*/
 

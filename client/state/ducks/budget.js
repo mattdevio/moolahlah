@@ -13,6 +13,8 @@ export const UPDATE_LINEITEM = `${BUDGET} UPDATE_LINEITEM`;
 export const REQUEST_DELETE_LINEITEM = `${BUDGET} REQUEST_DELETE_LINEITEM`;
 export const SET_IS_BEING_DELETED_ATTRIBUTE = `${BUDGET} SET_IS_BEING_DELETED_ATTRIBUTE`;
 export const DELETE_LINEITEM = `${BUDGET} DELETE_LINEITEM`;
+export const REQUEST_NEW_LINEITEM = `${BUDGET} REQUEST_NEW_LINEITEM`;
+export const ADD_LINEITEM = `${BUDGET} ADD_LINEITEM`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -119,6 +121,21 @@ export const deleteLineitem = ({ isDebit, parent, accessId }) => ({
   accessId,
 });
 
+export const requestNewLineItem = ({ accessId }) => ({
+  type: REQUEST_NEW_LINEITEM,
+  accessId,
+});
+
+export const addLineitem = ({ accessId, label, estimateDate, estimate, parent, isDebit }) => ({
+  type: ADD_LINEITEM,
+  accessId,
+  label,
+  estimateDate,
+  estimate,
+  parent,
+  isDebit,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -159,6 +176,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 
     case DELETE_LINEITEM:
       return reduceDeleteLineitem(state, action);
+    
+    case ADD_LINEITEM:
+      return reduceAddLineitem(state, action);
 
     default:
       return state;
@@ -248,6 +268,29 @@ const reduceDeleteLineitem = (state, { isDebit, parent, accessId }) => {
           lineItems: {
             ...state['categoryGroups'][groupKey][parent]['lineItems'],
             [accessId]: undefined,
+          },
+        },
+      },
+    },
+  });
+};
+
+const reduceAddLineitem = (state, { accessId, label, estimateDate, estimate, parent, isDebit }) => {
+  const groupKey = isDebit ? 'debit' : 'income';
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [parent]: {
+          ...state['categoryGroups'][groupKey][parent],
+          lineItems: {
+            ...state['categoryGroups'][groupKey][parent]['lineItems'],
+            [accessId]: {
+              label,
+              estimateDate,
+              estimate,
+            },
           },
         },
       },

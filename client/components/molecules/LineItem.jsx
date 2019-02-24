@@ -74,7 +74,7 @@ class LineItem extends Component {
   }
 
   getDateString() {
-    return `${moment(this.props.dayPickerValue).format('MM/DD/YYYY')}`;
+    return `${moment.utc(this.props.dayPickerValue).format('MM/DD/YYYY')}`;
   }
 
   getDecimalValue() {

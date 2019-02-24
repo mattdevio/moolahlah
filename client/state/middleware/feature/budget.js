@@ -10,12 +10,14 @@ import {
   UPDATE_CATEGORY_GROUP_LABEL,
   UPDATE_LINEITEM,
   REQUEST_DELETE_LINEITEM,
+  REQUEST_NEW_LINEITEM,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
   setBudgetStatusNotStarted,
   setIsBeingDeletedAttribute,
   deleteLineitem,
+  addLineitem,
 } from '@/state/ducks/budget';
 
 /**
@@ -112,6 +114,25 @@ const budgetMiddleware = ({ getState }) => next => action => {
 
     case `${REQUEST_DELETE_LINEITEM} ${API_ERROR}`:
       processRequestDeleteItemApiError(next, action);
+      break;
+    
+    case `${REQUEST_NEW_LINEITEM}`:
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/create_record',
+        feature: REQUEST_NEW_LINEITEM,
+      }));
+      break;
+    
+    case `${REQUEST_NEW_LINEITEM} ${API_SUCCESS}`:
+      processNewLineItemApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_NEW_LINEITEM} ${API_ERROR}`:
+      processNewLineItemApiError(next, action);
       break;
 
   }
@@ -246,6 +267,40 @@ const processRequestDeleteItemApiError = (next, { meta, payload }) => {
     parent,
     accessId,
   }));
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processNewLineItemApiSuccess = (next, { payload }) => {
+  const { message, status, data } = payload;
+  const { accessId, label, estimateDate, estimate, parent, isDebit } = data;
+  if (status === 1 && message === 'Record created') {
+    next(addLineitem({
+      accessId,
+      label,
+      estimateDate,
+      estimate,
+      parent,
+      isDebit,
+    }));
+  } else {
+    next(addLineitem({
+      accessId,
+      label,
+      estimateDate,
+      estimate,
+      parent,
+      isDebit,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processNewLineItemApiError = (next, { payload }) => {
+  const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));
   } else {
