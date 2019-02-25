@@ -15,6 +15,7 @@ import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import StartNewMonth from '@/components/molecules/StartNewMonth';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
 import AddCategoryButton from '@/components/atoms/AddCategoryButton';
+import BudgetOverviewTable from '@/components/organisms/BudgetOverviewTable';
 import {
   lookupBudget,
   BudgetStatusEnum,
@@ -84,6 +85,7 @@ class BudgetDesignPage extends Component {
         <TabContentContainer bgColor='skyBlue'>
           <TabSelector />
           <MonthSelector />
+          { budgetStatus === BudgetStatusEnum.loaded && <BudgetOverviewTable /> }
         </TabContentContainer>
       </Fragment>
     );
