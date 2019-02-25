@@ -28,8 +28,8 @@ class Budget extends BaseModel {
     const Calendar = require(`${appRoot}/server/db/models/Calendar`);
     return {
 
-      user: {
-        relation: Model.BelongsToOneRelation,
+      users: {
+        relation: Model.HasOneRelation,
         modelClass: User,
         join: {
           from: 'budget.user_uuid',
@@ -109,6 +109,40 @@ class Budget extends BaseModel {
           resolve();
         })),
       
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static addCategoryValidation() {
+    return [
+
+      sanitizeBody(['year', 'month'])
+        .toInt(),
+      
+      body('year')
+        .isInt({ min: 2012, max: 2026 }).withMessage('Must be an "int" between 2012 and 2026 inclusive'),
+      
+      body('month')
+        .isInt({ min: 0, max: 11 }).withMessage('Must be an "int" between 0 and 11 inclusive'),
+
+      body()
+        .custom(({ year, month }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let budgetExists__;
+          try {
+            budgetExists__ = await Budget.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('budget.start_date', `${year}-${month+1}-01`);
+          } catch (e) {
+            console.dir(e);
+            return reject('Unable to lookup budget');
+          }
+          if (budgetExists__.length !== 1) return reject('Budget does not exist');
+          resolve();
+        })),
+
       handleValidationErrors(),
 
     ];

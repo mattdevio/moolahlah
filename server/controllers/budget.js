@@ -492,5 +492,114 @@ budgetRouter.post('/delete_category', protectedRoute(), Category.deleteRecordVal
 });
 
 
+budgetRouter.post('/add_category', protectedRoute(), Budget.addCategoryValidation(), async (req, res, next) => {
+
+  const { year, month } = req.body;
+  const { email } = req.session.data;
+
+  // Start a transaction
+  let trx;
+  try {
+    trx = await transaction.start(KNEX_INSTANCE);
+  } catch (e) {
+    return next(e);
+  }
+
+  // Get the budget id
+  let budgetData__;
+  try {
+    budgetData__ = await Budget.query(trx)
+      .leftJoinRelation('users')
+      .where('users.email', email)
+      .andWhere('budget.start_date', `${year}-${month+1}-01`)
+      .first();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!budgetData__) {
+    return trx.rollback('Unable to lookup budget data')
+      .then(next)
+      .catch(next);
+  }
+
+  // Add a new category
+  let addCategory__;
+  try {
+    addCategory__ = await Category.query()
+      .insertAndFetch({
+        'category_label': '',
+        'can_edit': true,
+        'is_debit': true,
+        'budget_id': budgetData__.id,
+      });
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!addCategory__) {
+    return trx.rollback('Unable to add category')
+      .then(next)
+      .catch(next);
+  }
+
+  // Add a line item for the category
+  let addLineitem__;
+  try {
+    addLineitem__ = await BudgetRecord.query()
+      .insertAndFetch({
+        'budget_id': budgetData__.id,
+        'category_id': addCategory__.id,
+        'label': '',
+        'estimate_date': budgetData__.startDate,
+        'estimate': 0,
+      });
+  } catch(e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!addLineitem__) {
+    return trx.rollback('Unable to add lineitem')
+      .then(next)
+      .catch(next);
+  }
+
+  // Commit the transaction
+  try {
+    await trx.commit();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  // Send new data back to client
+  res.json(apiResponse({
+    message: 'Category created',
+    data: {
+      'accessId': addCategory__.accessId,
+      'canEdit': addCategory__.canEdit,
+      'isDebit': addCategory__.isDebit,
+      'categoryLabel': addCategory__.categoryLabel,
+      'lineItems': {
+        [addLineitem__.accessId]: {
+          label: addLineitem__.label,
+          estimateDate: addLineitem__.estimateDate,
+          estimate: addLineitem__.estimate,
+        },
+      },
+    },
+  }));
+
+});
+
+
+
 // Export router
 module.exports = budgetRouter;
