@@ -136,7 +136,6 @@ class Budget extends BaseModel {
               .where('users.email', email)
               .andWhere('budget.start_date', `${year}-${month+1}-01`);
           } catch (e) {
-            console.dir(e);
             return reject('Unable to lookup budget');
           }
           if (budgetExists__.length !== 1) return reject('Budget does not exist');
