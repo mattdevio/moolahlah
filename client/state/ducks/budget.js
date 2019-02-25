@@ -18,6 +18,8 @@ export const ADD_LINEITEM = `${BUDGET} ADD_LINEITEM`;
 export const REQUEST_DELETE_CATEGORY = `${BUDGET} REQUEST_DELETE_CATEGORY`;
 export const CATEGORY_IS_BEING_DELETED = `${BUDGET} CATEGORY_IS_BEING_DELETED`;
 export const DELETE_CATEGORY = `${BUDGET} DELETE_CATEGORY`;
+export const REQUEST_NEW_CATEGORY = `${BUDGET} REQUEST_NEW_CATEGORY`;
+export const NEW_CATEGORY = `${BUDGET} NEW_CATEGORY`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -158,6 +160,15 @@ export const deleteCategory = ({ isDebit, accessId }) => ({
   accessId,
 });
 
+export const requestNewCategory = () => ({
+  type: REQUEST_NEW_CATEGORY,
+});
+
+export const newCategory = categoryData => ({
+  type: NEW_CATEGORY,
+  categoryData,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -207,6 +218,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 
     case DELETE_CATEGORY:
       return reduceDeleteCategory(state, action);
+
+    case NEW_CATEGORY:
+      return reduceNewCategory(state, action);
 
     default:
       return state;
@@ -350,6 +364,28 @@ const reduceDeleteCategory = (state, { accessId, isDebit }) => {
       [groupKey]: {
         ...state['categoryGroups'][groupKey],
         [accessId]: undefined,
+      },
+    },
+  });
+};
+
+const reduceNewCategory = (state, { categoryData }) => {
+  const groupKey = categoryData.isDebit ? 'debit' : 'income';
+  Object.keys(categoryData.lineItems).forEach(key => {
+    categoryData.lineItems[key].isBeingDeleted = false;
+  });
+  return Object.assign({}, state, {
+    categoryGroups: {
+      ...state['categoryGroups'],
+      [groupKey]: {
+        ...state['categoryGroups'][groupKey],
+        [categoryData.accessId]: {
+          isDebit: categoryData.isDebit,
+          canEdit: categoryData.canEdit,
+          categoryLabel: categoryData.categoryLabel,
+          isBeingDeleted: false,
+          lineItems: categoryData.lineItems,
+        },
       },
     },
   });

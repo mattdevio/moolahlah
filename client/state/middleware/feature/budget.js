@@ -12,6 +12,7 @@ import {
   REQUEST_DELETE_LINEITEM,
   REQUEST_NEW_LINEITEM,
   REQUEST_DELETE_CATEGORY,
+  REQUEST_NEW_CATEGORY,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -21,6 +22,7 @@ import {
   addLineitem,
   setCategoryIsBeingDeleted,
   deleteCategory,
+  newCategory,
 } from '@/state/ducks/budget';
 
 /**
@@ -166,6 +168,18 @@ const budgetMiddleware = ({ getState }) => next => action => {
         isBeingDeleted: true,
       }));
       processRequestDeleteCategoryApiError(next, action);
+      break;
+    
+    case REQUEST_NEW_CATEGORY:
+      processRequestNewCategory(getState(), next);
+      break;
+
+    case `${REQUEST_NEW_CATEGORY} ${API_SUCCESS}`:
+      processRequestNewCategoryApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_NEW_CATEGORY} ${API_ERROR}`:
+      processRequestNewCategoryApiError(next, action);
       break;
 
   }
@@ -362,6 +376,38 @@ const processRequestDeleteCategoryApiSuccess = (next, { meta, payload }) => {
 };
 
 const processRequestDeleteCategoryApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestNewCategory = ({ budget }, next) => {
+  const { currentYear, currentMonth } = budget;
+  next(apiRequest({
+    data: {
+      year: currentYear,
+      month: currentMonth,
+    },
+    method: 'POST',
+    url: '/budget/add_category',
+    feature: REQUEST_NEW_CATEGORY,
+  }));
+};
+
+const processRequestNewCategoryApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  if (status === 1 && message === 'Category created') {
+    next(newCategory(payload.data));
+  } else {
+    next(newCategory(payload.data));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestNewCategoryApiError = (next, { payload }) => {
   const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));

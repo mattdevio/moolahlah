@@ -4,21 +4,24 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+// Custom Imports
+import { requestNewCategory } from '@/state/ducks/budget';
 
-const AddCategoryButton = ({ dispatchAddCategory }) => (
+
+const AddCategoryButton = ({ dispatchRequestNewCategory }) => (
   <AddCategoryButtonContainer>
-    <ACB onClick={ dispatchAddCategory }>
+    <ACB onClick={ dispatchRequestNewCategory }>
       Add Category Group
     </ACB>
   </AddCategoryButtonContainer>
 );
 
 AddCategoryButton.propTypes = {
-  dispatchAddCategory: PropTypes.func.isRequired,
+  dispatchRequestNewCategory: PropTypes.func.isRequired,
 };
 
 export default connect(null, dispatch => ({
-  dispatchAddCategory: () => dispatch(),
+  dispatchRequestNewCategory: () => dispatch(requestNewCategory()),
 }))(AddCategoryButton);
 
 const AddCategoryButtonContainer = styled.div`
