@@ -23,16 +23,24 @@ import {
   setCategoryIsBeingDeleted,
   deleteCategory,
   newCategory,
+  CURRENT_YEAR,
+  CURRENT_MONTH,
+  lookupBudget,
 } from '@/state/ducks/budget';
 
 /**
  * budgetMiddleware
  * Handle all budget request modifications
  */
-const budgetMiddleware = ({ getState }) => next => action => {
+const budgetMiddleware = ({ getState, dispatch }) => next => action => {
   next(action);
 
   switch (action.type) {
+
+    case CURRENT_YEAR:
+    case CURRENT_MONTH:
+      dispatchLookupBudget(getState(), dispatch);
+      break;
 
     case START:
       next(setBudgetStatusLoading());
@@ -414,4 +422,11 @@ const processRequestNewCategoryApiError = (next, { payload }) => {
   } else {
     next(showErrorMessage(message));
   }
+};
+
+const dispatchLookupBudget = ({ budget }, dispatch) => {
+  dispatch(lookupBudget({
+    currentYear: budget.currentYear,
+    currentMonth: budget.currentMonth,
+  }));
 };
