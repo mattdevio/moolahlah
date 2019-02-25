@@ -21,6 +21,7 @@ class BudgetOverviewTable extends Component {
     this.renderDebitRows = this.renderDebitRows.bind(this);
     this.renderTotalIncome = this.renderTotalIncome.bind(this);
     this.renderTotalDebits = this.renderTotalDebits.bind(this);
+    this.getRemainingTotal = this.getRemainingTotal.bind(this);
   }
 
   getUSD(val) {
@@ -33,6 +34,7 @@ class BudgetOverviewTable extends Component {
       let incomeRow = income[key]; // Make sure the item exists
       if (incomeRow) {
         let totalValue = Object.keys(incomeRow.lineItems).reduce((acc, val) => {
+          if (!incomeRow.lineItems[val]) return acc;
           acc += +incomeRow.lineItems[val].estimate;
           return acc;
         }, 0);
@@ -56,6 +58,7 @@ class BudgetOverviewTable extends Component {
       let debitRow = debit[key]; // Make sure the item exists
       if (debitRow) {
         let totalValue = Object.keys(debitRow.lineItems).reduce((acc, val) => {
+          if (!debitRow.lineItems[val]) return acc;
           acc += +debitRow.lineItems[val].estimate;
           return acc;
         }, 0);
@@ -79,6 +82,7 @@ class BudgetOverviewTable extends Component {
       let incomeGroup = income[val];
       if (!incomeGroup) return acc; // Make sure the item exists
       let catTotal = Object.keys(incomeGroup.lineItems).reduce((accum, value) => {
+        if (!incomeGroup.lineItems[value]) return accum;
         accum += +incomeGroup.lineItems[value].estimate;
         return accum;
       }, 0);
@@ -103,6 +107,7 @@ class BudgetOverviewTable extends Component {
       let debitGroup = debit[val];
       if (!debitGroup) return acc; // Make sure the item exists
       let catTotal = Object.keys(debitGroup.lineItems).reduce((accum, value) => {
+        if (!debitGroup.lineItems[value]) return accum;
         accum += +debitGroup.lineItems[value].estimate;
         return accum;
       }, 0);
@@ -121,7 +126,37 @@ class BudgetOverviewTable extends Component {
     );
   }
 
+  getRemainingTotal() {
+    const { income, debit } = this.props.categoryGroups;
+    const debitTotal = Object.keys(debit).reduce((acc, val) => {
+      let debitGroup = debit[val];
+      if (!debitGroup) return acc; // Make sure the item exists
+      let catTotal = Object.keys(debitGroup.lineItems).reduce((accum, value) => {
+        if (!debitGroup.lineItems[value]) return accum;
+        accum += +debitGroup.lineItems[value].estimate;
+        return accum;
+      }, 0);
+      acc += +catTotal;
+      return acc;
+    }, 0);
+    const incomeTotal = Object.keys(income).reduce((acc, val) => {
+      let incomeGroup = income[val];
+      if (!incomeGroup) return acc; // Make sure the item exists
+      let catTotal = Object.keys(incomeGroup.lineItems).reduce((accum, value) => {
+        if (!incomeGroup.lineItems[value]) return accum;
+        accum += +incomeGroup.lineItems[value].estimate;
+        return accum;
+      }, 0);
+      acc += +catTotal;
+      return acc;
+    }, 0);
+    return (+incomeTotal - +debitTotal);
+  }
+
   render() {
+    const remaining = this.getRemainingTotal();
+    const isSafeBudget = (remaining >= 0);
+    const displayRemaining = Math.abs(remaining);
     return (
       <Fragment>
         <BudgetOverviewTableContainer>
@@ -134,6 +169,17 @@ class BudgetOverviewTable extends Component {
         <BlockTotalContainer>
           { this.renderTotalIncome() }
           { this.renderTotalDebits() }
+          <TableRow>
+            <SplitSpan />
+          </TableRow>
+          <TableRow>
+            <BlockTotalTableData isSafeBudget={ isSafeBudget }>
+              { isSafeBudget ? 'Remaining' : 'Over Budget' }
+            </BlockTotalTableData>
+            <BlockTotalTableData isSafeBudget={ isSafeBudget }>
+              { isSafeBudget ? `$ ${this.getUSD(displayRemaining)}` : `- $ ${displayRemaining}` }
+            </BlockTotalTableData>
+          </TableRow>
         </BlockTotalContainer>
       </Fragment>
     );
@@ -215,5 +261,18 @@ const BlockTotalTableData = styled.p`
   text-transform: uppercase;
   margin: 0;
   padding: 0.25rem 0;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme, isSafeBudget }) => {
+    if (typeof isSafeBudget === 'undefined') {
+      return theme.white;
+    }
+    return isSafeBudget ? theme.white : theme.alertRed;
+  }};
+`;
+
+const SplitSpan = styled.span`
+  background-color: ${({ theme }) => theme.white};
+  width: 100%;
+  max-width: 15rem;
+  height: 0.5rem;
+  margin: 0.4rem 0 0.4rem auto;
 `;
