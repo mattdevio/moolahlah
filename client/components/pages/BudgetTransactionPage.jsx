@@ -7,6 +7,9 @@ import ContentSectionContainer from '@/components/atoms/ContentSectionContainer'
 import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
+import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
+import MonthSelector from '@/components/molecules/MonthSelector';
 
 class BudgetDesignPage extends Component {
 
@@ -19,11 +22,13 @@ class BudgetDesignPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            Transaction Page
+            <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
+            <CurrentBudgetDisplay />
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='lightBlue'>
           <TabSelector />
+          <MonthSelector />
         </TabContentContainer>
       </Fragment>
     );

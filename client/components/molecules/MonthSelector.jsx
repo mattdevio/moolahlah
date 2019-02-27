@@ -40,7 +40,7 @@ class MonthSelector extends Component {
       setCurrentYear,
     } = this.props;
     return (
-      <div>
+      <MonthSelectorContainer>
         <YearRow>
           <StyledIcon
             icon='chevron-circle-left'
@@ -76,7 +76,7 @@ class MonthSelector extends Component {
             { this.renderMonthButton(11, 'DEC', currentMonth) }
           </MonthRow>
         </MonthGroup>
-      </div>
+      </MonthSelectorContainer>
     );
   }
 }
@@ -102,7 +102,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(MonthSelector);
 
 /*=====  End of MonthSelector Component  ======*/
 
-
+const MonthSelectorContainer = styled.div`
+  margin: 1rem 0 0 0;
+`;
 
 const YearRow = styled.div`
   display: flex;
