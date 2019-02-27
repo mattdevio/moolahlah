@@ -11,6 +11,7 @@ import {
   faMinusCircle,
   faTrash,
   faSpinner,
+  faPenSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -25,4 +26,5 @@ library.add(
   faMinusCircle,         // minus-circle
   faTrash,               // fa-trash
   faSpinner,             // spinner
+  faPenSquare,           // pen-square
 );

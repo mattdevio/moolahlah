@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 /*----------  Custom imports  ----------*/
 import CategoryGroupHeader from '@/components/molecules/CategoryGroupHeader';
 import LineItem from '@/components/molecules/LineItem';
+import { requestNewLineItem } from '@/state/ducks/budget';
 
 /*=====================================
 =            CategoryGroup            =
@@ -15,20 +17,28 @@ class CategoryGroup extends Component {
 
   constructor(props) {
     super(props);
+    this.requestNewLineitem = this.requestNewLineitem.bind(this);
+  }
+
+  requestNewLineitem() {
+    const { dispatchRequestNewLineitem, accessId } = this.props;
+    dispatchRequestNewLineitem(accessId);
   }
 
   render() {
-    const { accessId, categoryLabel, canEdit, isDebit, lineItems } = this.props;
+    const { accessId, categoryLabel, canEdit, isDebit, lineItems, isBeingDeleted } = this.props;
     return (
-      <CategoryGroupContainer>
+      <CategoryGroupContainer isBeingDeleted={ isBeingDeleted }>
         <CategoryGroupHeader
           categoryLabel={ categoryLabel }
           canEdit={ canEdit }
           accessId={ accessId }
           isDebit={ isDebit }
+          categoryIsBeingDeleted={ isBeingDeleted }
         />
         {Object.keys(lineItems).map(key => {
           const li = lineItems[key];
+          if (!li) return; // don't remove this line
           return (
             <LineItem
               key={ key }
@@ -38,10 +48,12 @@ class CategoryGroup extends Component {
               plannedValue={ li.estimate }
               parent={ accessId }
               isDebit={ isDebit }
+              isBeingDeleted={ li.isBeingDeleted }
+              categoryIsBeingDeleted={ isBeingDeleted }
             />
           );
         })}
-        <AddLineItem>Add Line Item</AddLineItem>
+        <AddLineItem onClick={ this.requestNewLineitem }>Add Line Item</AddLineItem>
       </CategoryGroupContainer>
     );
   }
@@ -53,9 +65,15 @@ CategoryGroup.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   isDebit: PropTypes.bool.isRequired,
   lineItems: PropTypes.object.isRequired,
+  dispatchRequestNewLineitem: PropTypes.func.isRequired,
+  isBeingDeleted: PropTypes.bool.isRequired,
 };
 
-export default CategoryGroup;
+const mapDispatchToProps = dispatch => ({
+  dispatchRequestNewLineitem: accessId => dispatch(requestNewLineItem({ accessId })),
+});
+
+export default connect(null, mapDispatchToProps)(CategoryGroup);
 
 /*=====  End of CategoryGroup  ======*/
 
@@ -66,12 +84,18 @@ const CategoryGroupContainer = styled.div`
   min-width: 55rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
   padding: 1rem;
+  ${({ isBeingDeleted }) => {
+    if (isBeingDeleted) {
+      return `
+        opacity: 0.3;
+      `;
+    }
+  }}
 `;
 
 const AddLineItem = styled.button`
   display: block;
   width: 100%;
-  border: 0;
   background-color: ${({ theme }) => theme.mediumBlue};
   color: ${({ theme }) => theme.white};
   font-family: ${({ theme }) => theme.typeFont};
@@ -81,9 +105,10 @@ const AddLineItem = styled.button`
   margin: 0.5rem 0 0 0;
   padding: 0.3rem;
   cursor: pointer;
+  border: 2px solid transparent;
   &:hover,
-  &:focus, {
-    opacity: 0.9;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+  &:focus {
+    border: 2px solid ${({ theme }) => theme.skyBlue};
+    outline: 0;
   }
 `;

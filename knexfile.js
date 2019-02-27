@@ -19,7 +19,7 @@ module.exports = {
 
   development: {
     client: 'mysql2',
-    debug: true,
+    debug: false,
     connection: {
       host: MYSQL_HOST,
       port: MYSQL_PORT,

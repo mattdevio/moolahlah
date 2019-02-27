@@ -32,6 +32,7 @@ class Category extends BaseModel {
 
     // Import models here to prevent require loops.
     const User = require(`${appRoot}/server/db/models/User`);
+    const Budget = require(`${appRoot}/server/db/models/Budget`);
 
     return {
       users: {
@@ -44,6 +45,14 @@ class Category extends BaseModel {
             to: 'budget.user_uuid',
           },
           to: 'users.uuid',
+        },
+      },
+      budget: {
+        relation: Model.HasOneRelation,
+        modelClass: Budget,
+        join: {
+          from: 'category.budget_id',
+          to: 'budget.id',
         },
       },
     };
@@ -72,6 +81,7 @@ class Category extends BaseModel {
       
       body()
         .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
           const { email } = req.session.data;
           let result__;
           try {
@@ -84,6 +94,62 @@ class Category extends BaseModel {
           }
           if (result__.length !== 1) return reject('Unknown category label accessId');
           if (!result__[0].canEdit) return reject('Category label can not be edited');
+          resolve();
+        })),
+      
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static createRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+      
+      body('')
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
+          const { email } = req.session.data;
+          let categoryIsValid__;
+          try {
+            categoryIsValid__ = await Category.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('category.access_id', accessId);
+          } catch (e) {
+            return reject('Category lookup failed');
+          }
+          if (categoryIsValid__.length !== 1) return reject('Unknown category accessId');
+          resolve(); 
+        })),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static deleteRecordValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+
+      body('')
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          if (!accessId) return resolve(); // don't run if accessId doesn't exist
+          const { email } = req.session.data;
+          let validateOwnership__;
+          try {
+            validateOwnership__ = await Category.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('category.access_id', accessId);
+          } catch (e) {
+            return reject('Category lookup failed');
+          }
+          if (validateOwnership__.length !== 1) return reject('Unknown category accessId');
           resolve();
         })),
       

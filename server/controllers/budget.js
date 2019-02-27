@@ -117,14 +117,23 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
         };
         return acc;
       }, {});
-    accumulator[value.accessId] = {
-      categoryLabel: value.categoryLabel,
-      canEdit: value.canEdit,
-      isDebit: value.isDebit,
-      lineItems: lineItems,
-    };
+    if (value.isDebit) {
+      accumulator.debit[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } else {
+      accumulator.income[value.accessId] = {
+        categoryLabel: value.categoryLabel,
+        canEdit: value.canEdit,
+        isDebit: value.isDebit,
+        lineItems: lineItems,
+      };
+    } 
     return accumulator;
-  }, {});
+  }, { debit: {}, income: {} });
   
   // Send budget information back to client
   res.status(201).json(apiResponse({
@@ -389,6 +398,207 @@ budgetRouter.post('/delete_record', protectedRoute(), BudgetRecord.deleteRecordV
   }));
 
 });
+
+/**
+ * POST /create_record
+ * Creates a new line item record for a given category group accessId.
+ */
+budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  let categoryData__;
+  try {
+    categoryData__ = await Category.query()
+      .select({
+        budgetId: 'category.budget_id',
+        categoryId: 'category.id',
+        startDate: 'budget.start_date',
+        accessId: 'category.access_id',
+        isDebit: 'category.is_debit',
+      })
+      .leftJoinRelation('budget')
+      .where('access_id', accessId).first();
+  } catch (e) {
+    next(e);
+  }
+
+  const newBudgetRecord = {
+    budget_id: categoryData__.budgetId,
+    category_id: categoryData__.categoryId,
+    label: '',
+    estimateDate: categoryData__.startDate,
+    estimate: 0.00,
+  };
+
+  let newRecordInsert__;
+  try {
+    newRecordInsert__ = await BudgetRecord.query()
+      .insertAndFetch(newBudgetRecord);
+  } catch (e) {
+    next(e);
+  }
+
+  if (!newRecordInsert__) res.status(400).json(apiResponse({
+    message: 'Record not created',
+    status: 0,
+  }));
+
+  res.json(apiResponse({
+    message: 'Record created',
+    data: {
+      accessId: newRecordInsert__.accessId,
+      label: newRecordInsert__.label,
+      estimateDate: newRecordInsert__.estimateDate,
+      estimate: newRecordInsert__.estimate,
+      parent: categoryData__.accessId,
+      isDebit: categoryData__.isDebit,
+    },
+  }));
+
+});
+
+
+/**
+ * POST /delete_category
+ * Removes a category group and all of children lineitesm by the categorys accessId
+ * The children line items will be deleted from the database due to foreign relationship cascading deletion
+ */
+budgetRouter.post('/delete_category', protectedRoute(), Category.deleteRecordValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  let deleteCategory__;
+  try {
+    deleteCategory__ = await Category.query()
+      .delete()
+      .where('access_id', accessId);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (deleteCategory__ !== 1) return res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Failed to delete category',
+  }));
+
+  res.json(apiResponse({
+    message: 'Category deleted',
+    data: {
+      accessId: accessId,
+    },
+  }));
+
+});
+
+
+budgetRouter.post('/add_category', protectedRoute(), Budget.addCategoryValidation(), async (req, res, next) => {
+
+  const { year, month } = req.body;
+  const { email } = req.session.data;
+
+  // Start a transaction
+  let trx;
+  try {
+    trx = await transaction.start(KNEX_INSTANCE);
+  } catch (e) {
+    return next(e);
+  }
+
+  // Get the budget id
+  let budgetData__;
+  try {
+    budgetData__ = await Budget.query(trx)
+      .leftJoinRelation('users')
+      .where('users.email', email)
+      .andWhere('budget.start_date', `${year}-${month+1}-01`)
+      .first();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!budgetData__) {
+    return trx.rollback('Unable to lookup budget data')
+      .then(next)
+      .catch(next);
+  }
+
+  // Add a new category
+  let addCategory__;
+  try {
+    addCategory__ = await Category.query()
+      .insertAndFetch({
+        'category_label': '',
+        'can_edit': true,
+        'is_debit': true,
+        'budget_id': budgetData__.id,
+      });
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!addCategory__) {
+    return trx.rollback('Unable to add category')
+      .then(next)
+      .catch(next);
+  }
+
+  // Add a line item for the category
+  let addLineitem__;
+  try {
+    addLineitem__ = await BudgetRecord.query()
+      .insertAndFetch({
+        'budget_id': budgetData__.id,
+        'category_id': addCategory__.id,
+        'label': '',
+        'estimate_date': budgetData__.startDate,
+        'estimate': 0,
+      });
+  } catch(e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  if (!addLineitem__) {
+    return trx.rollback('Unable to add lineitem')
+      .then(next)
+      .catch(next);
+  }
+
+  // Commit the transaction
+  try {
+    await trx.commit();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+
+  // Send new data back to client
+  res.json(apiResponse({
+    message: 'Category created',
+    data: {
+      'accessId': addCategory__.accessId,
+      'canEdit': addCategory__.canEdit,
+      'isDebit': addCategory__.isDebit,
+      'categoryLabel': addCategory__.categoryLabel,
+      'lineItems': {
+        [addLineitem__.accessId]: {
+          label: addLineitem__.label,
+          estimateDate: addLineitem__.estimateDate,
+          estimate: addLineitem__.estimate,
+        },
+      },
+    },
+  }));
+
+});
+
 
 
 // Export router
