@@ -11,6 +11,7 @@ import * as routes from '@/constants/routes';
 import LandingPage from '@/components/pages/LandingPage';
 import DashboardPage from '@/components/pages/DashboardPage';
 import { LineDayPickerStyles } from '@/components/atoms/LineDayPicker';
+import { BoxDayPickerStyles } from '@/components/atoms/BoxDayPicker';
 import '@/bin/iconLibrary';
 
 
@@ -24,6 +25,7 @@ class App extends Component {
     return (
       <Fragment>
         <LineDayPickerStyles />
+        <BoxDayPickerStyles />
         <Switch>
           <Route path={ routes.AUTH_BASE } component={ LandingPage } />
           <Route path={ routes.DASHBOARD_BASE } component={ DashboardPage } />

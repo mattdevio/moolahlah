@@ -10,6 +10,7 @@ import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import MonthSelector from '@/components/molecules/MonthSelector';
+import AddTransactionForm from '../organisms/AddTransactionForm';
 
 class BudgetDesignPage extends Component {
 
@@ -24,6 +25,7 @@ class BudgetDesignPage extends Component {
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             <CurrentBudgetDisplay />
+            <AddTransactionForm />
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='lightBlue'>
