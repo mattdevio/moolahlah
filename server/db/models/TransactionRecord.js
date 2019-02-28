@@ -1,12 +1,12 @@
 // Vendor imports
 const appRoot = require('app-root-path');
 const { Model } = require('objection');
-// const { body } = require('express-validator/check');
+const { body } = require('express-validator/check');
 const uuid = require('uuid/v4');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
-// const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
+const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
  * TransactionRecord Model
@@ -83,6 +83,33 @@ class TransactionRecord extends BaseModel {
     const buf = Buffer.from(this.belongsTo, 'binary');
     const belongsTo = buf.toString('utf8');
     this.belongsTo = belongsTo;
+  }
+
+  static deleteTransactionValidation() {
+    return [
+
+      body('accessId')
+        .not().isEmpty().withMessage('Field required'),
+
+      body()
+        .custom(({ accessId }, { req }) => new Promise(async function(resolve, reject) {
+          const { email } = req.session.data;
+          let transactionExists__;
+          try {
+            transactionExists__ = await TransactionRecord.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('transaction_record.access_id', accessId);
+          } catch (e) {
+            return reject('Transaction lookup failed');
+          }
+          if (transactionExists__.length !== 1) return reject('No transaction with that accessId');
+          resolve();
+        })),
+
+      handleValidationErrors(),
+
+    ];
   }
 
 }

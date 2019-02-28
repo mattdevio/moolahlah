@@ -22,7 +22,7 @@ const KNEX_INSTANCE = Budget.knex();
 
 /**
  * POST /create_transaction
- * 
+ * Creates a new transaction record
  */
 transactionRouter.post('/create_transaction', protectedRoute(), Category.createTransactionValidation(), async (req, res, next) => {
 
@@ -93,6 +93,40 @@ transactionRouter.post('/create_transaction', protectedRoute(), Category.createT
       date: newRecord__.transactionDate,
       cost: newRecord__.cost,
       notes: newRecord__.notes,
+    },
+  }));
+
+});
+
+/**
+ * POST /delete_transaction
+ * Deletes a transaction record
+ */
+transactionRouter.post('/delete_transaction', protectedRoute(), TransactionRecord.deleteTransactionValidation(), async (req, res, next) => {
+
+  const { accessId } = req.body;
+
+  // Delete
+  let deleteTransaction__;
+  try {
+    deleteTransaction__ = await TransactionRecord.query()
+      .delete()
+      .where('access_id', accessId);
+  } catch (e) {
+    return next(e);
+  }
+
+  // Validate
+  if (deleteTransaction__ !== 1) return res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Failed to delete transaction',
+  }));
+
+  // Respond
+  res.json(apiResponse({
+    message: 'Transaction deleted',
+    data: {
+      accessId: accessId,
     },
   }));
 

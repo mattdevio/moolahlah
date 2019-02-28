@@ -22,6 +22,8 @@ export const REQUEST_NEW_CATEGORY = `${BUDGET} REQUEST_NEW_CATEGORY`;
 export const NEW_CATEGORY = `${BUDGET} NEW_CATEGORY`;
 export const ADD_TRANSACTION = `${BUDGET} ADD_TRANSACTION`;
 export const ADD_TRANSACTION_TO_STORE = `${BUDGET} ADD_TRANSACTION_TO_STORE`;
+export const DELETE_TRANSACTION = `${BUDGET} DELETE_TRANSACTION`;
+export const DELETE_TRANSACTION_FROM_STORE = `${BUDGET} DELETE_TRANSACTION_FROM_STORE`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -191,6 +193,16 @@ export const addTransactionToStore = ({ name, belongsTo, date, cost, notes }) =>
   date,
   cost,
   notes,
+});
+
+export const deleteTransaction = ({ accessId }) => ({
+  type: DELETE_TRANSACTION,
+  accessId,
+});
+
+export const deleteTransactionFromStore = ({ accessId }) => ({
+  type: DELETE_TRANSACTION_FROM_STORE,
+  accessId,
 });
 
 /**

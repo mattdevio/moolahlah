@@ -4,15 +4,22 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 // Custom Imports
-
+import { deleteTransaction } from '@/state/ducks/budget';
 
 
 class TransactionLine extends Component {
 
   constructor(props) {
     super(props);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete() {
+    const { dispatchDeleteTransaction, accessId } = this.props;
+    dispatchDeleteTransaction(accessId);
   }
 
   render() {
@@ -33,12 +40,12 @@ class TransactionLine extends Component {
         <DataField>
           { isDebit ? '- $' : '$' } { parseFloat(Math.round(cost * 100) / 100).toFixed(2) }
         </DataField>
-        <TrashButton />
+        <TrashButton onClick={ this.handleDelete } />
       </TLContainer>
     );
   }
 
-}
+} // end TransactionLine Component
 
 TransactionLine.propTypes = {
   accessId: PropTypes.string.isRequired,
@@ -47,9 +54,14 @@ TransactionLine.propTypes = {
   date: PropTypes.string.isRequired,
   notes: PropTypes.string.isRequired,
   isDebit: PropTypes.bool.isRequired,
+  dispatchDeleteTransaction: PropTypes.func.isRequired,
 };
 
-export default TransactionLine;
+const mapDispatchToProps = dispatch => ({
+  dispatchDeleteTransaction: accessId => dispatch(deleteTransaction({ accessId })),
+});
+
+export default connect(null, mapDispatchToProps)(TransactionLine);
 
 const TLContainer = styled.div`
   padding: 0.2rem 0;
@@ -63,6 +75,7 @@ const TLContainer = styled.div`
 
 const TrashButton = styled(FontAwesomeIcon).attrs({
   icon: 'trash',
+  tabIndex: 0,
 })`
   font-size: 3rem;
   color: ${({ theme }) => theme.black};

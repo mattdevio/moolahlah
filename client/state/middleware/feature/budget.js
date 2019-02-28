@@ -14,6 +14,7 @@ import {
   REQUEST_DELETE_CATEGORY,
   REQUEST_NEW_CATEGORY,
   ADD_TRANSACTION,
+  DELETE_TRANSACTION,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -213,6 +214,10 @@ const budgetMiddleware = ({ getState, dispatch }) => next => action => {
 
     case `${ADD_TRANSACTION} ${API_ERROR}`:
       processAddTransactionApiError(next, action);
+      break;
+
+    case DELETE_TRANSACTION:
+      console.dir(action);
       break;
 
   }
