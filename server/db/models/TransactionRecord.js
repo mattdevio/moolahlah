@@ -51,30 +51,28 @@ class TransactionRecord extends BaseModel {
   }
   
   $afterInsert() {
-    this.parseUUID();
+    this.parseAccessId();
+    this.parseBelongsTo();
   }
   
   $afterGet() {
-    this.parseUUID();
+    this.parseAccessId();
+    this.parseBelongsTo();
   }
 
-  parseUUID() {
+  parseAccessId() {
     if (!this.accessId) return; // Sometimes, your selects don't return the id
     const buf = Buffer.from(this.accessId, 'binary');
     const access_id = buf.toString('utf8');
     this.accessId = access_id;
   }
 
-  static createTransactionValidation() {
-    return [
-
-      body(),
-
-      handleValidationErrors(),
-
-    ];
+  parseBelongsTo() {
+    if (!this.belongsTo) return; // Sometimes, your selects don't return 'belongsTo'
+    const buf = Buffer.from(this.belongsTo, 'binary');
+    const belongsTo = buf.toString('utf8');
+    this.belongsTo = belongsTo;
   }
-
 
 }
 

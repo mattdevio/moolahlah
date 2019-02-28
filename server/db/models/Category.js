@@ -3,6 +3,7 @@ const appRoot = require('app-root-path');
 const uuid = require('uuid/v4');
 const { Model } = require('objection');
 const { body } = require('express-validator/check');
+const moment = require('moment');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
@@ -153,6 +154,42 @@ class Category extends BaseModel {
           resolve();
         })),
       
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static createTransactionValidation() {
+    return [
+
+      body('name', 'belongsTo', 'date', 'cost', 'notes')
+        .not().isEmpty().withMessage('Field required'),
+      
+      body()
+        .custom(({ belongsTo }, { req }) => new Promise(async function(resolve, reject) {
+          if (!belongsTo) return resolve(); // Don't run if belongsTo doesn't exist
+          const { email } = req.session.data;
+          let budgetExists__;
+          try {
+            budgetExists__ = await Category.query()
+              .leftJoinRelation('users')
+              .where('users.email', email)
+              .andWhere('category.access_id', belongsTo);
+          } catch (e) {
+            return reject('Unknown category accessId');
+          }
+          if (budgetExists__.length !== 1) return reject('Unknown category accessId');
+          resolve();
+        })),
+      
+      body()
+        .custom(({ date }) => new Promise(async function(resolve, reject) {
+          if (typeof date !== 'undefined' && !moment(date, 'YYYY-MM-DD', true).isValid()) {
+            return reject('Date format must be YYYY-MM-DD');
+          }
+          resolve();
+        })),
+
       handleValidationErrors(),
 
     ];

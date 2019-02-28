@@ -428,7 +428,7 @@ budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValid
       .leftJoinRelation('budget')
       .where('access_id', accessId).first();
   } catch (e) {
-    next(e);
+    return next(e);
   }
 
   const newBudgetRecord = {
