@@ -9,6 +9,7 @@ import isCurrency from 'validator/lib/isCurrency';
 
 // Custom Imports
 import BoxDayPicker from '@/components/atoms/BoxDayPicker';
+import { addTransaction } from '@/state/ducks/budget';
 
 class AddTransactionForm extends Component {
 
@@ -117,6 +118,14 @@ class AddTransactionForm extends Component {
       });
     }
 
+    this.props.dispatchAddTransaction({
+      name,
+      belongsTo,
+      date,
+      cost,
+      notes,
+    });
+
   }
 
   renderBelongsToSelectors() {
@@ -204,6 +213,7 @@ class AddTransactionForm extends Component {
 AddTransactionForm.propTypes = {
   unassignedAccessId: PropTypes.string.isRequired,
   categoryGroups: PropTypes.object.isRequired,
+  dispatchAddTransaction: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -211,7 +221,11 @@ const mapStateToProps = state => ({
   categoryGroups: state.budget.categoryGroups,
 });
 
-export default connect(mapStateToProps)(AddTransactionForm);
+const mapDispatchToProps = dispatch => ({
+  dispatchAddTransaction: transactionObject => dispatch(addTransaction(transactionObject)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTransactionForm);
 
 const AddTransactionFormContainer = styled.div`
   width: 100%;

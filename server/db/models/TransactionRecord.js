@@ -1,12 +1,12 @@
 // Vendor imports
 const appRoot = require('app-root-path');
 const { Model } = require('objection');
-const { body } = require('express-validator/check');
+// const { body } = require('express-validator/check');
 const uuid = require('uuid/v4');
 
 // Custom Imports
 const BaseModel = require(`${appRoot}/server/db/models/BaseModel`);
-const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
+// const handleValidationErrors = require(`${appRoot}/server/middleware/handleValidationErrors`);
 
 /**
  * TransactionRecord Model
@@ -26,6 +26,7 @@ class TransactionRecord extends BaseModel {
 
     // Import here to avoid require loops
     const User = require(`${appRoot}/server/db/models/User`);
+    const Category = require(`${appRoot}/server/db/models/Category`);
 
     return {
       users: {
@@ -40,6 +41,16 @@ class TransactionRecord extends BaseModel {
           to: 'users.uuid',
         },
       },
+      
+      category: {
+        relation: Model.HasOneRelation,
+        modelClass: Category,
+        join: {
+          from: 'transaction_record.category_id',
+          to: 'category.id',
+        },
+      }
+
     };
 
   }

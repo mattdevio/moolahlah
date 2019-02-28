@@ -12,7 +12,8 @@ const {
   Budget,
   User,
   Category,
-  BudgetRecord
+  BudgetRecord,
+  TransactionRecord,
 } = require(`${appRoot}/server/db/models`);
 
 // Setup
@@ -145,6 +146,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
       budgetStartDate: budget__.startDate,
       categoryGroups: categoryGroups,
       unassignedAccessId: unassignedCategory.accessId,
+      transactions: [],
     },
   }));
 
@@ -211,6 +213,24 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     return accumulator;
   }, { debit: {}, income: {} });
 
+  // Get all the transactions
+  let relatedTransactions__;
+  try {
+    relatedTransactions__ = await TransactionRecord.query()
+      .select({
+        accessId: 'transaction_record.access_id',
+        belongsTo: 'category.access_id',
+        name: 'transaction_record.name',
+        date: 'transaction_record.transaction_date',
+        cost: 'transaction_record.cost',
+        notes: 'transaction_record.notes',
+      })
+      .leftJoinRelation('category')
+      .where('transaction_record.budget_id', id);
+  } catch (e) {
+    return next(e);
+  }
+
   // Send budget information back to client
   res.status(200).json(apiResponse({
     message: 'Existing budget data retrieved',
@@ -218,6 +238,7 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
       budgetStartDate: startDate,
       categoryGroups: categoryGroups,
       unassignedAccessId: unassignedCategory.accessId,
+      transactions: relatedTransactions__,
     },
   }));
 

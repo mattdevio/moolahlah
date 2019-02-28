@@ -20,6 +20,7 @@ export const CATEGORY_IS_BEING_DELETED = `${BUDGET} CATEGORY_IS_BEING_DELETED`;
 export const DELETE_CATEGORY = `${BUDGET} DELETE_CATEGORY`;
 export const REQUEST_NEW_CATEGORY = `${BUDGET} REQUEST_NEW_CATEGORY`;
 export const NEW_CATEGORY = `${BUDGET} NEW_CATEGORY`;
+export const ADD_TRANSACTION = `${BUDGET} ADD_TRANSACTION`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -169,6 +170,15 @@ export const requestNewCategory = () => ({
 export const newCategory = categoryData => ({
   type: NEW_CATEGORY,
   categoryData,
+});
+
+export const addTransaction = ({ name, belongsTo, date, cost, notes }) => ({
+  type: ADD_TRANSACTION,
+  name,
+  belongsTo,
+  date,
+  cost,
+  notes,
 });
 
 /**

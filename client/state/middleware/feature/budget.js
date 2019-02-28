@@ -13,6 +13,7 @@ import {
   REQUEST_NEW_LINEITEM,
   REQUEST_DELETE_CATEGORY,
   REQUEST_NEW_CATEGORY,
+  ADD_TRANSACTION,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
@@ -188,6 +189,29 @@ const budgetMiddleware = ({ getState, dispatch }) => next => action => {
 
     case `${REQUEST_NEW_CATEGORY} ${API_ERROR}`:
       processRequestNewCategoryApiError(next, action);
+      break;
+    
+    case ADD_TRANSACTION:
+      next(apiRequest({
+        data: {
+          name: action.name,
+          belongsTo: action.belongsTo,
+          date: action.date,
+          cost: action.cost,
+          notes: action.notes,
+        },
+        method: 'POST',
+        url: '/transaction/create_transaction',
+        feature: ADD_TRANSACTION,
+      }));
+      break;
+    
+    case `${ADD_TRANSACTION} ${API_SUCCESS}`:
+      console.log('success', action);
+      break;
+
+    case `${ADD_TRANSACTION} ${API_ERROR}`:
+      console.log('error', action);
       break;
 
   }
