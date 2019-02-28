@@ -27,6 +27,7 @@ import {
   CURRENT_YEAR,
   CURRENT_MONTH,
   lookupBudget,
+  addTransactionToStore,
 } from '@/state/ducks/budget';
 
 /**
@@ -207,11 +208,11 @@ const budgetMiddleware = ({ getState, dispatch }) => next => action => {
       break;
     
     case `${ADD_TRANSACTION} ${API_SUCCESS}`:
-      console.log('success', action);
+      processAddTransactionApiSuccess(next, action);
       break;
 
     case `${ADD_TRANSACTION} ${API_ERROR}`:
-      console.log('error', action);
+      processAddTransactionApiError(next, action);
       break;
 
   }
@@ -455,4 +456,38 @@ const dispatchLookupBudget = ({ budget }, dispatch) => {
     currentYear: budget.currentYear,
     currentMonth: budget.currentMonth,
   }));
+};
+
+const processAddTransactionApiSuccess = (next, { payload }) => {
+  const { status, message, data } = payload;
+  const { accessId, belongsTo, name, date, cost, notes } = data;
+  if (status === 1 && message === 'Transaction created') {
+    next(addTransactionToStore({
+      accessId,
+      belongsTo,
+      name,
+      date,
+      cost,
+      notes
+    }));
+  } else {
+    next(addTransactionToStore({
+      accessId,
+      belongsTo,
+      name,
+      date,
+      cost,
+      notes
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processAddTransactionApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
 };

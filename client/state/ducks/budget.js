@@ -21,6 +21,7 @@ export const DELETE_CATEGORY = `${BUDGET} DELETE_CATEGORY`;
 export const REQUEST_NEW_CATEGORY = `${BUDGET} REQUEST_NEW_CATEGORY`;
 export const NEW_CATEGORY = `${BUDGET} NEW_CATEGORY`;
 export const ADD_TRANSACTION = `${BUDGET} ADD_TRANSACTION`;
+export const ADD_TRANSACTION_TO_STORE = `${BUDGET} ADD_TRANSACTION_TO_STORE`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -183,6 +184,15 @@ export const addTransaction = ({ name, belongsTo, date, cost, notes }) => ({
   notes,
 });
 
+export const addTransactionToStore = ({ name, belongsTo, date, cost, notes }) => ({
+  type: ADD_TRANSACTION_TO_STORE,
+  name,
+  belongsTo,
+  date,
+  cost,
+  notes,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -237,6 +247,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 
     case NEW_CATEGORY:
       return reduceNewCategory(state, action);
+
+    case ADD_TRANSACTION_TO_STORE:
+      return reduceAddTransactionToStore(state, action);
 
     default:
       return state;
@@ -405,4 +418,8 @@ const reduceNewCategory = (state, { categoryData }) => {
       },
     },
   });
+};
+
+const reduceAddTransactionToStore = (state, {  }) => {
+
 };
