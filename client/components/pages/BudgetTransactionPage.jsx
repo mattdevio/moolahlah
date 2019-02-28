@@ -12,6 +12,9 @@ import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import MonthSelector from '@/components/molecules/MonthSelector';
 import AddTransactionForm from '../organisms/AddTransactionForm';
+import RequireBudgetFirst from '@/components/atoms/RequireBudgetFirst';
+import LoadingSpinner from '@/components/atoms/LoadingSpinner';
+
 import {
   lookupBudget,
   BudgetStatusEnum,
@@ -39,6 +42,8 @@ class BudgetDesignPage extends Component {
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             <CurrentBudgetDisplay />
+            { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
+            { budgetStatus === BudgetStatusEnum.notStarted && <RequireBudgetFirst /> }
             { budgetStatus === BudgetStatusEnum.loaded && <AddTransactionForm /> }
           </ContentSectionWrapper>
         </ContentSectionContainer>
