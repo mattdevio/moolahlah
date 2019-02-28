@@ -28,44 +28,75 @@ transactionRouter.post('/create_transaction', protectedRoute(), Category.createT
 
   const { name, belongsTo, date, cost, notes } = req.body;
 
-  let budgetRecord__;
+  // Start a transaction
+  let trx;
   try {
-    budgetRecord__ = await Category.query()
-      .leftJoinRelation('budget')
-      .where('access_id', belongsTo).first();
+    trx = await transaction.start(KNEX_INSTANCE);
   } catch (e) {
     return next(e);
   }
 
+  // Get the category data need for the relationships
+  let category__;
+  try {
+    category__ = await Category.query(trx)
+      .select({
+        budgetId: 'budget_id',
+        categoryId: 'id',
+      })
+      .where('access_id', belongsTo).first();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+  logger.debug(JSON.stringify(category__, null ,2));
+
+  // Build a new transaction data structure
   const newTransactionRecord = {
-    'budget_id': budgetRecord__.id,
+    'budget_id': category__.budgetId,
+    'category_id': category__.categoryId,
     'name': name,
-    'belongs_to': Buffer.from(belongsTo),
     'transaction_date': date,
     'cost': cost,
     'notes': notes,
   };
 
+  // Add new transaction data to database
   let newRecord__;
   try {
-    newRecord__ = await TransactionRecord.query()
+    newRecord__ = await TransactionRecord.query(trx)
       .insertAndFetch(newTransactionRecord);
   } catch (e) {
-    return next(e);
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
+  }
+  logger.debug(JSON.stringify(newRecord__, null ,2));
+
+  // Commit the transaction
+  try {
+    await trx.commit();
+  } catch (e) {
+    return trx.rollback(e)
+      .then(next)
+      .catch(next);
   }
 
-  console.dir(newRecord__);
-
+  // Respond with new information to client
   res.json(apiResponse({
-    message: 'Nothing here yet',
+    message: 'Transaction created',
+    data: {
+      belongsTo: belongsTo,
+      accessId: newRecord__.accessId,
+      name: newRecord__.name,
+      date: newRecord__.transactionDate,
+      cost: newRecord__.cost,
+      notes: newRecord__.notes,
+    },
   }));
 
 });
-
-
-
-
-
 
 
 // Export router
