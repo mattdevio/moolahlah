@@ -8,6 +8,7 @@ exports.up = function(knex, Promise) {
       table.string('category_label').notNullable();
       table.boolean('can_edit').notNullable().defaultTo(true);
       table.boolean('is_debit').notNullable().defaultTo(true);
+      table.boolean('is_visable').notNullable().defaultTo(true);
       table.integer('budget_id').unsigned().notNullable();
       table.foreign('budget_id').references('budget.id').onDelete('cascade');
     });

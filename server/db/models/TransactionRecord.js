@@ -68,6 +68,8 @@ class TransactionRecord extends BaseModel {
   static createTransactionValidation() {
     return [
 
+      body(),
+
       handleValidationErrors(),
 
     ];

@@ -70,9 +70,12 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
   logger.debug(JSON.stringify(categories__, null, 2));
 
+  const visibleCategories = categories__.filter(categoryRecord => categoryRecord.isVisable);
+  const unassignedCategory = categories__.filter(categoryRecord => !categoryRecord.isVisable)[0];
+
   // Build 2 budget_record entries for each category
   const budgetRecordInserts = [];
-  categories__.forEach(categoryRecord => {
+  visibleCategories.forEach(categoryRecord => {
     for(let i=0; i<2; i++) {
       budgetRecordInserts.push({
         budgetId: budget__.id,
@@ -106,7 +109,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
 
   // Build category groups data structure
-  const categoryGroups = categories__.reduce((accumulator, value) => {    
+  const categoryGroups = visibleCategories.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
       .filter(record => record.categoryId === value.id)
       .reduce((acc, val) => {
@@ -141,6 +144,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
     data: {
       budgetStartDate: budget__.startDate,
       categoryGroups: categoryGroups,
+      unassignedAccessId: unassignedCategory.accessId,
     },
   }));
 
@@ -174,8 +178,11 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     return next(e);
   }
 
+  const visibleCategories = categories__.filter(categoryRecord => categoryRecord.isVisable);
+  const unassignedCategory = categories__.filter(categoryRecord => !categoryRecord.isVisable)[0];
+
   // Build category groups data structure
-  const categoryGroups = categories__.reduce((accumulator, value) => {    
+  const categoryGroups = visibleCategories.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
       .filter(record => record.categoryId === value.id)
       .reduce((acc, val) => {
@@ -210,6 +217,7 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     data: {
       budgetStartDate: startDate,
       categoryGroups: categoryGroups,
+      unassignedAccessId: unassignedCategory.accessId,
     },
   }));
 
