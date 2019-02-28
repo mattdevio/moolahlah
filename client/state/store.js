@@ -6,6 +6,7 @@ import rootReducer from '@/state/ducks';
 import uiMiddleware from '@/state/middleware/feature/ui';
 import authMiddleware from '@/state/middleware/feature/auth';
 import budgetMiddleware from '@/state/middleware/feature/budget';
+import analyticsMiddleware from '@/state/middleware/feature/analytics';
 import apiMiddleware from '@/state/middleware/core/api';
 import toastMiddleware from '@/state/middleware/core/toast';
 
@@ -18,6 +19,7 @@ const featureMiddleware = [
   uiMiddleware,
   authMiddleware,
   budgetMiddleware,
+  analyticsMiddleware,
 ];
 const coreMiddleware = [
   apiMiddleware,
