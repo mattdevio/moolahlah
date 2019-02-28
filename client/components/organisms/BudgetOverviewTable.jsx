@@ -157,11 +157,12 @@ class BudgetOverviewTable extends Component {
     const remaining = this.getRemainingTotal();
     const isSafeBudget = (remaining >= 0);
     const displayRemaining = Math.abs(remaining);
+    const { transactionPage } = this.props;
     return (
       <Fragment>
         <BudgetOverviewTableContainer>
           <TableHeading>
-            Budget Designer
+            { transactionPage ? 'Currently Planned' : 'Budget Designer' }
           </TableHeading>
           { this.renderIncomeRow() }
           { this.renderDebitRows() }
@@ -189,6 +190,7 @@ class BudgetOverviewTable extends Component {
 
 BudgetOverviewTable.propTypes = {
   categoryGroups: PropTypes.object.isRequired,
+  transactionPage: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

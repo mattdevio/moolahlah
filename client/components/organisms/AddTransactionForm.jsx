@@ -239,6 +239,7 @@ const AddTransactionFormContainer = styled.div`
   width: 100%;
   border: 2px solid #000;
   padding: 1rem;
+  margin-bottom: 3rem;
 `;
 
 const AddTransactionTitle = styled.h2`

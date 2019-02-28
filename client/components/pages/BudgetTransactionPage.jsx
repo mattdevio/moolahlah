@@ -14,11 +14,13 @@ import MonthSelector from '@/components/molecules/MonthSelector';
 import AddTransactionForm from '../organisms/AddTransactionForm';
 import RequireBudgetFirst from '@/components/atoms/RequireBudgetFirst';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
+import BudgetOverviewTable from '@/components/organisms/BudgetOverviewTable';
 
 import {
   lookupBudget,
   BudgetStatusEnum,
 } from '@/state/ducks/budget';
+import AllTransactions from '../organisms/AllTransactions';
 
 
 class BudgetDesignPage extends Component {
@@ -44,12 +46,18 @@ class BudgetDesignPage extends Component {
             <CurrentBudgetDisplay />
             { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
             { budgetStatus === BudgetStatusEnum.notStarted && <RequireBudgetFirst /> }
-            { budgetStatus === BudgetStatusEnum.loaded && <AddTransactionForm /> }
+            { budgetStatus === BudgetStatusEnum.loaded && 
+              <Fragment>
+                <AddTransactionForm />
+                <AllTransactions />
+              </Fragment>
+            }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='lightBlue'>
           <TabSelector />
           <MonthSelector />
+          { budgetStatus === BudgetStatusEnum.loaded && <BudgetOverviewTable transactionPage /> }
         </TabContentContainer>
       </Fragment>
     );
