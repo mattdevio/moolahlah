@@ -1,6 +1,7 @@
 // Vendor Imports
 import React, { Component, Fragment } from 'react';
-// import styled from 'styled-components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 // Custom Imports
 import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
@@ -11,6 +12,11 @@ import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import MonthSelector from '@/components/molecules/MonthSelector';
 import AddTransactionForm from '../organisms/AddTransactionForm';
+import {
+  lookupBudget,
+  BudgetStatusEnum,
+} from '@/state/ducks/budget';
+
 
 class BudgetDesignPage extends Component {
 
@@ -18,14 +24,22 @@ class BudgetDesignPage extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    const { currentYear, currentMonth, budgetStatus, dispatchLookupBudget } = this.props;
+    if (budgetStatus !== BudgetStatusEnum.loaded) {
+      dispatchLookupBudget(currentYear, currentMonth);
+    }
+  }
+
   render() {
+    const { budgetStatus } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             <CurrentBudgetDisplay />
-            <AddTransactionForm />
+            { budgetStatus === BudgetStatusEnum.loaded && <AddTransactionForm /> }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='lightBlue'>
@@ -38,4 +52,21 @@ class BudgetDesignPage extends Component {
 
 }
 
-export default BudgetDesignPage;
+BudgetDesignPage.propTypes = {
+  currentYear: PropTypes.number.isRequired,
+  currentMonth: PropTypes.number.isRequired,
+  budgetStatus: PropTypes.number.isRequired,
+  dispatchLookupBudget: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  currentYear: state.budget.currentYear,
+  currentMonth: state.budget.currentMonth,
+  budgetStatus: state.budget.budgetStatus,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchLookupBudget: (currentYear, currentMonth) => dispatch(lookupBudget({ currentYear, currentMonth }))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BudgetDesignPage);
