@@ -420,6 +420,18 @@ const reduceNewCategory = (state, { categoryData }) => {
   });
 };
 
-const reduceAddTransactionToStore = (state, {  }) => {
-
+const reduceAddTransactionToStore = (state, { accessId, belongsTo, name, date, cost, notes }) => {
+  return Object.assign({}, state, {
+    transactions: [
+      ...state.transactions,
+      {
+        accessId,
+        belongsTo,
+        name,
+        date,
+        cost,
+        notes,
+      },
+    ],
+  });
 };

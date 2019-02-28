@@ -126,6 +126,14 @@ class AddTransactionForm extends Component {
       notes,
     });
 
+    this.setState({
+      name: '',
+      belongsTo: '',
+      date: '',
+      cost: '',
+      notes: '',
+    });
+
   }
 
   renderBelongsToSelectors() {
