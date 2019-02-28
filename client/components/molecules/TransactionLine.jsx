@@ -43,7 +43,7 @@ class TransactionLine extends Component {
 TransactionLine.propTypes = {
   accessId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  cost: PropTypes.number.isRequired,
+  cost: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   notes: PropTypes.string.isRequired,
   isDebit: PropTypes.bool.isRequired,
