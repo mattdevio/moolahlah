@@ -30,8 +30,10 @@ class BudgetDesignPage extends Component {
   }
 
   componentDidMount() {
-    const { currentYear, currentMonth, dispatchLookupBudget } = this.props;
-    dispatchLookupBudget(currentYear, currentMonth);
+    const { currentYear, currentMonth, dispatchLookupBudget, budgetStatus } = this.props;
+    if (budgetStatus !== BudgetStatusEnum.loaded) {
+      dispatchLookupBudget(currentYear, currentMonth);
+    }
   }
 
   renderCategoryGroups() {

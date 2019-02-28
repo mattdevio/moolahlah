@@ -12,6 +12,7 @@ import {
   faTrash,
   faSpinner,
   faPenSquare,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -27,4 +28,5 @@ library.add(
   faTrash,               // fa-trash
   faSpinner,             // spinner
   faPenSquare,           // pen-square
+  faTimes,               // times
 );

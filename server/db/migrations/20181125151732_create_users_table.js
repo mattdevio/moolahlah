@@ -1,7 +1,7 @@
 const tableName = 'users';
 
 exports.up = function(knex) {
-  return knex.schema.createTable(tableName, function (table) {
+  return knex.schema.createTable(tableName, (table) => {
     table.binary('uuid', 16).primary();
     table.string('name', 150).notNullable();
     table.string('email', 100).notNullable();

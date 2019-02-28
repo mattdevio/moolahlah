@@ -12,7 +12,8 @@ const {
   Budget,
   User,
   Category,
-  BudgetRecord
+  BudgetRecord,
+  TransactionRecord,
 } = require(`${appRoot}/server/db/models`);
 
 // Setup
@@ -70,9 +71,12 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
   logger.debug(JSON.stringify(categories__, null, 2));
 
+  const visibleCategories = categories__.filter(categoryRecord => categoryRecord.isVisable);
+  const unassignedCategory = categories__.filter(categoryRecord => !categoryRecord.isVisable)[0];
+
   // Build 2 budget_record entries for each category
   const budgetRecordInserts = [];
-  categories__.forEach(categoryRecord => {
+  visibleCategories.forEach(categoryRecord => {
     for(let i=0; i<2; i++) {
       budgetRecordInserts.push({
         budgetId: budget__.id,
@@ -106,7 +110,7 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
   }
 
   // Build category groups data structure
-  const categoryGroups = categories__.reduce((accumulator, value) => {    
+  const categoryGroups = visibleCategories.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
       .filter(record => record.categoryId === value.id)
       .reduce((acc, val) => {
@@ -141,6 +145,8 @@ budgetRouter.post('/start', protectedRoute(), Budget.startBudgetValidation(), as
     data: {
       budgetStartDate: budget__.startDate,
       categoryGroups: categoryGroups,
+      unassignedAccessId: unassignedCategory.accessId,
+      transactions: [],
     },
   }));
 
@@ -174,8 +180,11 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     return next(e);
   }
 
+  const visibleCategories = categories__.filter(categoryRecord => categoryRecord.isVisable);
+  const unassignedCategory = categories__.filter(categoryRecord => !categoryRecord.isVisable)[0];
+
   // Build category groups data structure
-  const categoryGroups = categories__.reduce((accumulator, value) => {    
+  const categoryGroups = visibleCategories.reduce((accumulator, value) => {    
     const lineItems = budgetRecords__
       .filter(record => record.categoryId === value.id)
       .reduce((acc, val) => {
@@ -204,12 +213,32 @@ budgetRouter.post('/lookup', protectedRoute(), Budget.lookupBudgetValidation(), 
     return accumulator;
   }, { debit: {}, income: {} });
 
+  // Get all the transactions
+  let relatedTransactions__;
+  try {
+    relatedTransactions__ = await TransactionRecord.query()
+      .select({
+        accessId: 'transaction_record.access_id',
+        belongsTo: 'category.access_id',
+        name: 'transaction_record.name',
+        date: 'transaction_record.transaction_date',
+        cost: 'transaction_record.cost',
+        notes: 'transaction_record.notes',
+      })
+      .leftJoinRelation('category')
+      .where('transaction_record.budget_id', id);
+  } catch (e) {
+    return next(e);
+  }
+
   // Send budget information back to client
   res.status(200).json(apiResponse({
     message: 'Existing budget data retrieved',
     data: {
       budgetStartDate: startDate,
       categoryGroups: categoryGroups,
+      unassignedAccessId: unassignedCategory.accessId,
+      transactions: relatedTransactions__,
     },
   }));
 
@@ -420,7 +449,7 @@ budgetRouter.post('/create_record', protectedRoute(), Category.createRecordValid
       .leftJoinRelation('budget')
       .where('access_id', accessId).first();
   } catch (e) {
-    next(e);
+    return next(e);
   }
 
   const newBudgetRecord = {

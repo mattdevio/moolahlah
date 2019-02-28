@@ -20,6 +20,10 @@ export const CATEGORY_IS_BEING_DELETED = `${BUDGET} CATEGORY_IS_BEING_DELETED`;
 export const DELETE_CATEGORY = `${BUDGET} DELETE_CATEGORY`;
 export const REQUEST_NEW_CATEGORY = `${BUDGET} REQUEST_NEW_CATEGORY`;
 export const NEW_CATEGORY = `${BUDGET} NEW_CATEGORY`;
+export const ADD_TRANSACTION = `${BUDGET} ADD_TRANSACTION`;
+export const ADD_TRANSACTION_TO_STORE = `${BUDGET} ADD_TRANSACTION_TO_STORE`;
+export const DELETE_TRANSACTION = `${BUDGET} DELETE_TRANSACTION`;
+export const DELETE_TRANSACTION_FROM_STORE = `${BUDGET} DELETE_TRANSACTION_FROM_STORE`;
 
 // Enumerations
 export const BudgetStatusEnum = Object.freeze({
@@ -36,6 +40,8 @@ const BUDGET_INITIAL_STATE = {
   currentMonth: TODAY.getMonth(),
   budgetStatus: BudgetStatusEnum.loading,
   categoryGroups: {},
+  unassignedAccessId: '',
+  transactions: [],
 };
 
 // Action Creators
@@ -80,11 +86,13 @@ export const setBudgetStatusErrored = () => ({
   budgetStatus: BudgetStatusEnum.error,
 });
 
-export const setLoadedData = ({ categoryGroups, currentMonth, currentYear }) => ({
+export const setLoadedData = ({ categoryGroups, currentMonth, currentYear, unassignedAccessId, transactions }) => ({
   type: SET_LOADED_DATA,
   categoryGroups,
   currentMonth,
   currentYear,
+  unassignedAccessId,
+  transactions,
 });
 
 export const updateCategoryGroupLabel = ({ isDebit, accessId, categoryLabel }) => ({
@@ -169,6 +177,35 @@ export const newCategory = categoryData => ({
   categoryData,
 });
 
+export const addTransaction = ({ name, belongsTo, date, cost, notes }) => ({
+  type: ADD_TRANSACTION,
+  name,
+  belongsTo,
+  date,
+  cost,
+  notes,
+});
+
+export const addTransactionToStore = ({ accessId, name, belongsTo, date, cost, notes }) => ({
+  type: ADD_TRANSACTION_TO_STORE,
+  name,
+  belongsTo,
+  date,
+  cost,
+  notes,
+  accessId,
+});
+
+export const deleteTransaction = ({ accessId }) => ({
+  type: DELETE_TRANSACTION,
+  accessId,
+});
+
+export const deleteTransactionFromStore = ({ accessId }) => ({
+  type: DELETE_TRANSACTION_FROM_STORE,
+  accessId,
+});
+
 /**
  * budgetReducer
  * Manage the state of the budget
@@ -196,6 +233,8 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
         categoryGroups: action.categoryGroups,
         currentMonth: action.currentMonth,
         currentYear: action.currentYear,
+        unassignedAccessId: action.unassignedAccessId,
+        transactions: action.transactions,
       });
     
     case UPDATE_CATEGORY_GROUP_LABEL:
@@ -221,6 +260,12 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 
     case NEW_CATEGORY:
       return reduceNewCategory(state, action);
+
+    case ADD_TRANSACTION_TO_STORE:
+      return reduceAddTransactionToStore(state, action);
+    
+    case DELETE_TRANSACTION_FROM_STORE:
+      return reduceDeleteTransactionFromStore(state, action);
 
     default:
       return state;
@@ -388,5 +433,29 @@ const reduceNewCategory = (state, { categoryData }) => {
         },
       },
     },
+  });
+};
+
+const reduceAddTransactionToStore = (state, { accessId, belongsTo, name, date, cost, notes }) => {
+  return Object.assign({}, state, {
+    transactions: [
+      ...state.transactions,
+      {
+        accessId,
+        belongsTo,
+        name,
+        date,
+        cost,
+        notes,
+      },
+    ],
+  });
+};
+
+const reduceDeleteTransactionFromStore = (state, { accessId }) => {
+  return Object.assign({}, state, {
+    transactions: [
+      ...state.transactions.filter(transaction => transaction.accessId !== accessId),
+    ],
   });
 };
