@@ -29,6 +29,7 @@ import {
   CURRENT_MONTH,
   lookupBudget,
   addTransactionToStore,
+  deleteTransactionFromStore,
 } from '@/state/ducks/budget';
 
 /**
@@ -217,7 +218,22 @@ const budgetMiddleware = ({ getState, dispatch }) => next => action => {
       break;
 
     case DELETE_TRANSACTION:
-      console.dir(action);
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/transaction/delete_transaction',
+        feature: DELETE_TRANSACTION,
+      }));
+      break;
+    
+    case `${DELETE_TRANSACTION} ${API_SUCCESS}`:
+      processDeleteTransactionApiSuccess(next, action);
+      break;
+    
+    case `${DELETE_TRANSACTION} ${API_ERROR}`:
+      processDeleteTransactionApiError(next, action);
       break;
 
   }
@@ -489,6 +505,30 @@ const processAddTransactionApiSuccess = (next, { payload }) => {
 };
 
 const processAddTransactionApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processDeleteTransactionApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  const { accessId } = payload.data;
+  if (status === 1 && message === 'Transaction deleted') {
+    next(deleteTransactionFromStore({
+      accessId,
+    }));
+  } else {
+    next(deleteTransactionFromStore({
+      accessId,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processDeleteTransactionApiError = (next, { payload }) => {
   const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));

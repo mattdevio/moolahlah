@@ -262,6 +262,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
 
     case ADD_TRANSACTION_TO_STORE:
       return reduceAddTransactionToStore(state, action);
+    
+    case DELETE_TRANSACTION_FROM_STORE:
+      return reduceDeleteTransactionFromStore(state, action);
 
     default:
       return state;
@@ -444,6 +447,14 @@ const reduceAddTransactionToStore = (state, { accessId, belongsTo, name, date, c
         cost,
         notes,
       },
+    ],
+  });
+};
+
+const reduceDeleteTransactionFromStore = (state, { accessId }) => {
+  return Object.assign({}, state, {
+    transactions: [
+      ...state.transactions.filter(transaction => transaction.accessId !== accessId),
     ],
   });
 };

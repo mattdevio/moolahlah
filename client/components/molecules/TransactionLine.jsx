@@ -75,7 +75,6 @@ const TLContainer = styled.div`
 
 const TrashButton = styled(FontAwesomeIcon).attrs({
   icon: 'trash',
-  tabIndex: 0,
 })`
   font-size: 3rem;
   color: ${({ theme }) => theme.black};
