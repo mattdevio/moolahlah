@@ -186,13 +186,14 @@ export const addTransaction = ({ name, belongsTo, date, cost, notes }) => ({
   notes,
 });
 
-export const addTransactionToStore = ({ name, belongsTo, date, cost, notes }) => ({
+export const addTransactionToStore = ({ accessId, name, belongsTo, date, cost, notes }) => ({
   type: ADD_TRANSACTION_TO_STORE,
   name,
   belongsTo,
   date,
   cost,
   notes,
+  accessId,
 });
 
 export const deleteTransaction = ({ accessId }) => ({
