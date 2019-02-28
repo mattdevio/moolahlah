@@ -36,6 +36,7 @@ const BUDGET_INITIAL_STATE = {
   currentMonth: TODAY.getMonth(),
   budgetStatus: BudgetStatusEnum.loading,
   categoryGroups: {},
+  unassignedAccessId: '',
 };
 
 // Action Creators
@@ -80,11 +81,12 @@ export const setBudgetStatusErrored = () => ({
   budgetStatus: BudgetStatusEnum.error,
 });
 
-export const setLoadedData = ({ categoryGroups, currentMonth, currentYear }) => ({
+export const setLoadedData = ({ categoryGroups, currentMonth, currentYear, unassignedAccessId }) => ({
   type: SET_LOADED_DATA,
   categoryGroups,
   currentMonth,
   currentYear,
+  unassignedAccessId,
 });
 
 export const updateCategoryGroupLabel = ({ isDebit, accessId, categoryLabel }) => ({
@@ -196,6 +198,7 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
         categoryGroups: action.categoryGroups,
         currentMonth: action.currentMonth,
         currentYear: action.currentYear,
+        unassignedAccessId: action.unassignedAccessId,
       });
     
     case UPDATE_CATEGORY_GROUP_LABEL:

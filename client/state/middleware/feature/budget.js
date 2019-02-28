@@ -213,6 +213,7 @@ const processBudgetData = (next, { payload }) => {
   const {
     budgetStartDate,
     categoryGroups,
+    unassignedAccessId,
   } = payload.data;
   const parsedStartDate = new Date(budgetStartDate);
   const currentMonth = parsedStartDate.getUTCMonth();
@@ -227,7 +228,7 @@ const processBudgetData = (next, { payload }) => {
     });
   });
 
-  next(setLoadedData({ categoryGroups, currentMonth, currentYear }));
+  next(setLoadedData({ categoryGroups, currentMonth, currentYear, unassignedAccessId }));
   next(setBudgetStatusLoaded());
 }; 
 
