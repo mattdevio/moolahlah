@@ -27,6 +27,7 @@ class BudgetRecord extends BaseModel {
 
     // Import here to avoid require loops
     const User = require(`${appRoot}/server/db/models/User`);
+    const Category = require(`${appRoot}/server/db/models/Category`);
 
     return {
 
@@ -40,6 +41,15 @@ class BudgetRecord extends BaseModel {
             to: 'budget.user_uuid',
           },
           to: 'users.uuid',
+        },
+      },
+
+      category: {
+        relation: Model.HasOneRelation,
+        modelClass: Category,
+        join: {
+          from: 'budget_record.category_id',
+          to: 'category.id',
         },
       },
 

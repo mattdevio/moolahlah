@@ -147,6 +147,20 @@ class Budget extends BaseModel {
     ];
   }
 
+  static yearReviewValidation() {
+    return [
+
+      sanitizeBody(['year'])
+        .toInt(),
+      
+      body('year')
+        .isInt({ min: 2012, max: 2026 }).withMessage('Must be an "int" between 2012 and 2026 inclusive'),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
 }
 
 module.exports = Budget;
