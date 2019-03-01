@@ -4,7 +4,7 @@ import validator from 'validator';
 
 /*----------  Custom Imports  ----------*/
 import history from '@/bin/history';
-import { DASHBOARD_BASE } from '@/constants/routes';
+import { DASHBOARD_BASE, LANDING } from '@/constants/routes';
 import { setDisplayOn } from '@/state/ducks/ui';
 import {
   CHECK_SESSION,
@@ -15,6 +15,7 @@ import {
   SIGNIN_EMAIL,
   SIGNIN_PASSWORD,
   SUBMIT_SIGNIN_FORM,
+  SIGN_OUT,
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
@@ -42,6 +43,24 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
   next(action);
 
   switch (action.type) {
+
+    case SIGN_OUT:
+      next(apiRequest({
+        data: {},
+        method: 'POST',
+        url: '/user/logout',
+        feature: SIGN_OUT,
+      }));
+      break;
+
+    case `${SIGN_OUT} ${API_SUCCESS}`:
+      history.push(LANDING);
+      break;
+
+    case `${SIGN_OUT} ${API_ERROR}`:
+      history.push(LANDING);
+      break;
+      
 
     case CHECK_SESSION:
       next(apiRequest({

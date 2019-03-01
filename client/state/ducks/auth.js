@@ -16,6 +16,7 @@ export const SIGNIN_PASSWORD_ERROR = `${AUTH} SIGNIN_PASSWORD_ERROR`;
 export const SUBMIT_SIGNIN_FORM = `${AUTH} SUBMIT_SIGNIN_FORM`;
 export const AUTHENTICATED_USER = `${AUTH} AUTHENTICATED_USER`;
 export const CHECK_SESSION = `${AUTH} CHECK_SESSION`;
+export const SIGN_OUT = `${AUTH} SIGN_OUT`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -37,6 +38,10 @@ const INITIAL_AUTH_STATE = {
 };
 
 /*----------  Action Creators  ----------*/
+export const signOut = () => ({
+  type: SIGN_OUT,
+});
+
 export const setRegisterName = registerName => ({
   type: REGISTER_NAME,
   registerName,
@@ -171,6 +176,9 @@ export default function authReducer(state = INITIAL_AUTH_STATE, action) {
           password: action.password,
         }
       });
+
+    case SIGN_OUT:
+      return INITIAL_AUTH_STATE;
 
     default:
       return state;

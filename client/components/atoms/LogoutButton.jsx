@@ -2,15 +2,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
+// Custom Imports
+import { signOut } from '@/state/ducks/auth';
 
-const LogOutButton = () => (
-  <LBContainer>
+const LogOutButton = ({ dispatchSignOut }) => (
+  <LBContainer onClick={ dispatchSignOut }>
     Sign Out <LogoutIcon />
   </LBContainer>
 );
 
-export default LogOutButton;
+const mapDispatchToProps = dispatch => ({
+  dispatchSignOut: () => dispatch(signOut()),
+});
+
+LogOutButton.propTypes = {
+  dispatchSignOut: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(LogOutButton);
 
 
 const LBContainer = styled.button`
