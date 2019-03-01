@@ -93,9 +93,9 @@ const ChangePasswordTitle = styled.p`
   text-transform: uppercase;
   font-family: ${({ theme }) => theme.typeFont};
   color: ${({ theme }) => theme.darkBlue};
-  letter-spacing: 0.3rem;
+  letter-spacing: 0.2rem;
   margin: 0;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   text-align: center;
 `;
 

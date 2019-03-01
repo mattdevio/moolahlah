@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 // Custom Imports
 import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
@@ -11,7 +12,7 @@ import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import LogOutButton from '@/components/atoms/LogoutButton';
 import UpdatePassword from '@/components/molecules/UpdatePassword';
-
+import AccountDisplayBox from '@/components/atoms/AccountDisplayBox';
 
 class AccountPage extends Component {
 
@@ -20,6 +21,7 @@ class AccountPage extends Component {
   }
 
   render() {
+    const { name, email, password } = this.props.authenticatedUser;
     return (
       <Fragment>
         <ContentSectionContainer>
@@ -28,6 +30,15 @@ class AccountPage extends Component {
             <TitleBar>
               Account Management
             </TitleBar>
+            <AccountDisplayBox>
+              Name: { name }
+            </AccountDisplayBox>
+            <AccountDisplayBox>
+              Email: { email }
+            </AccountDisplayBox>
+            <AccountDisplayBox>
+              Password: { password }
+            </AccountDisplayBox>
             <UpdatePassword />
           </ContentSectionWrapper>
         </ContentSectionContainer>
@@ -41,7 +52,15 @@ class AccountPage extends Component {
 
 }
 
-export default AccountPage;
+AccountPage.propTypes = {
+  authenticatedUser: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  authenticatedUser: state.auth.authenticatedUser,
+});
+
+export default connect(mapStateToProps)(AccountPage);
 
 const TitleBar = styled.h2`
   font-size: 4rem;
