@@ -10,6 +10,8 @@ import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import YearSelector from '@/components/molecules/YearSelector';
+import LoadingSpinner from '@/components/atoms/LoadingSpinner';
+import YearReviewGraph from '@/components/organisms/YearReviewGraph';
 import {
   AnalyticStatusEnum,
   requestYearReview,
@@ -29,11 +31,14 @@ class BudgetVisionPage extends Component {
   }
 
   render() {
+    const { status } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
+            { status === AnalyticStatusEnum.loading && <LoadingSpinner /> }
+            { status === AnalyticStatusEnum.loaded && <YearReviewGraph /> }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='mediumBlue'>

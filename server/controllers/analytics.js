@@ -137,7 +137,7 @@ analyticsRouter.post('/year_review', protectedRoute(), Budget.yearReviewValidati
 
   // Flatted category and transactions into one object
   const overview = budgetsInYear__.reduce((acc, val) => {
-    acc[moment.utc(val.startDate).format('MMMM')] = {
+    acc[moment.utc(val.startDate).format('MMM')] = {
       estimate: allBudgetCategoryTotals[val.budgetId],
       actual: allBudgetTransactionTotals[val.budgetId],
     };
