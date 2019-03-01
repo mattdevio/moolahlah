@@ -17,6 +17,7 @@ export const SUBMIT_SIGNIN_FORM = `${AUTH} SUBMIT_SIGNIN_FORM`;
 export const AUTHENTICATED_USER = `${AUTH} AUTHENTICATED_USER`;
 export const CHECK_SESSION = `${AUTH} CHECK_SESSION`;
 export const SIGN_OUT = `${AUTH} SIGN_OUT`;
+export const UPDATE_PASSWORD = `${AUTH} UPDATE_PASSWORD`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -38,6 +39,11 @@ const INITIAL_AUTH_STATE = {
 };
 
 /*----------  Action Creators  ----------*/
+export const updatePassword = ({ password }) => ({
+  type: UPDATE_PASSWORD,
+  password,
+});
+
 export const signOut = () => ({
   type: SIGN_OUT,
 });

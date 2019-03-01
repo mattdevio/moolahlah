@@ -16,6 +16,7 @@ import {
   SIGNIN_PASSWORD,
   SUBMIT_SIGNIN_FORM,
   SIGN_OUT,
+  UPDATE_PASSWORD,
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
@@ -33,6 +34,7 @@ import {
   API_SUCCESS,
   API_ERROR,
 } from '@/state/ducks/api';
+import { showErrorMessage, showSuccessMessage } from '@/state/ducks/toast';
 
 
 /*======================================
@@ -43,6 +45,25 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
   next(action);
 
   switch (action.type) {
+
+    case UPDATE_PASSWORD:
+      next(apiRequest({
+        data: {
+          password: action.password
+        },
+        method: 'POST',
+        url: '/user/update_password',
+        feature: UPDATE_PASSWORD,
+      }));
+      break;
+
+    case `${UPDATE_PASSWORD} ${API_SUCCESS}`:
+      next(showSuccessMessage('🚀 Password Updated!!'));
+      break;
+    
+    case `${UPDATE_PASSWORD} ${API_ERROR}`:
+      processUpdatePasswordApiError(next, action);
+      break;
 
     case SIGN_OUT:
       next(apiRequest({
@@ -337,4 +358,13 @@ const processSigninError = (next, { payload }) => {
   if (obj.email) next(setSigninEmailError(obj.email));
   if (obj.password) next(setSigninPasswordError(obj.password));
 
+};
+
+const processUpdatePasswordApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
 };
