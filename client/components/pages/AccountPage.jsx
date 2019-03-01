@@ -7,6 +7,8 @@ import ContentSectionContainer from '@/components/atoms/ContentSectionContainer'
 import ContentSectionWrapper from '@/components/atoms/ContentSectionWrapper';
 import TabContentContainer from '@/components/atoms/TabContentContainer';
 import TabSelector from '@/components/molecules/TabSelector';
+import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
+import LogOutButton from '@/components/atoms/LogoutButton';
 
 
 class AccountPage extends Component {
@@ -20,11 +22,12 @@ class AccountPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            Account Page
+            <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='darkBlue'>
           <TabSelector />
+          <LogOutButton />
         </TabContentContainer>
       </Fragment>
     );
