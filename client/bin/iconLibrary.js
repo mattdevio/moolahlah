@@ -13,6 +13,7 @@ import {
   faSpinner,
   faPenSquare,
   faTimes,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*----------  Setup  ----------*/
@@ -29,4 +30,5 @@ library.add(
   faSpinner,             // spinner
   faPenSquare,           // pen-square
   faTimes,               // times
+  faSignOutAlt,          // sign-out-alt
 );

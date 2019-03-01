@@ -24,10 +24,8 @@ class BudgetVisionPage extends Component {
   }
 
   componentDidMount() {
-    const { status, year, dispatchRequestYearReview } = this.props;
-    if (status === AnalyticStatusEnum.empty) {
-      dispatchRequestYearReview(year);
-    }
+    const { year, dispatchRequestYearReview } = this.props;
+    dispatchRequestYearReview(year);
   }
 
   render() {
