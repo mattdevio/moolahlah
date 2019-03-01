@@ -178,5 +178,46 @@ userRouter.get('/profile', protectedRoute(), async function(req, res, next) {
 
 });
 
+/**
+ * POST /update_password
+ * Allows the user to update their email and password
+ */
+userRouter.post('/update_password', protectedRoute(), User.updatePasswordValidation(), async (req, res, next) => {
+
+  const { email } = req.session.data;
+  const { password } = req.body;
+
+  // Create hash
+  let hash;
+  try {
+    hash = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
+  } catch (e) {
+    return next(e);
+  }
+
+  let updatePassword__;
+  try {
+    updatePassword__ = await User.query()
+      .update({ password: hash })
+      .where('email', email);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (updatePassword__ !== 1) res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Password not updated',
+  }));
+
+  res.json(apiResponse({
+    message: 'Password updated',
+    data: {
+      password: '*********',
+    },
+  }));
+
+});
+
+
 // export router
 module.exports = userRouter;
