@@ -12,6 +12,7 @@ import LineDayPicker from '@/components/atoms/LineDayPicker';
 import LineInput from '@/components/atoms/LineInput';
 import {
   updateLineitem,
+  requestDeleteLineitem,
 } from '@/state/ducks/budget';
 
 
@@ -73,7 +74,7 @@ class LineItem extends Component {
   }
 
   getDateString() {
-    return `${moment(this.props.dayPickerValue).format('MM/DD/YYYY')}`;
+    return `${moment.utc(this.props.dayPickerValue).format('MM/DD/YYYY')}`;
   }
 
   getDecimalValue() {
@@ -82,7 +83,12 @@ class LineItem extends Component {
   }
 
   destoryLineItem() {
-
+    const { isDebit, parent, accessId, dispatchRequestDeleteLineitem } = this.props;
+    dispatchRequestDeleteLineitem({
+      isDebit,
+      parent,
+      accessId
+    });
   }
 
   updateLabel(event) {
@@ -149,6 +155,24 @@ class LineItem extends Component {
 
 
   render() {
+    const { isBeingDeleted, categoryIsBeingDeleted } = this.props;
+    if (isBeingDeleted || categoryIsBeingDeleted) {
+      return (
+        <LineItemContainer>
+          <LineItemFlexContainer isBeingDeleted={isBeingDeleted}>
+            <LabelDisplayField>
+              { this.props.labelValue.trim() === '' ? 'Budget Item Label' : this.props.labelValue }
+            </LabelDisplayField>
+            <AttributeDisplayField margin='0 1rem'>
+              { this.getDateString() }
+            </AttributeDisplayField>
+            <AttributeDisplayField>
+              ${ this.getDecimalValue() }
+            </AttributeDisplayField>
+          </LineItemFlexContainer>
+        </LineItemContainer>
+      );
+    }
     return (
       <LineItemContainer>
         {
@@ -205,6 +229,7 @@ class LineItem extends Component {
 
 const mapDispatchToProps = dispatch => ({
   dispatchUpdateLineitem: (updateObject) => dispatch(updateLineitem(updateObject)),
+  dispatchRequestDeleteLineitem: (updateObject) => dispatch(requestDeleteLineitem(updateObject)),
 });
 
 export default connect(null, mapDispatchToProps)(LineItem);
@@ -216,7 +241,10 @@ LineItem.propTypes = {
   accessId: PropTypes.string.isRequired,
   parent: PropTypes.string.isRequired,
   isDebit: PropTypes.bool.isRequired,
+  isBeingDeleted: PropTypes.bool.isRequired,
   dispatchUpdateLineitem: PropTypes.func.isRequired,
+  dispatchRequestDeleteLineitem: PropTypes.func.isRequired,
+  categoryIsBeingDeleted: PropTypes.bool.isRequired,
 };
 
 
@@ -233,6 +261,13 @@ const LineItemFlexContainer = styled.div`
   padding: 1rem;
   border: 1px dashed transparent;
   ${({ hasFocus }) => !!hasFocus && 'border-color: #000;'}
+  ${({ isBeingDeleted }) => {
+    if (isBeingDeleted) {
+      return `
+        opacity: 0.3;
+      `;
+    }
+  }}
 `;
 
 const ClickableLineItemFlexContainer = styled(LineItemFlexContainer)`

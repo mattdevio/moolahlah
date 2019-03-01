@@ -14,6 +14,8 @@ import CategoryGroup from '@/components/organisms/CategoryGroup';
 import CurrentBudgetDisplay from '@/components/atoms/CurrentBudgetDisplay';
 import StartNewMonth from '@/components/molecules/StartNewMonth';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
+import AddCategoryButton from '@/components/atoms/AddCategoryButton';
+import BudgetOverviewTable from '@/components/organisms/BudgetOverviewTable';
 import {
   lookupBudget,
   BudgetStatusEnum,
@@ -28,8 +30,10 @@ class BudgetDesignPage extends Component {
   }
 
   componentDidMount() {
-    const { currentYear, currentMonth, dispatchLookupBudget } = this.props;
-    dispatchLookupBudget(currentYear, currentMonth);
+    const { currentYear, currentMonth, dispatchLookupBudget, budgetStatus } = this.props;
+    if (budgetStatus !== BudgetStatusEnum.loaded) {
+      dispatchLookupBudget(currentYear, currentMonth);
+    }
   }
 
   renderCategoryGroups() {
@@ -39,24 +43,29 @@ class BudgetDesignPage extends Component {
       <Fragment>
         {Object.keys(income).map(key => {
           const incomeRecord = income[key];
-          return (
-            <CategoryGroup
-              key={ key }
-              accessId={ key }
-              { ...incomeRecord }
-            />
-          );
+          if (incomeRecord) {
+            return (
+              <CategoryGroup
+                key={ key }
+                accessId={ key }
+                { ...incomeRecord }
+              />
+            );
+          }
         })}
         {Object.keys(debit).map(key => {
           const debitRecord = debit[key];
-          return (
-            <CategoryGroup
-              key={ key }
-              accessId={ key }
-              { ...debitRecord }
-            />
-          );
+          if (debitRecord) {
+            return (
+              <CategoryGroup
+                key={ key }
+                accessId={ key }
+                { ...debitRecord }
+              />
+            );
+          }
         })}
+        <AddCategoryButton />
       </Fragment>
     );
   }
@@ -67,7 +76,7 @@ class BudgetDesignPage extends Component {
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
-            <MoolahlahLogo width='20' margin='0 auto 2rem auto' />
+            <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             <CurrentBudgetDisplay />
             { budgetStatus === BudgetStatusEnum.loading && <LoadingSpinner /> }
             { budgetStatus === BudgetStatusEnum.notStarted && <StartNewMonth /> }
@@ -78,6 +87,7 @@ class BudgetDesignPage extends Component {
         <TabContentContainer bgColor='skyBlue'>
           <TabSelector />
           <MonthSelector />
+          { budgetStatus === BudgetStatusEnum.loaded && <BudgetOverviewTable /> }
         </TabContentContainer>
       </Fragment>
     );

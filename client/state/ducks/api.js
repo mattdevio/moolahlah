@@ -5,7 +5,7 @@ export const API_ERROR = 'API_ERROR';
 
 
 /*----------  Action Creators  ----------*/
-export const apiRequest = ({ data, method, url, feature, cancelable = false }) => ({
+export const apiRequest = ({ data, method, url, feature, cancelable = false, cacheAction }) => ({
   type: `${feature} ${API_REQUEST}`,
   payload: data,
   meta: {
@@ -13,21 +13,24 @@ export const apiRequest = ({ data, method, url, feature, cancelable = false }) =
     url,
     feature,
     cancelable,
+    cacheAction,
   },
 });
 
-export const apiSuccess = ({ data, feature }) => ({
+export const apiSuccess = ({ data, feature, cacheAction }) => ({
   type: `${feature} ${API_SUCCESS}`,
   payload: data,
   meta: {
     feature,
+    cacheAction,
   },
 });
 
-export const apiError = ({ error, feature }) => ({
+export const apiError = ({ error, feature, cacheAction }) => ({
   type: `${feature} ${API_ERROR}`,
   payload: error,
   meta: {
     feature,
+    cacheAction,
   },
 });

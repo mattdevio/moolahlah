@@ -9,22 +9,45 @@ import {
   LOOKUP,
   UPDATE_CATEGORY_GROUP_LABEL,
   UPDATE_LINEITEM,
+  REQUEST_DELETE_LINEITEM,
+  REQUEST_NEW_LINEITEM,
+  REQUEST_DELETE_CATEGORY,
+  REQUEST_NEW_CATEGORY,
+  ADD_TRANSACTION,
+  DELETE_TRANSACTION,
   setLoadedData,
   setBudgetStatusLoading,
   setBudgetStatusLoaded,
   setBudgetStatusNotStarted,
+  setLineitemIsBeingDeleted,
+  deleteLineitem,
+  addLineitem,
+  setCategoryIsBeingDeleted,
+  deleteCategory,
+  newCategory,
+  CURRENT_YEAR,
+  CURRENT_MONTH,
+  lookupBudget,
+  addTransactionToStore,
+  deleteTransactionFromStore,
 } from '@/state/ducks/budget';
 
 /**
  * budgetMiddleware
  * Handle all budget request modifications
  */
-const budgetMiddleware = ({ getState }) => next => action => {
+const budgetMiddleware = ({ getState, dispatch }) => next => action => {
   next(action);
 
   switch (action.type) {
 
+    case CURRENT_YEAR:
+    case CURRENT_MONTH:
+      dispatchLookupBudget(getState(), dispatch);
+      break;
+
     case START:
+      next(setBudgetStatusLoading());
       processStartBudget(getState(), next);
       break;
     
@@ -34,6 +57,7 @@ const budgetMiddleware = ({ getState }) => next => action => {
     
     case `${START} ${API_ERROR}`:
       // Needs a more robust solution, for now this will work.
+      next(setBudgetStatusNotStarted());
       next(showErrorMessage('Start Budget API Error: Unhandled Error!'));
       break;
 
@@ -82,6 +106,135 @@ const budgetMiddleware = ({ getState }) => next => action => {
     case `${UPDATE_LINEITEM} ${API_ERROR}`:
       processUpdateLineitemApiError(next, action);
       break;
+    
+    case REQUEST_DELETE_LINEITEM:
+      next(setLineitemIsBeingDeleted({
+        isDebit: action.isDebit,
+        parent: action.parent,
+        accessId: action.accessId,
+        isBeingDeleted: true,
+      }));
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/delete_record',
+        feature: REQUEST_DELETE_LINEITEM,
+        cacheAction: action,
+      }));
+      break;
+    
+    case `${REQUEST_DELETE_LINEITEM} ${API_SUCCESS}`:
+      processRequestDeleteItemApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_DELETE_LINEITEM} ${API_ERROR}`:
+      processRequestDeleteItemApiError(next, action);
+      break;
+    
+    case `${REQUEST_NEW_LINEITEM}`:
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/create_record',
+        feature: REQUEST_NEW_LINEITEM,
+      }));
+      break;
+    
+    case `${REQUEST_NEW_LINEITEM} ${API_SUCCESS}`:
+      processNewLineItemApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_NEW_LINEITEM} ${API_ERROR}`:
+      processNewLineItemApiError(next, action);
+      break;
+    
+    case REQUEST_DELETE_CATEGORY:
+      next(setCategoryIsBeingDeleted({
+        accessId: action.accessId,
+        isDebit: action.isDebit,
+        isBeingDeleted: true,
+      }));
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/budget/delete_category',
+        feature: REQUEST_DELETE_CATEGORY,
+        cacheAction: action,
+      }));
+      break;
+    
+    case `${REQUEST_DELETE_CATEGORY} ${API_SUCCESS}`:
+      processRequestDeleteCategoryApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_DELETE_CATEGORY} ${API_ERROR}`:
+      next(setCategoryIsBeingDeleted({
+        accessId: action.accessId,
+        isDebit: action.isDebit,
+        isBeingDeleted: true,
+      }));
+      processRequestDeleteCategoryApiError(next, action);
+      break;
+    
+    case REQUEST_NEW_CATEGORY:
+      processRequestNewCategory(getState(), next);
+      break;
+
+    case `${REQUEST_NEW_CATEGORY} ${API_SUCCESS}`:
+      processRequestNewCategoryApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_NEW_CATEGORY} ${API_ERROR}`:
+      processRequestNewCategoryApiError(next, action);
+      break;
+    
+    case ADD_TRANSACTION:
+      next(apiRequest({
+        data: {
+          name: action.name,
+          belongsTo: action.belongsTo,
+          date: action.date,
+          cost: action.cost,
+          notes: action.notes,
+        },
+        method: 'POST',
+        url: '/transaction/create_transaction',
+        feature: ADD_TRANSACTION,
+      }));
+      break;
+    
+    case `${ADD_TRANSACTION} ${API_SUCCESS}`:
+      processAddTransactionApiSuccess(next, action);
+      break;
+
+    case `${ADD_TRANSACTION} ${API_ERROR}`:
+      processAddTransactionApiError(next, action);
+      break;
+
+    case DELETE_TRANSACTION:
+      next(apiRequest({
+        data: {
+          accessId: action.accessId,
+        },
+        method: 'POST',
+        url: '/transaction/delete_transaction',
+        feature: DELETE_TRANSACTION,
+      }));
+      break;
+    
+    case `${DELETE_TRANSACTION} ${API_SUCCESS}`:
+      processDeleteTransactionApiSuccess(next, action);
+      break;
+    
+    case `${DELETE_TRANSACTION} ${API_ERROR}`:
+      processDeleteTransactionApiError(next, action);
+      break;
 
   }
 
@@ -106,12 +259,23 @@ const processBudgetData = (next, { payload }) => {
   const {
     budgetStartDate,
     categoryGroups,
+    unassignedAccessId,
+    transactions,
   } = payload.data;
   const parsedStartDate = new Date(budgetStartDate);
   const currentMonth = parsedStartDate.getUTCMonth();
   const currentYear = parsedStartDate.getUTCFullYear();
+  // Add extra option to line item so I can tell when its being deleted
+  Object.keys(categoryGroups).forEach(catKeys => {
+    Object.keys(categoryGroups[catKeys]).forEach(cats => {
+      categoryGroups[catKeys][cats].isBeingDeleted = false;
+      Object.keys(categoryGroups[catKeys][cats].lineItems).forEach(li => {
+        categoryGroups[catKeys][cats].lineItems[li].isBeingDeleted = false;
+      });
+    });
+  });
 
-  next(setLoadedData({ categoryGroups, currentMonth, currentYear }));
+  next(setLoadedData({ categoryGroups, currentMonth, currentYear, unassignedAccessId, transactions }));
   next(setBudgetStatusLoaded());
 }; 
 
@@ -173,6 +337,199 @@ const processUpdateLineitemApiSuccess = (next, { payload }) => {
 
 const processUpdateLineitemApiError = (next, { payload }) => {
   const { message, errors } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestDeleteItemApiSuccess = (next, { meta, payload }) => {
+  const { status, message } = payload;
+  const { isDebit, parent, accessId } = meta.cacheAction;
+  if (status === 1 && message === 'Record deleted') {
+    next(deleteLineitem({
+      isDebit,
+      parent,
+      accessId,
+    }));
+  } else {
+    next(deleteLineitem({
+      isDebit,
+      parent,
+      accessId,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestDeleteItemApiError = (next, { meta, payload }) => {
+  const { message, errors } = payload;
+  const { isDebit, parent, accessId } = meta.cacheAction;
+  next(setLineitemIsBeingDeleted({
+    isDebit,
+    parent,
+    accessId,
+    isBeingDeleted: false,
+  }));
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processNewLineItemApiSuccess = (next, { payload }) => {
+  const { message, status, data } = payload;
+  const { accessId, label, estimateDate, estimate, parent, isDebit } = data;
+  if (status === 1 && message === 'Record created') {
+    next(addLineitem({
+      accessId,
+      label,
+      estimateDate,
+      estimate,
+      parent,
+      isDebit,
+    }));
+  } else {
+    next(addLineitem({
+      accessId,
+      label,
+      estimateDate,
+      estimate,
+      parent,
+      isDebit,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processNewLineItemApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+
+const processRequestDeleteCategoryApiSuccess = (next, { meta, payload }) => {
+  const { status, message } = payload;
+  const { isDebit, accessId } = meta.cacheAction;
+  if (status === 1 && message === 'Category deleted') {
+    next(deleteCategory({
+      accessId,
+      isDebit,
+    }));
+  } else {
+    next(deleteCategory({
+      accessId,
+      isDebit,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestDeleteCategoryApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestNewCategory = ({ budget }, next) => {
+  const { currentYear, currentMonth } = budget;
+  next(apiRequest({
+    data: {
+      year: currentYear,
+      month: currentMonth,
+    },
+    method: 'POST',
+    url: '/budget/add_category',
+    feature: REQUEST_NEW_CATEGORY,
+  }));
+};
+
+const processRequestNewCategoryApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  if (status === 1 && message === 'Category created') {
+    next(newCategory(payload.data));
+  } else {
+    next(newCategory(payload.data));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestNewCategoryApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const dispatchLookupBudget = ({ budget }, dispatch) => {
+  dispatch(lookupBudget({
+    currentYear: budget.currentYear,
+    currentMonth: budget.currentMonth,
+  }));
+};
+
+const processAddTransactionApiSuccess = (next, { payload }) => {
+  const { status, message, data } = payload;
+  const { accessId, belongsTo, name, date, cost, notes } = data;
+  if (status === 1 && message === 'Transaction created') {
+    next(addTransactionToStore({
+      accessId,
+      belongsTo,
+      name,
+      date,
+      cost,
+      notes
+    }));
+  } else {
+    next(addTransactionToStore({
+      accessId,
+      belongsTo,
+      name,
+      date,
+      cost,
+      notes
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processAddTransactionApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processDeleteTransactionApiSuccess = (next, { payload }) => {
+  const { status, message } = payload;
+  const { accessId } = payload.data;
+  if (status === 1 && message === 'Transaction deleted') {
+    next(deleteTransactionFromStore({
+      accessId,
+    }));
+  } else {
+    next(deleteTransactionFromStore({
+      accessId,
+    }));
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processDeleteTransactionApiError = (next, { payload }) => {
+  const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));
   } else {
