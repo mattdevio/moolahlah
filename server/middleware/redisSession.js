@@ -18,10 +18,11 @@ function redisSession(expressAppInstance) {
       port: process.env.REDIS_PORT,
       logErrors: true,
     }),
-    saveUninitialized: false,
+    saveUninitialized: true,
     proxy: true,
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
+    rolling: true,
     name: process.env.COOKIE_NAME,
     cookie: { maxAge: 3600000 }, // One Hour
   });

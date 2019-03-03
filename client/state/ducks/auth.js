@@ -19,6 +19,7 @@ export const CHECK_SESSION = `${AUTH} CHECK_SESSION`;
 export const SIGN_OUT = `${AUTH} SIGN_OUT`;
 export const UPDATE_PASSWORD = `${AUTH} UPDATE_PASSWORD`;
 export const REQUEST_UPDATE_EMAIL = `${AUTH} REQUEST_UPDATE_EMAIL`;
+export const REQUEST_UPDATE_NAME = `${AUTH} REQUEST_UPDATE_NAME`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -43,6 +44,11 @@ const INITIAL_AUTH_STATE = {
 export const requestUpdateEmail = ({ email }) => ({
   type: REQUEST_UPDATE_EMAIL,
   email,
+});
+
+export const requestUpdateName = ({ name }) => ({
+  type: REQUEST_UPDATE_NAME,
+  name,
 });
 
 export const updatePassword = ({ password }) => ({

@@ -2,6 +2,7 @@
 const appRoot = require('app-root-path');
 const { Router } = require('express');
 const bcrypt = require('bcrypt');
+// const { transaction } = require('objection');
 
 // Custom Imports
 const { logger, sendMail } = require(`${appRoot}/server/bin/utility`);
@@ -11,6 +12,10 @@ const { User } = require(`${appRoot}/server/db/models`);
 
 // Setup
 const userRouter = Router();
+
+// // Get a reference to the knex sql builder
+// const KNEX_INSTANCE = User.knex();
+
 
 /**
  * POST /
@@ -180,7 +185,7 @@ userRouter.get('/profile', protectedRoute(), async function(req, res, next) {
 
 /**
  * POST /update_password
- * Allows the user to update their email and password
+ * Allows the user to update their password
  */
 userRouter.post('/update_password', protectedRoute(), User.updatePasswordValidation(), async (req, res, next) => {
 
@@ -204,7 +209,7 @@ userRouter.post('/update_password', protectedRoute(), User.updatePasswordValidat
     return next(e);
   }
 
-  if (updatePassword__ !== 1) res.status(400).json(apiResponse({
+  if (updatePassword__ !== 1) return res.status(400).json(apiResponse({
     status: 0,
     message: 'Password not updated',
   }));
@@ -213,6 +218,81 @@ userRouter.post('/update_password', protectedRoute(), User.updatePasswordValidat
     message: 'Password updated',
     data: {
       password: '*********',
+    },
+  }));
+
+});
+
+/**
+ * POST /update_name
+ * Allows the user to update their name
+ */
+userRouter.post('/update_name', protectedRoute(), User.updateNameValidation(), async (req, res, next) => {
+
+  const { email } = req.session.data;
+  const { name } = req.body;
+
+  let updateName__;
+  try {
+    updateName__ = await User.query()
+      .update({ name: name })
+      .where('email', email);
+  } catch (e) {
+    return next(e);
+  }
+
+  if (updateName__ !== 1) return res.status(400).json(apiResponse({
+    status: 0,
+    message: 'Unable to update name',
+  }));
+
+  // Update Session Data
+  req.session.data.name = name;
+
+  res.json(apiResponse({
+    message: 'Name updated',
+    data: {
+      name: name,
+    },
+  }));
+
+});
+
+/**
+ * POST /update_email
+ * Updates a user email address
+ */
+userRouter.post('/update_email', protectedRoute(), User.updateEmailValidation(), async (req, res, next) => {
+
+  const { email, name } = req.session.data;
+
+  let updateEmail__;
+  try {
+    updateEmail__ = await User.query()
+      .update({ email: req.body.email })
+      .where('email', email);
+  } catch (e) {
+    console.dir(e);
+    return next(e);
+  }
+
+  if (updateEmail__ !== 1) {
+    return res.status(400).json(apiResponse({
+      message: 'Unable to update email',
+      status: 0,
+    }));
+  }
+
+  // Update Session Data
+  req.session.data = {
+    email: req.body.email,
+    name: name,
+  };
+
+  res.json(apiResponse({
+    message: 'Email updated',
+    data: {
+      email: req.body.email,
     },
   }));
 

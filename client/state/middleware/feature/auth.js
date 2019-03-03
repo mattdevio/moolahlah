@@ -17,6 +17,8 @@ import {
   SUBMIT_SIGNIN_FORM,
   SIGN_OUT,
   UPDATE_PASSWORD,
+  REQUEST_UPDATE_EMAIL,
+  REQUEST_UPDATE_NAME,
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
@@ -45,6 +47,18 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
   next(action);
 
   switch (action.type) {
+
+    case REQUEST_UPDATE_EMAIL:
+      next(apiRequest({
+
+      }));
+      break;
+    
+    case REQUEST_UPDATE_NAME:
+      next(apiRequest({
+
+      }));
+      break;
 
     case UPDATE_PASSWORD:
       next(apiRequest({
