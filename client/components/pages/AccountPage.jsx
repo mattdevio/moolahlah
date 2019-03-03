@@ -12,6 +12,7 @@ import TabSelector from '@/components/molecules/TabSelector';
 import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import LogOutButton from '@/components/atoms/LogoutButton';
 import UpdatePassword from '@/components/molecules/UpdatePassword';
+import UpdateEmail from '@/components/molecules/UpdateEmail';
 import AccountDisplayBox from '@/components/atoms/AccountDisplayBox';
 
 class AccountPage extends Component {
@@ -39,6 +40,7 @@ class AccountPage extends Component {
             <AccountDisplayBox>
               Password: { password }
             </AccountDisplayBox>
+            <UpdateEmail />
             <UpdatePassword />
           </ContentSectionWrapper>
         </ContentSectionContainer>
