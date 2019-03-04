@@ -17,7 +17,7 @@ const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
   next(action);
 
   if (action.type.includes(API_REQUEST)) {
-    const { url, method, feature, cancelable } = action.meta;
+    const { url, method, feature, cancelable, cacheAction } = action.meta;
 
     // Init Request Body
     const request = {
@@ -45,6 +45,7 @@ const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
         return dispatch(apiError({
           error: data,
           feature,
+          cacheAction
         }));
       }
       // Send log message to server sometime in the future
@@ -53,7 +54,7 @@ const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
 
     const { data } = thunk;
     if (data && (data.status === 1 || data.status === 0)) {
-      return dispatch(apiSuccess({ data, feature }));
+      return dispatch(apiSuccess({ data, feature, cacheAction }));
     }
     // Send log message to server sometime in the future
     dispatch(showErrorMessage('⚠️ An unknown error occurred!'));

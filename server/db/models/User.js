@@ -130,6 +130,18 @@ class User extends BaseModel {
     ];
   }
 
+  static updatePasswordValidation() {
+    return [
+
+      body('password')
+        .isLength({ min: 6 }).withMessage('Must be atleast 6 characters')
+        .matches(/\d/).withMessage('must contain a number'),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
 } // end User Model
 
 module.exports = User;

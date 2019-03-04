@@ -2,7 +2,7 @@
 import { toast } from 'react-toastify';
 
 /*----------  Custom Imports  ----------*/
-import { ERROR_MESSAGE } from '@/state/ducks/toast';
+import { ERROR_MESSAGE, SUCCESS_MESSAGE } from '@/state/ducks/toast';
 
 
 /*=======================================
@@ -20,6 +20,11 @@ const toastMiddleware = () => (next) => async (action) => {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
       break;
+    
+    case SUCCESS_MESSAGE:
+      toast.success(action.payload, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
 
   } // end switch
 

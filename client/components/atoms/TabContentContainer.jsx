@@ -13,6 +13,7 @@ const TabContentContainer = styled.div`
   top: 0;
   right: 0;
   background-color: ${({ theme, bgColor }) => theme[bgColor]};
+  overflow-y: scroll;
 `;
 
 export default TabContentContainer;
