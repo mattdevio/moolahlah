@@ -19,7 +19,8 @@ class UpdateName extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit() {
+  handleSubmit(event) {
+    event.preventDefault();
     const name = this.state.name.trim();
     if (!name) {
       return this.setState({
@@ -27,6 +28,9 @@ class UpdateName extends Component {
       });
     }
     this.props.dispatchRequestUpdateName(name);
+    this.setState({
+      name: '',
+    });
   }
 
   updateKey(key) {

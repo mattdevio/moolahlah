@@ -19,7 +19,9 @@ export const CHECK_SESSION = `${AUTH} CHECK_SESSION`;
 export const SIGN_OUT = `${AUTH} SIGN_OUT`;
 export const UPDATE_PASSWORD = `${AUTH} UPDATE_PASSWORD`;
 export const REQUEST_UPDATE_EMAIL = `${AUTH} REQUEST_UPDATE_EMAIL`;
+export const SET_UPDATED_EMAIL = `${AUTH} SET_UPDATED_EMAIL`;
 export const REQUEST_UPDATE_NAME = `${AUTH} REQUEST_UPDATE_NAME`;
+export const SET_UPDATED_NAME = `${AUTH} SET_UPDATED_NAME`;
 
 /*----------  Default State  ----------*/
 const INITIAL_AUTH_STATE = {
@@ -46,8 +48,18 @@ export const requestUpdateEmail = ({ email }) => ({
   email,
 });
 
+export const setUpdatedEmail = ({ email }) => ({
+  type: SET_UPDATED_EMAIL,
+  email,
+});
+
 export const requestUpdateName = ({ name }) => ({
   type: REQUEST_UPDATE_NAME,
+  name,
+});
+
+export const setUpdatedName = ({ name }) => ({
+  type: SET_UPDATED_NAME,
   name,
 });
 
@@ -135,6 +147,22 @@ export const checkSession = () => ({
 
 export default function authReducer(state = INITIAL_AUTH_STATE, action) {
   switch (action.type) {
+
+    case SET_UPDATED_EMAIL:
+      return Object.assign({}, state, {
+        authenticatedUser: {
+          ...state.authenticatedUser,
+          email: action.email,
+        },
+      });
+    
+    case SET_UPDATED_NAME:
+      return Object.assign({}, state, {
+        authenticatedUser: {
+          ...state.authenticatedUser,
+          name: action.name,
+        },
+      });
 
     case REGISTER_NAME:
       return Object.assign({}, state, {

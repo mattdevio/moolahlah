@@ -36,11 +36,14 @@ class UpdateEmail extends Component {
         error: 'Not a valid email address',
       });
     }
-
     this.props.dispatchRequestUpdateEmail(email);
+    this.setState({
+      email: ''
+    });
   }
 
   render() {
+    const { email, error } = this.state;
     return (
       <UEContainer onSubmit={ this.handleSubmit }>
         <ChangeEmailTitle>
@@ -49,9 +52,10 @@ class UpdateEmail extends Component {
         <EmailField
           placeholder='Email...'
           onChange={ this.updateByKey('email') }
+          value={ email }
         />
-        { !!this.state.error && <ErrorBox>
-          Error: { this.state.error }
+        { !!error && <ErrorBox>
+          Error: { error }
         </ErrorBox> }
         <SubmitEmail>
           Submit New Email
