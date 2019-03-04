@@ -1,3 +1,6 @@
+// Custom Imports
+import { SIGN_OUT } from '@/state/ducks/auth';
+
 // Namespace
 export const ANALYTICS = '[analytics]';
 
@@ -82,6 +85,9 @@ const analyticsReducer = (state = INITIAL_ANALYTICS_DATA, action) => {
       return Object.assign({}, state, {
         yearReview: action.yearReview,
       });
+
+    case SIGN_OUT:
+      return INITIAL_ANALYTICS_DATA;
 
     default:
       return state;
