@@ -44,7 +44,7 @@ class BudgetVisionPage extends Component {
             { yearReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
             { yearReviewStatus === AnalyticStatusEnum.loaded &&
               <Fragment>
-                <GraphTitle>Year Review</GraphTitle>
+                <GraphTitle>{ `${year} Overview` }</GraphTitle>
                 <YearReviewGraph />
               </Fragment>
             }

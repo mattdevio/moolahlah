@@ -31,6 +31,12 @@ const analyticsMiddleware = ({ dispatch, getState }) => next => action => {
       dispatch(requestYearReview({
         year: action.year,
       }));
+      //  eslint-disable-next-line no-case-declarations
+      const { month } = getState().analytics;
+      dispatch(requestMonthReview({
+        month: month,
+        year: action.year,
+      }));
       break;
 
     case SET_MONTH:
