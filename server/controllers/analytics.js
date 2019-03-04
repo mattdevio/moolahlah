@@ -154,5 +154,99 @@ analyticsRouter.post('/year_review', protectedRoute(), Budget.yearReviewValidati
 });
 
 
+/**
+ * POST /month_review
+ * Get the data for the month review
+ */
+analyticsRouter.post('/month_review', protectedRoute(), Budget.monthReviewValidation(), async (req, res, next) => {
+
+  const { email } = req.session.data;
+  const { year, month } = req.body;
+
+  let budget__;
+  try {
+    budget__ = await Budget.query()
+      .select({
+        budgetId: 'budget.id',
+      })
+      .leftJoinRelation('users')
+      .where('budget.start_date', `${year}-${month+1}-01`)
+      .andWhere('users.email', email)
+      .first();
+  } catch (e) {
+    return next(e);
+  }
+
+  let budgetRecords__;
+  try {
+    budgetRecords__ = await BudgetRecord.query()
+      .leftJoinRelation('category')
+      .select({
+        category: 'category.category_label',
+        id: 'category.access_id',
+        total: raw('SUM(budget_record.estimate)'),
+        isDebit: 'category.is_debit',
+      })
+      .where('budget_record.budget_id', budget__.budgetId)
+      .groupBy('budget_record.category_id');
+  } catch (e) {
+    console.dir(e);
+    return next(e);
+  }
+
+  const normalBudgetRecords = budgetRecords__.reduce((acc, val) => {
+    acc[val.id] = {
+      ...val,
+      id: undefined,
+    };
+    return acc;
+  }, {});
+
+  let transactionRecords__;
+  try {
+    transactionRecords__ = await TransactionRecord.query()
+      .leftJoinRelation('category')
+      .select({
+        category: 'category.category_label',
+        id: 'category.access_id',
+        total: raw('SUM(transaction_record.cost)'),
+        isDebit: 'category.is_debit',
+      })
+      .where('transaction_record.budget_id', budget__.budgetId)
+      .groupBy('transaction_record.category_id');
+  } catch (e) {
+    return next(e);
+  }
+
+  const normalTransactionRecords = transactionRecords__.reduce((acc, val) => {
+    acc[val.id] = {
+      ...val,
+      id: undefined,
+    };
+    return acc;
+  }, {});
+
+  const allData = {
+    debit: {},
+    income: {},
+  };
+  Object.keys(normalBudgetRecords).forEach(key => {
+    const base = normalBudgetRecords[key].isDebit ? 'debit' : 'income';
+    allData[base][key] = {
+      label: normalBudgetRecords[key].category,
+      planned: normalBudgetRecords[key].total,
+      actual: normalTransactionRecords[key] ? normalTransactionRecords[key].total : '0.0000',
+    };
+  });
+  
+
+  res.json(apiResponse({
+    message: 'Month review',
+    data: allData,
+  }));
+
+});
+
+
 // Export Routre
 module.exports = analyticsRouter;

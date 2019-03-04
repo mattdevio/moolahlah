@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 // Custom Imports
 import ContentSectionContainer from '@/components/atoms/ContentSectionContainer';
@@ -13,6 +14,7 @@ import YearSelector from '@/components/molecules/YearSelector';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
 import YearReviewGraph from '@/components/organisms/YearReviewGraph';
 import OnlyMonthSelector from '@/components/molecules/OnlyMonthSelector';
+import MonthReviewGraph from '@/components/organisms/MonthReviewGraph';
 import {
   AnalyticStatusEnum,
   requestYearReview,
@@ -32,14 +34,26 @@ class BudgetVisionPage extends Component {
   }
 
   render() {
-    const { yearReviewStatus } = this.props;
+    const { yearReviewStatus, monthReviewStatus } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
             { yearReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
-            { yearReviewStatus === AnalyticStatusEnum.loaded && <YearReviewGraph /> }
+            { yearReviewStatus === AnalyticStatusEnum.loaded &&
+              <Fragment>
+                <GraphTitle>Year Review</GraphTitle>
+                <YearReviewGraph />
+              </Fragment>
+            }
+            { monthReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
+            { monthReviewStatus === AnalyticStatusEnum.loaded &&
+              <Fragment>
+                <GraphTitle>Month Review</GraphTitle>
+                <MonthReviewGraph />
+              </Fragment>
+            }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='mediumBlue'>
@@ -75,3 +89,12 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BudgetVisionPage);
+
+const GraphTitle = styled.p`
+  font-size: 4rem;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.darkBlue};
+  font-weight: 700;
+  font-family: ${({ theme }) => theme.typeFont};
+  text-align: center;
+`;
