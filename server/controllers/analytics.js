@@ -225,13 +225,9 @@ analyticsRouter.post('/month_review', protectedRoute(), Budget.monthReviewValida
     return acc;
   }, {});
 
-  const allData = {
-    debit: {},
-    income: {},
-  };
+  const allData = {};
   Object.keys(normalBudgetRecords).forEach(key => {
-    const base = normalBudgetRecords[key].isDebit ? 'debit' : 'income';
-    allData[base][key] = {
+    allData[key] = {
       label: normalBudgetRecords[key].category,
       planned: normalBudgetRecords[key].total,
       actual: normalTransactionRecords[key] ? normalTransactionRecords[key].total : '0.0000',

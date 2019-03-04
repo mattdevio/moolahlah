@@ -22,7 +22,6 @@ class YearReviewGraph extends Component {
 
   processData() {
     const { yearReview, theme } = this.props;
-    console.log(JSON.stringify(yearReview, null, 2));
     const IncomeEstimate = moment.monthsShort().map(monthKey => {
       if (yearReview[monthKey] && yearReview[monthKey].estimate && typeof yearReview[monthKey].estimate.income !== 'undefined') {
         return { x: monthKey, y: this.parseMoney(yearReview[monthKey].estimate.income) };

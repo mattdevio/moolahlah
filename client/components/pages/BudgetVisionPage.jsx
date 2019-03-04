@@ -15,6 +15,7 @@ import LoadingSpinner from '@/components/atoms/LoadingSpinner';
 import YearReviewGraph from '@/components/organisms/YearReviewGraph';
 import OnlyMonthSelector from '@/components/molecules/OnlyMonthSelector';
 import MonthReviewGraph from '@/components/organisms/MonthReviewGraph';
+import { displayMonths } from '@/bin/dateHelpers';
 import {
   AnalyticStatusEnum,
   requestYearReview,
@@ -34,7 +35,7 @@ class BudgetVisionPage extends Component {
   }
 
   render() {
-    const { yearReviewStatus, monthReviewStatus } = this.props;
+    const { month, year, yearReviewStatus, monthReviewStatus } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
@@ -51,7 +52,7 @@ class BudgetVisionPage extends Component {
             { monthReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
             { monthReviewStatus === AnalyticStatusEnum.loaded &&
               <Fragment>
-                <GraphTitle>Month Review</GraphTitle>
+                <GraphTitle>{ `${displayMonths[month]} ${year.toString()} Overview` }</GraphTitle>
                 <MonthReviewGraph />
               </Fragment>
             }
