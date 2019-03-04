@@ -17,6 +17,8 @@ import {
   SUBMIT_SIGNIN_FORM,
   SIGN_OUT,
   UPDATE_PASSWORD,
+  REQUEST_UPDATE_EMAIL,
+  REQUEST_UPDATE_NAME,
   setRegisterName,
   setRegisterEmail,
   setRegisterPassword,
@@ -28,6 +30,8 @@ import {
   setSigninEmailError,
   setSigninPasswordError,
   authenticatedUser,
+  setUpdatedEmail,
+  setUpdatedName,
 } from '@/state/ducks/auth';
 import {
   apiRequest,
@@ -45,6 +49,44 @@ const authMiddleware = ({ getState }) => (next) => (action) => {
   next(action);
 
   switch (action.type) {
+
+    case REQUEST_UPDATE_EMAIL:
+      next(apiRequest({
+        data: {
+          email: action.email,
+        },
+        method: 'POST',
+        url: '/user/update_email',
+        feature: REQUEST_UPDATE_EMAIL,
+      }));
+      break;
+
+    case `${REQUEST_UPDATE_EMAIL} ${API_SUCCESS}`:
+      processRequestUpdateEmailApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_UPDATE_EMAIL} ${API_ERROR}`:
+      processRequestUpdateEmailApiError(next, action);
+      break;
+    
+    case REQUEST_UPDATE_NAME:
+      next(apiRequest({
+        data: {
+          name: action.name,
+        },
+        method: 'POST',
+        url: '/user/update_name',
+        feature: REQUEST_UPDATE_NAME,
+      }));
+      break;
+
+    case `${REQUEST_UPDATE_NAME} ${API_SUCCESS}`:
+      processRequestUpdateNameApiSuccess(next, action);
+      break;
+
+    case `${REQUEST_UPDATE_NAME} ${API_ERROR}`:
+      processRequestUpdateNameApiError(next, action);
+      break;  
 
     case UPDATE_PASSWORD:
       next(apiRequest({
@@ -361,6 +403,42 @@ const processSigninError = (next, { payload }) => {
 };
 
 const processUpdatePasswordApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestUpdateEmailApiSuccess = (next, { payload }) => {
+  const { message, data } = payload;
+  next(setUpdatedEmail({ email: data.email }));
+  next(showSuccessMessage('Email updated!'));
+  if (message !== 'Email updated') {
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestUpdateEmailApiError = (next, { payload }) => {
+  const { errors, message } = payload;
+  if (errors.length > 0) {
+    next(showErrorMessage(errors[0].msg));
+  } else {
+    next(showErrorMessage(message));
+  }
+};
+
+const processRequestUpdateNameApiSuccess = (next, { payload }) => {
+  const { message, data } = payload;
+  next(setUpdatedName({ name: data.name }));
+  next(showSuccessMessage('Name updated!'));
+  if (message !== 'Name updated') {
+    next(showErrorMessage(`Unexpected: ${message}`));
+  }
+};
+
+const processRequestUpdateNameApiError = (next, { payload }) => {
   const { errors, message } = payload;
   if (errors.length > 0) {
     next(showErrorMessage(errors[0].msg));

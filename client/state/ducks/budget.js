@@ -1,3 +1,6 @@
+// Custom Imports
+import { SIGN_OUT } from '@/state/ducks/auth';
+
 // Namespace
 export const BUDGET = '[budget]';
 
@@ -266,6 +269,9 @@ const budgetReducer = (state = BUDGET_INITIAL_STATE, action) => {
     
     case DELETE_TRANSACTION_FROM_STORE:
       return reduceDeleteTransactionFromStore(state, action);
+
+    case SIGN_OUT:
+      return BUDGET_INITIAL_STATE;
 
     default:
       return state;

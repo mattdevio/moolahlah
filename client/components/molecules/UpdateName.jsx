@@ -4,15 +4,15 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-// Custom imports
-import { updatePassword } from '@/state/ducks/auth';
+// Custom Imports
+import { requestUpdateName } from '@/state/ducks/auth';
 
-class UpdatePassword extends Component {
+class UpdateName extends Component {
 
   constructor(props) {
     super(props);
-    this.state={
-      password: '',
+    this.state = {
+      name: '',
       error: '',
     };
     this.updateKey = this.updateKey.bind(this);
@@ -21,74 +21,66 @@ class UpdatePassword extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const password = this.state.password.trim();
-    if (password.length < 6) {
+    const name = this.state.name.trim();
+    if (!name) {
       return this.setState({
-        error: 'Password must be atleast 6 characters',
+        error: 'Please provide a name.',
       });
     }
-    if (!password.match(/\d/)) {
-      return this.setState({
-        error: 'Password must contain a number',
-      });
-    }
+    this.props.dispatchRequestUpdateName(name);
     this.setState({
-      error: '',
-      password: '',
+      name: '',
     });
-    this.props.dispatchUpdatePassword(password);
   }
 
   updateKey(key) {
-    return (event) => {
-      this.setState({
-        [key]: event.target.value,
-        error: '',
-      });
-    };
+    return event => this.setState({
+      [key]: event.target.value,
+      error: '', 
+    });
   }
 
   render() {
+    const { error, name } = this.state;
     return (
-      <UPContainer onSubmit={ this.handleSubmit }>
-        <ChangePasswordTitle>
-          Update Password
-        </ChangePasswordTitle>
-        <PasswordField
-          placeholder='Password...'
-          type='password'
-          value={ this.state.password }
-          onChange={ this.updateKey('password') }
+      <UNContainer onSubmit={ this.handleSubmit }>
+        <UNTitle>
+          Update Name
+        </UNTitle>
+        <UNField
+          placeholder='Name...'
+          onChange={ this.updateKey('name') }
+          value={ name }
         />
-        { !!this.state.error && <ErrorBox>
-          Error: { this.state.error }
+        { !!error && <ErrorBox>
+          Error: { error }
         </ErrorBox> }
-        <SubmitPassword>
+        <UNSubmit>
           Submit New Password
-        </SubmitPassword>
-      </UPContainer>
+        </UNSubmit>
+      </UNContainer>
     );
   }
 
 }
 
-UpdatePassword.propTypes = {
-  dispatchUpdatePassword: PropTypes.func.isRequired,
+UpdateName.propTypes = {
+  dispatchRequestUpdateName: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  dispatchUpdatePassword: password => dispatch(updatePassword({ password })),
+  dispatchRequestUpdateName: name => dispatch(requestUpdateName({ name })),
 });
 
-export default connect(null, mapDispatchToProps)(UpdatePassword);
+export default connect(null, mapDispatchToProps)(UpdateName);
 
-const UPContainer = styled.form`
+const UNContainer = styled.form`
   width: 100%;
   padding: 1rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
 `;
 
-const ChangePasswordTitle = styled.p`
+const UNTitle = styled.p`
   font-size: 3rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -100,7 +92,7 @@ const ChangePasswordTitle = styled.p`
   text-align: center;
 `;
 
-const PasswordField = styled.input`
+const UNField = styled.input`
   width: 100%;
   margin: 0;
   border: 3px solid #000;
@@ -118,7 +110,7 @@ const PasswordField = styled.input`
   `}
 `;
 
-const SubmitPassword = styled.button`
+const UNSubmit = styled.button`
   display: block;
   width: 100%;
   background-color: ${({ theme }) => theme.mediumBlue};

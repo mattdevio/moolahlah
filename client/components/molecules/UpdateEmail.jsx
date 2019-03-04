@@ -2,93 +2,88 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import isEmail from 'validator/lib/isEmail'; 
 import PropTypes from 'prop-types';
 
-// Custom imports
-import { updatePassword } from '@/state/ducks/auth';
+// Custom Imports
+import { requestUpdateEmail } from '@/state/ducks/auth';
 
-class UpdatePassword extends Component {
+
+class UpdateEmail extends Component {
 
   constructor(props) {
     super(props);
-    this.state={
-      password: '',
+    this.state = {
+      email: '',
       error: '',
     };
-    this.updateKey = this.updateKey.bind(this);
+    this.updateByKey = this.updateByKey.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  updateByKey(key) {
+    return e => this.setState({
+      [key]: e.target.value,
+      error: '',
+    });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const password = this.state.password.trim();
-    if (password.length < 6) {
+    const email = this.state.email.trim();
+    if (!isEmail(email)) {
       return this.setState({
-        error: 'Password must be atleast 6 characters',
+        error: 'Not a valid email address',
       });
     }
-    if (!password.match(/\d/)) {
-      return this.setState({
-        error: 'Password must contain a number',
-      });
-    }
+    this.props.dispatchRequestUpdateEmail(email);
     this.setState({
-      error: '',
-      password: '',
+      email: ''
     });
-    this.props.dispatchUpdatePassword(password);
-  }
-
-  updateKey(key) {
-    return (event) => {
-      this.setState({
-        [key]: event.target.value,
-        error: '',
-      });
-    };
   }
 
   render() {
+    const { email, error } = this.state;
     return (
-      <UPContainer onSubmit={ this.handleSubmit }>
-        <ChangePasswordTitle>
-          Update Password
-        </ChangePasswordTitle>
-        <PasswordField
-          placeholder='Password...'
-          type='password'
-          value={ this.state.password }
-          onChange={ this.updateKey('password') }
+      <UEContainer onSubmit={ this.handleSubmit }>
+        <ChangeEmailTitle>
+          Update Email
+        </ChangeEmailTitle>
+        <EmailField
+          placeholder='Email...'
+          onChange={ this.updateByKey('email') }
+          value={ email }
         />
-        { !!this.state.error && <ErrorBox>
-          Error: { this.state.error }
+        { !!error && <ErrorBox>
+          Error: { error }
         </ErrorBox> }
-        <SubmitPassword>
-          Submit New Password
-        </SubmitPassword>
-      </UPContainer>
+        <SubmitEmail>
+          Submit New Email
+        </SubmitEmail>
+      </UEContainer>
     );
   }
 
 }
 
-UpdatePassword.propTypes = {
-  dispatchUpdatePassword: PropTypes.func.isRequired,
+UpdateEmail.propTypes = {
+  dispatchRequestUpdateEmail: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  dispatchUpdatePassword: password => dispatch(updatePassword({ password })),
+  dispatchRequestUpdateEmail: email => dispatch(requestUpdateEmail({ email })),
 });
 
-export default connect(null, mapDispatchToProps)(UpdatePassword);
+export default connect(null, mapDispatchToProps)(UpdateEmail);
 
-const UPContainer = styled.form`
+const UEContainer = styled.form`
   width: 100%;
   padding: 1rem;
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.9);
+  margin: 0 0 1rem 0;
 `;
 
-const ChangePasswordTitle = styled.p`
+const ChangeEmailTitle = styled.p`
   font-size: 3rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -100,7 +95,7 @@ const ChangePasswordTitle = styled.p`
   text-align: center;
 `;
 
-const PasswordField = styled.input`
+const EmailField = styled.input`
   width: 100%;
   margin: 0;
   border: 3px solid #000;
@@ -118,7 +113,7 @@ const PasswordField = styled.input`
   `}
 `;
 
-const SubmitPassword = styled.button`
+const SubmitEmail = styled.button`
   display: block;
   width: 100%;
   background-color: ${({ theme }) => theme.mediumBlue};
