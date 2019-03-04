@@ -12,9 +12,11 @@ import MoolahlahLogo from '@/components/atoms/MoolahlahLogo';
 import YearSelector from '@/components/molecules/YearSelector';
 import LoadingSpinner from '@/components/atoms/LoadingSpinner';
 import YearReviewGraph from '@/components/organisms/YearReviewGraph';
+import OnlyMonthSelector from '@/components/molecules/OnlyMonthSelector';
 import {
   AnalyticStatusEnum,
   requestYearReview,
+  requestMonthReview,
 } from '@/state/ducks/analytics';
 
 class BudgetVisionPage extends Component {
@@ -24,24 +26,26 @@ class BudgetVisionPage extends Component {
   }
 
   componentDidMount() {
-    const { year, dispatchRequestYearReview } = this.props;
+    const { month, year, dispatchRequestYearReview, dispatchRequestMonthReview } = this.props;
     dispatchRequestYearReview(year);
+    dispatchRequestMonthReview({ year, month });
   }
 
   render() {
-    const { status } = this.props;
+    const { yearReviewStatus } = this.props;
     return (
       <Fragment>
         <ContentSectionContainer>
           <ContentSectionWrapper>
             <MoolahlahLogo width='20' margin='0 auto 1rem auto' />
-            { status === AnalyticStatusEnum.loading && <LoadingSpinner /> }
-            { status === AnalyticStatusEnum.loaded && <YearReviewGraph /> }
+            { yearReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
+            { yearReviewStatus === AnalyticStatusEnum.loaded && <YearReviewGraph /> }
           </ContentSectionWrapper>
         </ContentSectionContainer>
         <TabContentContainer bgColor='mediumBlue'>
           <TabSelector />
           <YearSelector />
+          <OnlyMonthSelector />
         </TabContentContainer>
       </Fragment>
     );
@@ -50,18 +54,24 @@ class BudgetVisionPage extends Component {
 }
 
 BudgetVisionPage.propTypes = {
-  status: PropTypes.number.isRequired,
+  yearReviewStatus: PropTypes.number.isRequired,
+  monthReviewStatus: PropTypes.number.isRequired,
   year: PropTypes.number.isRequired,
+  month: PropTypes.number.isRequired,
   dispatchRequestYearReview: PropTypes.func.isRequired,
+  dispatchRequestMonthReview: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  status: state.analytics.status,
+  yearReviewStatus: state.analytics.yearReviewStatus,
+  monthReviewStatus: state.analytics.monthReviewStatus,
   year: state.analytics.year,
+  month: state.analytics.month,
 });
 
 const mapDispatchToProps = dispatch => ({
   dispatchRequestYearReview: year => dispatch(requestYearReview({ year })),
+  dispatchRequestMonthReview: ({ year, month }) => dispatch(requestMonthReview({ year, month })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BudgetVisionPage);

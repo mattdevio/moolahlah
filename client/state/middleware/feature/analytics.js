@@ -6,9 +6,9 @@ import {
   SET_YEAR,
   setYearReviewData,
   requestYearReview,
-  setStatusLoading,
-  setStatusLoaded,
-  setStatusEmpty,
+  setYearReviewStatusLoading,
+  setYearReviewStatusLoaded,
+  setYearReviewStatusEmpty,
 } from '@/state/ducks/analytics';
 
 /**
@@ -27,7 +27,7 @@ const analyticsMiddleware = ({ dispatch }) => next => action => {
       break;
 
     case REQUEST_YEAR_REVIEW:
-      next(setStatusLoading());
+      next(setYearReviewStatusLoading());
       next(apiRequest({
         data: {
           year: action.year,
@@ -40,12 +40,12 @@ const analyticsMiddleware = ({ dispatch }) => next => action => {
     
     case `${REQUEST_YEAR_REVIEW} ${API_SUCCESS}`:
       processRequestYearReviewApiSuccess(next, action);
-      next(setStatusLoaded());
+      next(setYearReviewStatusLoaded());
       break;
 
     case `${REQUEST_YEAR_REVIEW} ${API_ERROR}`:
       processRequestYearReviewApiError(next, action);
-      next(setStatusEmpty());
+      next(setYearReviewStatusEmpty());
       break;
 
     default:

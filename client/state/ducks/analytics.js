@@ -7,8 +7,10 @@ export const ANALYTICS = '[analytics]';
 // Actions
 export const REQUEST_YEAR_REVIEW = `${ANALYTICS} REQUEST_YEAR_REVIEW`;
 export const SET_YEAR_REVIEW_DATA = `${ANALYTICS} SET_YEAR_REVIEW_DATA`;
-export const SET_STATUS = `${ANALYTICS} SET_STATUS`;
+export const REQUEST_MONTH_REVIEW = `${ANALYTICS} REQUEST_MONTH_REVIEW`;
+export const SET_YEAR_REVIEW_STATUS = `${ANALYTICS} SET_YEAR_REVIEW_STATUS`;
 export const SET_YEAR = `${ANALYTICS} SET_YEAR`;
+export const SET_MONTH = `${ANALYTICS} SET_MONTH`;
 
 export const AnalyticStatusEnum = Object.freeze({
   empty: 1,
@@ -20,8 +22,11 @@ export const AnalyticStatusEnum = Object.freeze({
 const TODAY = new Date();
 const INITIAL_ANALYTICS_DATA = {
   year: TODAY.getFullYear(),
-  status: AnalyticStatusEnum.empty, // Always starts empty
+  month: TODAY.getMonth(),
+  yearReviewStatus: AnalyticStatusEnum.empty, // Always start empty
+  monthReviewStatus: AnalyticStatusEnum.empty, // Always start empty
   yearReview: {},
+  monthReview: {},
 };
 
 
@@ -36,25 +41,31 @@ export const setYearReviewData = yearReview => ({
   yearReview,
 });
 
-export const setStatusLoaded = () => ({
-  type: SET_STATUS,
-  status: AnalyticStatusEnum.loaded,
+export const requestMonthReview = ({ year, month }) => ({
+  type: REQUEST_MONTH_REVIEW,
+  month,
+  year,
+});
+
+export const setYearReviewStatusLoaded = () => ({
+  type: SET_YEAR_REVIEW_STATUS,
+  yearReviewStatus: AnalyticStatusEnum.loaded,
   meta: {
     AnalyticStatusEnum,
   }
 });
 
-export const setStatusLoading = () => ({
-  type: SET_STATUS,
-  status: AnalyticStatusEnum.loading,
+export const setYearReviewStatusLoading = () => ({
+  type: SET_YEAR_REVIEW_STATUS,
+  yearReviewStatus: AnalyticStatusEnum.loading,
   meta: {
     AnalyticStatusEnum,
   }
 });
 
-export const setStatusEmpty = () => ({
-  type: SET_STATUS,
-  status: AnalyticStatusEnum.empty,
+export const setYearReviewStatusEmpty = () => ({
+  type: SET_YEAR_REVIEW_STATUS,
+  yearReviewStatus: AnalyticStatusEnum.empty,
   meta: {
     AnalyticStatusEnum,
   }
@@ -63,6 +74,11 @@ export const setStatusEmpty = () => ({
 export const setYear = ({ year }) => ({
   type: SET_YEAR,
   year,
+});
+
+export const setMonth = ({ month }) => ({
+  type: SET_MONTH,
+  month,
 });
 
 
@@ -76,14 +92,19 @@ const analyticsReducer = (state = INITIAL_ANALYTICS_DATA, action) => {
         year: action.year,
       });
 
-    case SET_STATUS:
+    case SET_YEAR_REVIEW_STATUS:
       return Object.assign({}, state, {
-        status: action.status,
+        yearReviewStatus: action.yearReviewStatus,
       });
 
     case SET_YEAR_REVIEW_DATA:
       return Object.assign({}, state, {
         yearReview: action.yearReview,
+      });
+
+    case SET_MONTH:
+      return Object.assign({}, state, {
+        month: action.month,
       });
 
     case SIGN_OUT:
