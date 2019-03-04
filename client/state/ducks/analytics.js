@@ -8,7 +8,9 @@ export const ANALYTICS = '[analytics]';
 export const REQUEST_YEAR_REVIEW = `${ANALYTICS} REQUEST_YEAR_REVIEW`;
 export const SET_YEAR_REVIEW_DATA = `${ANALYTICS} SET_YEAR_REVIEW_DATA`;
 export const REQUEST_MONTH_REVIEW = `${ANALYTICS} REQUEST_MONTH_REVIEW`;
+export const SET_MONTH_REVIEW_DATA = `${ANALYTICS} SET_MONTH_REVIEW_DATA`;
 export const SET_YEAR_REVIEW_STATUS = `${ANALYTICS} SET_YEAR_REVIEW_STATUS`;
+export const SET_MONTH_REVIEW_STATUS = `${ANALYTICS} SET_MONTH_REVIEW_STATUS`;
 export const SET_YEAR = `${ANALYTICS} SET_YEAR`;
 export const SET_MONTH = `${ANALYTICS} SET_MONTH`;
 
@@ -47,6 +49,11 @@ export const requestMonthReview = ({ year, month }) => ({
   year,
 });
 
+export const setMonthReviewData = monthReview => ({
+  type: SET_MONTH_REVIEW_DATA,
+  monthReview,
+});
+
 export const setYearReviewStatusLoaded = () => ({
   type: SET_YEAR_REVIEW_STATUS,
   yearReviewStatus: AnalyticStatusEnum.loaded,
@@ -66,6 +73,30 @@ export const setYearReviewStatusLoading = () => ({
 export const setYearReviewStatusEmpty = () => ({
   type: SET_YEAR_REVIEW_STATUS,
   yearReviewStatus: AnalyticStatusEnum.empty,
+  meta: {
+    AnalyticStatusEnum,
+  }
+});
+
+export const setMonthReviewStatusLoaded = () => ({
+  type: SET_MONTH_REVIEW_STATUS,
+  monthReviewStatus: AnalyticStatusEnum.loaded,
+  meta: {
+    AnalyticStatusEnum,
+  }
+});
+
+export const setMonthReviewStatusLoading = () => ({
+  type: SET_MONTH_REVIEW_STATUS,
+  monthReviewStatus: AnalyticStatusEnum.loading,
+  meta: {
+    AnalyticStatusEnum,
+  }
+});
+
+export const setMonthReviewStatusEmpty = () => ({
+  type: SET_MONTH_REVIEW_STATUS,
+  monthReviewStatus: AnalyticStatusEnum.empty,
   meta: {
     AnalyticStatusEnum,
   }
@@ -97,9 +128,19 @@ const analyticsReducer = (state = INITIAL_ANALYTICS_DATA, action) => {
         yearReviewStatus: action.yearReviewStatus,
       });
 
+    case SET_MONTH_REVIEW_STATUS:
+      return Object.assign({}, state, {
+        monthReviewStatus: action.monthReviewStatus,
+      });
+
     case SET_YEAR_REVIEW_DATA:
       return Object.assign({}, state, {
         yearReview: action.yearReview,
+      });
+
+    case SET_MONTH_REVIEW_DATA:
+      return Object.assign({}, state, {
+        monthReview: action.monthReview,
       });
 
     case SET_MONTH:

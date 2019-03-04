@@ -47,6 +47,7 @@ class BudgetVisionPage extends Component {
                 <YearReviewGraph />
               </Fragment>
             }
+            { monthReviewStatus === AnalyticStatusEnum.empty && <GraphTitle>No Budget Data For That Month</GraphTitle> }
             { monthReviewStatus === AnalyticStatusEnum.loading && <LoadingSpinner /> }
             { monthReviewStatus === AnalyticStatusEnum.loaded &&
               <Fragment>

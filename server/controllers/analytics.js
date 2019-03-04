@@ -190,7 +190,6 @@ analyticsRouter.post('/month_review', protectedRoute(), Budget.monthReviewValida
       .where('budget_record.budget_id', budget__.budgetId)
       .groupBy('budget_record.category_id');
   } catch (e) {
-    console.dir(e);
     return next(e);
   }
 
@@ -241,7 +240,7 @@ analyticsRouter.post('/month_review', protectedRoute(), Budget.monthReviewValida
   
 
   res.json(apiResponse({
-    message: 'Month review',
+    message: 'Month review generated',
     data: allData,
   }));
 
