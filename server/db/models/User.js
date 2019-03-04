@@ -133,9 +133,56 @@ class User extends BaseModel {
   static updatePasswordValidation() {
     return [
 
+      sanitizeBody('password')
+        .trim(),
+
       body('password')
         .isLength({ min: 6 }).withMessage('Must be atleast 6 characters')
         .matches(/\d/).withMessage('must contain a number'),
+
+      handleValidationErrors(),
+
+    ];
+  }
+
+  static updateNameValidation() {
+    return [
+
+      sanitizeBody('name')
+        .trim(),
+
+      body('name')
+        .not().isEmpty().withMessage('Field required'),
+
+      handleValidationErrors(),
+      
+    ];
+  }
+
+  static updateEmailValidation() {
+    return [
+
+      sanitizeBody('email')
+        .trim(),
+
+      body('email')
+        .isEmail().withMessage('Not a valid email address'),
+
+      body('email')
+        .custom((email, { req }) => new Promise(async (resolve, reject) => {
+          console.dir(req.session.data);
+          if (typeof email === 'undefined') return reject();
+          if (req.session.data.email === email) return reject('No update, that is already your email');
+          let emailIsOpen__;
+          try {
+            emailIsOpen__ = await User.query()
+              .where('email', email);
+          } catch (e) {
+            return reject('Email lookup failed');
+          }
+          if (emailIsOpen__.length > 0) return reject('Email address already in use');
+          resolve();
+        })),
 
       handleValidationErrors(),
 
