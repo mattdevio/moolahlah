@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 // Custom Imports
 import * as routes from '@/constants/routes';
@@ -19,6 +20,9 @@ class DashboardPage extends Component {
   render() {
     return (
       <DashboardPageContainer>
+        <Helmet>
+          <title>Moolahlah Budget App</title>
+        </Helmet>
         <Switch>
           <Route
             path={ routes.DASHBOARD_BUDGET_DESIGN }
